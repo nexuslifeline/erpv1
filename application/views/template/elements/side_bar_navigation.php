@@ -20,7 +20,7 @@
                         <li class="nav-separator"><span>Explore</span></li>
 
                         <li><a href="#"><i class="ti ti-home"></i><span>Dashboard</span><span class="badge badge-teal">2</span></a></li>
-                        <li><a href="#"><i class="ti ti-layout"></i><span>Purchasing</span></a>
+                        <li><a href="#"><i class="ti ti-package"></i><span>Purchasing</span></a>
                             <ul class="acc-menu">
                                 <li><a href="#">Purchase Order</a></li>
                                 <li><a href="#">Receiving</a></li>
@@ -30,29 +30,48 @@
                             </ul>
                         </li>
 
-                        <li><a href="#"><i class="ti ti-view-list-alt"></i><span>Sales</span></a>
+                        <li><a href="#"><i class="ti ti-shopping-cart"></i><span>Sales</span></a>
                             <ul class="acc-menu">
-                                <li><a href="#">Sales Order</a></li>
-                                <li><a href="#">Sales Invoice</a></li>
-                                <li><a href="#">Record Payment</a></li>
+                                <li><a href="#">Standard Sales</a>
+
+                                    <ul class="acc-menu">
+                                        <li><a href="#">Sales Order</a></li>
+                                        <li><a href="#">Record Invoice</a></li>
+                                        <li><a href="#">Received Payment</a></li>
+                                    </ul>
+
+                                </li>
+
+
+                                <li><a href="#">Special Store</a>
+                                    <ul class="acc-menu">
+                                        <li><a href="#">POS Convenient Store</a></li>
+                                        <li><a href="#">POS Restaurant</a></li>
+                                        <li><a href="#">POS Trading</a></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
 
-
-                        <li><a href="#"><i class="ti ti-control-shuffle"></i><span>Masterfiles</span></a>
+                        <li><a href="#"><i class="ti ti-view-list-alt"></i><span>References</span></a>
                             <ul class="acc-menu">
-                                <li><a href="products">Product Management</a></li>
-                                <li><a href="suppliers">Supplier Management</a></li>
-                                <li><a href="customers">Customer Management</a></li>
                                 <li><a href="categories">Category Management</a></li>
                                 <li><a href="departments">Department Management</a></li>
                                 <li><a href="units">Unit Management</a></li>
-                                <li><a href="#">Discount Management</a></li>
                                 <li><a href="brands">Brand Management</a></li>
+                                <li><a href="#">Discount Management</a></li>
                                 <li><a href="cards">Card Management</a></li>
                                 <li><a href="generics">Generic Management</a></li>
                                 <li><a href="giftcards">Gift Card Management</a></li>
                                 <li><a href="locations">Location Management</a></li>
+                            </ul>
+                        </li>
+
+                        <li><a href="#"><i class="ti ti-harddrive"></i><span>Masterfiles</span></a>
+                            <ul class="acc-menu">
+                                <li><a href="products">Product Management</a></li>
+                                <li><a href="suppliers">Supplier Management</a></li>
+                                <li><a href="customers">Customer Management</a></li>
                             </ul>
                         </li>
 
@@ -67,7 +86,7 @@
                 </nav>
             </div>
 
-            <div class="widget" id="widget-progress">
+            <!--<div class="widget" id="widget-progress">
                 <div class="widget-heading">
                     Progress
                 </div>
@@ -95,7 +114,7 @@
                     </div>
 
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>
