@@ -44,17 +44,58 @@ class Users extends CORE_Controller
                 $m_users->user_mobile=$this->input->post('user_mobile',TRUE);
                 $m_users->user_telephone=$this->input->post('user_telephone',TRUE);
                 $m_users->user_bdate=date('Y-m-d',strtotime($this->input->post('user_bdate',TRUE)));
+                $m_users->user_group_id=$this->input->post('user_group_id',TRUE);
                 $m_users->save();
 
-                $useraccountid=$m_users->last_insert_id();
+                $user_account_id=$m_users->last_insert_id();
 
                 $response['title']='Success!';
                 $response['stat']='success';
                 $response['msg']='User account information successfully created.';
-                $response['row_added']=$m_users->get_user_list($useraccountid);
+                $response['row_added']=$m_users->get_user_list($user_account_id);
                 echo json_encode($response);
 
                 break;
+            //****************************************************************************************************************
+            case 'update' :
+                $m_users=$this->Users_model;
+
+                $user_account_id=$this->input->post('user_id',TRUE);
+                $m_users->user_name=$this->input->post('user_name',TRUE);
+                $m_users->user_pword=sha1($this->input->post('user_pword',TRUE));
+                $m_users->user_lname=$this->input->post('user_lname',TRUE);
+                $m_users->user_fname=$this->input->post('user_fname',TRUE);
+                $m_users->user_mname=$this->input->post('user_mname',TRUE);
+                $m_users->user_address=$this->input->post('user_address',TRUE);
+                $m_users->user_email=$this->input->post('user_email',TRUE);
+                $m_users->user_mobile=$this->input->post('user_mobile',TRUE);
+                $m_users->user_telephone=$this->input->post('user_telephone',TRUE);
+                $m_users->user_bdate=date('Y-m-d',strtotime($this->input->post('user_bdate',TRUE)));
+                $m_users->user_group_id=$this->input->post('user_group_id',TRUE);
+                $m_users->modify($user_account_id);
+
+
+                $response['title']='Success!';
+                $response['stat']='success';
+                $response['msg']='User account information successfully created.';
+                $response['row_updated']=$m_users->get_user_list($user_account_id);
+                echo json_encode($response);
+
+                break;
+            //****************************************************************************************************************
+            case 'delete':
+                $m_users=$this->Users_model;
+                $user_account_id=$this->input->post('user_id',TRUE);
+
+                $m_users->is_deleted=1;
+                if($m_users->modify($user_account_id)){
+                    $response['title']='Success!';
+                    $response['stat']='success';
+                    $response['msg']='User account information successfully deleted.';
+                    echo json_encode($response);
+                }
+
+
         }
 
 

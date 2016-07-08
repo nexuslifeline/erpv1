@@ -155,10 +155,10 @@
                                                        <label class="col-md-2 col-md-offset-1 control-label">User Group :</label>
 
                                                        <div class="col-md-7">
-                                                           <select id="cbo_user_groups">
-                                                               <option value="1">[ Create Register User Account Group ]</option>
+                                                           <select name="" id="cbo_user_groups" data-error-msg="User group is required." required>
+                                                               <option value="0">[ Create User Account Group ]</option>
                                                                <?php foreach($user_groups as $group){ ?>
-                                                                        <option value="<?php echo $group->user_group_id; ?>" selected><?php echo $group->user_group; ?></option>
+                                                                        <option value="<?php echo $group->user_group_id; ?>"><?php echo $group->user_group; ?></option>
                                                                <?php } ?>
                                                            </select>
 
@@ -298,8 +298,8 @@
                                                            <div class="input-group">
                                                                <div class="" style="border:1px solid black;height: 230px;width: 210px;vertical-align: middle;">
 
-                                                                   <div id="div_img_customer" style="position:relative;">
-                                                                       <img name="img_customer" src="assets/img/anonymous-icon.png" style="object-fit: fill; !important; height: 100%;width: 100%;" />
+                                                                   <div id="div_img_user" style="position:relative;">
+                                                                       <img name="img_user" src="assets/img/anonymous-icon.png" style="object-fit: fill; !important; height: 100%;width: 100%;" />
                                                                        <input type="file" name="file_upload[]" class="hidden">
                                                                    </div>
 
@@ -329,7 +329,7 @@
                                             <div class="panel-footer">
                                                 <div class="row">
                                                     <div class="col-sm-10 col-sm-offset-3">
-                                                        <button id="btn_save" class="btn-primary btn" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;""><span class=""></span>  Save Changes</button>
+                                                        <button id="btn_save" class="btn-primary btn" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span>  Save Changes</button>
                                                         <button id="btn_cancel" class="btn-default btn" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"">Cancel</button>
                                                     </div>
                                                 </div>
@@ -365,13 +365,54 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button id="btn_yes" type="button" class="btn btn-danger" data-dismiss="modal">Yes</button>
-                            <button id="btn_close" type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                            <button id="btn_yes" type="button" class="btn btn-danger" data-dismiss="modal" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Yes</button>
+                            <button id="btn_close" type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">No</button>
                         </div>
                     </div><!---content---->
                 </div>
             </div><!---modal-->
 
+
+            <div id="modal_user_group" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content"><!---content--->
+                        <div class="modal-header">
+                            <button type="button" class="close"   data-dismiss="modal" aria-hidden="true">X</button>
+                            <h4 class="modal-title"><span id="modal_mode"> </span>New User Group</h4>
+
+                        </div>
+
+                        <div class="modal-body">
+                            <form id="frm_user_group">
+                                <div class="form-group">
+                                            <label>* User Group :</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-envelope-o"></i>
+                                                </span>
+                                                <input type="text" name="user_group" class="form-control" placeholder="User group" data-error-msg="Category name is required." required>
+                                            </div>
+                                 </div>
+
+
+                                <div class="form-group">
+                                    <label>Description :</label>
+                                    <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <textarea name="user_group_desc" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button id="btn_create_user_group" type="button" class="btn btn-primary"  style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span> Create</button>
+                            <button id="btn_close_user_group" type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Cancel</button>
+                        </div>
+                    </div><!---content---->
+                </div>
+            </div><!---modal-->
 
 
 
@@ -422,7 +463,7 @@
 
 <script>
     $(document).ready(function(){
-        var dt; var _txnMode; var _selectedID; var _selectRowObj;
+        var dt; var _txnMode; var _selectedID; var _selectRowObj; var _cboUserGroup;
 
 
 
@@ -475,7 +516,13 @@
             });
 
 
-            $("#cbo_user_groups,#cbo_employees").select2();
+            _cboUserGroup=$("#cbo_user_groups").select2({
+                placeholder: "Please select user group",
+                allowClear: true
+            });
+
+            _cboUserGroup.select2('val', null)
+
 
 
         }();
@@ -528,7 +575,41 @@
 
             $('#btn_remove_photo').click(function(event){
                 event.preventDefault();
-                $('img[name="img_customer"]').attr('src','assets/img/anonymous-icon.png');
+                $('img[name="img_user"]').attr('src','assets/img/anonymous-icon.png');
+            });
+
+            $('#btn_create_user_group').click(function(){
+
+                var btn=$(this);
+
+                if(validateRequiredFields($('#frm_user_group'))){
+                    var data=$('#frm_user_group').serializeArray();
+
+                    $.ajax({
+                        "dataType":"json",
+                        "type":"POST",
+                        "url":"User_groups/transaction/create",
+                        "data":data,
+                        "beforeSend" : function(){
+                            showSpinningProgress(btn);
+                        }
+                    }).done(function(response){
+                        showNotification(response);
+                        $('#modal_user_group').modal('hide');
+
+                        var _group=response.row_added[0];
+                        $('#cbo_user_groups').append('<option value="'+_group.user_group_id+'" selected>'+_group.user_group+'</option>');
+                        $('#cbo_user_groups').select2('val',_group.user_group_id);
+
+                    }).always(function(){
+                        showSpinningProgress(btn);
+                    });
+                }
+
+
+
+
+
             });
 
 
@@ -538,18 +619,21 @@
                     _txnMode="edit";
                     _selectRowObj=$(this).closest('tr');
                     var data=dt.row(_selectRowObj).data();
-                    _selectedID=data.customer_id;
+                    _selectedID=data.user_id;
 
                     $('input,textarea').each(function(){
                         var _elem=$(this);
                         $.each(data,function(name,value){
-                            if(_elem.attr('name')==name){
+                            if(_elem.attr('name')==name&&_elem.attr('type')!='password'){
                                 _elem.val(value);
                             }
+
                         });
+
+                        $('#cbo_user_groups').select2('val',data.user_group_id);
                     });
 
-                    $('img[name="img_customer"]').attr('src',data.photo_path);
+                    $('img[name="img_user"]').attr('src',data.photo_path);
                     showList(false);
 
             });
@@ -557,7 +641,7 @@
             $('#tbl_user_list tbody').on('click','button[name="remove_info"]',function(){
                 _selectRowObj=$(this).closest('tr');
                 var data=dt.row(_selectRowObj).data();
-                _selectedID=data.customer_id;
+                _selectedID=data.user_id;
 
                 $('#modal_confirmation').modal('show');
             });
@@ -570,10 +654,23 @@
             });
 
 
+            _cboUserGroup.on("select2:select", function (e) {
+
+                var i=$(this).select2('val');
+                if(i==0){
+                    $(this).select2('val',null)
+                    $('#modal_user_group').modal('show');
+                    clearFields($('#modal_user_group').find('form'));
+                }
+
+
+            });
+
+
                 $('input[name="file_upload[]"]').change(function(event){
                     var _files=event.target.files;
 
-                    $('#div_img_customer').hide();
+                    $('#div_img_user').hide();
                     $('#div_img_loader').show();
 
 
@@ -585,7 +682,7 @@
                     console.log(_files);
 
                     $.ajax({
-                        url : 'customers/transaction/upload',
+                        url : 'Users/transaction/upload',
                         type : "POST",
                         data : data,
                         cache : false,
@@ -596,8 +693,8 @@
                             //console.log(response);
                             //alert(response.path);
                             $('#div_img_loader').hide();
-                            $('#div_img_customer').show();
-                            $('img[name="img_customer"]').attr('src',response.path);
+                            $('#div_img_user').show();
+                            $('img[name="img_user"]').attr('src',response.path);
 
                         }
                     });
@@ -610,12 +707,12 @@
 
                 $('#btn_save').click(function(){
 
-                    if(validateRequiredFields()){
+                    if(validateRequiredFields($('#frm_users'))){
                         if(_txnMode=="new"){
                             createUserAccount().done(function(response){
                                 showNotification(response);
                                 dt.row.add(response.row_added[0]).draw();
-                                clearFields();
+                                clearFields($('#frm_users'));
                             }).always(function(){
                                 showSpinningProgress($('#btn_save'));
                             });
@@ -623,7 +720,7 @@
                             updateUserAccount().done(function(response){
                                 showNotification(response);
                                 dt.row(_selectRowObj).data(response.row_updated[0]).draw();
-                                clearFields();
+                                clearFields($('#frm_users'));
                                 showList(true);
                             }).always(function(){
                                 showSpinningProgress($('#btn_save'));
@@ -638,19 +735,31 @@
         })();
 
 
-        var validateRequiredFields=function(){
+        var validateRequiredFields=function(f){
                 var stat=true;
 
                 $('div.form-group').removeClass('has-error');
-                  $('input[required],textarea','#frm_users').each(function(){
+                  $('input[required],textarea[required],select[required]',f).each(function(){
 
-                      if($(this).val()==""){
-                          showNotification({title:"Error!",stat:"error",msg:$(this).data('error-msg')});
-                          $(this).closest('div.form-group').addClass('has-error');
-                          $(this).focus();
-                          stat=false;
-                          return false;
+                      if($(this).is('select')){
+                          if($(this).select2('val')==0||$(this).select2('val')==null){
+                              showNotification({title:"Error!",stat:"error",msg:$(this).data('error-msg')});
+                              $(this).closest('div.form-group').addClass('has-error');
+                              $(this).focus();
+                              stat=false;
+                              return false;
+                          }
+                      }else{
+                          if($(this).val()==""){
+                              showNotification({title:"Error!",stat:"error",msg:$(this).data('error-msg')});
+                              $(this).closest('div.form-group').addClass('has-error');
+                              $(this).focus();
+                              stat=false;
+                              return false;
+                          }
                       }
+
+
 
                   });
 
@@ -660,7 +769,8 @@
 
         var createUserAccount=function(){
             var _data=$('#frm_users').serializeArray();
-            _data.push({name : "photo_path" ,value : $('img[name="img_customer"]').attr('src')});
+            _data.push({name : "photo_path" ,value : $('img[name="img_user"]').attr('src')});
+            _data.push({name : "user_group_id" ,value : $('#cbo_user_groups').select2('val')});
 
             return $.ajax({
                 "dataType":"json",
@@ -673,13 +783,14 @@
 
         var updateUserAccount=function(){
             var _data=$('#frm_users').serializeArray();
-            _data.push({name : "photo_path" ,value : $('img[name="img_customer"]').attr('src')});
-            _data.push({name : "customer_id" ,value : _selectedID});
+            _data.push({name : "photo_path" ,value : $('img[name="img_user"]').attr('src')});
+            _data.push({name : "user_group_id" ,value : $('#cbo_user_groups').select2('val')});
+            _data.push({name : "user_id" ,value : _selectedID});
 
             return $.ajax({
                 "dataType":"json",
                 "type":"POST",
-                "url":"customers/transaction/update",
+                "url":"Users/transaction/update",
                 "data":_data,
                 "beforeSend": showSpinningProgress($('#btn_save'))
             });
@@ -689,8 +800,8 @@
             return $.ajax({
                 "dataType":"json",
                 "type":"POST",
-                "url":"customers/transaction/delete",
-                "data":{customer_id : _selectedID}
+                "url":"Users/transaction/delete",
+                "data":{user_id : _selectedID}
             });
         };
 
@@ -719,9 +830,10 @@
             $(e).find('span').toggleClass('glyphicon glyphicon-refresh spinning');
         };
 
-        var clearFields=function(){
-            $('input[required],textarea','#frm_users').val('');
-            $('form').find('input:first').focus();
+        var clearFields=function(f){
+            $('input[required],textarea',f).val('');
+            $(f).find('select').select2('val',null);
+            $(f).find('input:first').focus();
         };
 
 
