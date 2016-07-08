@@ -13,7 +13,7 @@
     <meta name="author" content="">
 
 
-    <?php echo $def_css_files; ?>
+    <?php echo $_def_css_files; ?>
 
     <link rel="stylesheet" href="assets/plugins/spinner/dist/ladda-themeless.min.css">
 
