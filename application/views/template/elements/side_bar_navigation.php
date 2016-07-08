@@ -59,7 +59,7 @@
                                 <li><a href="departments">Department Management</a></li>
                                 <li><a href="units">Unit Management</a></li>
                                 <li><a href="brands">Brand Management</a></li>
-                                <li><a href="#">Discount Management</a></li>
+                                <li><a href="discounts">Discount Management</a></li>
                                 <li><a href="cards">Card Management</a></li>
                                 <li><a href="generics">Generic Management</a></li>
                                 <li><a href="giftcards">Gift Card Management</a></li>
