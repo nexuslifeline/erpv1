@@ -23,6 +23,12 @@
 
     <link href="assets/plugins/select2/select2.min.css" rel="stylesheet">
 
+    <!--/twitter typehead-->
+    <link href="assets/plugins/twittertypehead/twitter.typehead.css" rel="stylesheet">
+
+
+
+
 
 
     <style>
@@ -66,25 +72,34 @@
             to { -webkit-transform: rotate(360deg); }
         }
 
-
-
-        /*table{
-            min-width: 700px;
+        .custom_frame{
+            padding: .5% .8% .5% 1%;
+            border: 1px solid lightgray;
+            margin: 1% 1% 1% 1%;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
         }
 
-        .dataTables_filter{
-            min-width: 700px;
+        @media screen and (max-width: 480px) {
+
+            table{
+                min-width: 700px;
+            }
+
+            .dataTables_filter{
+                min-width: 700px;
+            }
+
+            .dataTables_info{
+                min-width: 700px;
+            }
+
+            .dataTables_paginate{
+                float: left;
+                width: 100%;
+            }
         }
-
-        .dataTables_info{
-            min-width: 700px;
-        }
-
-        .dataTables_paginate{
-            float: left;
-            width: 100%;
-        }*/
-
     </style>
 </head>
 
@@ -107,265 +122,217 @@
 <div class="static-content"  >
 <div class="page-content"><!-- #page-content -->
 
-<ol class="breadcrumb">
-    <li><a href="dashboard">Dashboard</a></li>
+<ol class="breadcrumb"  style="margin-bottom: 10px;>
+    <li><a href="dashboard">Dashboard</a> > </li>
     <li><a href="users">Users  <?php //print_r($user_groups); ?></a></li>
 </ol>
 
 
-<div class="container-fluid">
-<div data-widget-group="group1">
-<div class="row">
-<div class="col-md-12">
+<div class="container-fluid"">
+    <div data-widget-group="group1">
+        <div class="row">
+            <div class="col-md-12">
 
-<div id="div_user_list">
-    <div class="panel panel-default">
-        <div class="panel-body table-responsive">
-            <table id="tbl_purchases" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>PO#</th>
-                    <th>Vendor</th>
-                    <th>Terms</th>
-                    <th>Contact Person</th>
-                    <th>Deliver to</th>
-                    <th><center>Action</center></th>
-                </tr>
-                </thead>
-                <tbody>
-
-
-
-                </tbody>
-            </table>
-        </div>
-        <div class="panel-footer"></div>
-    </div>
-
-</div>
+                <div id="div_user_list">
+                    <div class="panel panel-default">
+                        <div class="panel-body table-responsive">
+                            <table id="tbl_purchases" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>PO#</th>
+                                    <th>Vendor</th>
+                                    <th>Terms</th>
+                                    <th>Contact Person</th>
+                                    <th>Deliver to</th>
+                                    <th><center>Action</center></th>
+                                </tr>
+                                </thead>
+                                <tbody>
 
 
-<div id="div_user_fields" style="display: none;">
-<div class="panel panel-default">
-<div class="panel-heading">
-    <h2>User Information</h2>
-    <div class="panel-ctrls" data-actions-container="" data-action-collapse='{"target": ".panel-body"}'></div>
-</div>
 
-<div class="panel-body">
-
-
-    <form id="frm_users" role="form" class="form-horizontal row-border">
-
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">* User Name :</label>
-            <div class="col-md-7">
-                <div class="input-group">
-                                                                <span class="input-group-addon">
-                                                                    <i class="fa fa-users"></i>
-                                                                </span>
-                    <input type="text" name="user_name" class="form-control" placeholder="User Name" data-error-msg="User name is required!" required>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">User Group :</label>
-
-            <div class="col-md-7">
-                <select name="" id="cbo_user_groups" data-error-msg="User group is required." required>
-                    <option value="0">[ Create User Account Group ]</option>
-                    <?php foreach($user_groups as $group){ ?>
-                        <option value="<?php echo $group->user_group_id; ?>"><?php echo $group->user_group; ?></option>
-                    <?php } ?>
-                </select>
-
-
-                <span class="help-block m-b-none">Required. Please select the correct user group of the user.</span>
-
-            </div>
-
-        </div>
-
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">* Password :</label>
-            <div class="col-md-7">
-                <div class="input-group">
-                                                                <span class="input-group-addon">
-                                                                    <i class="fa fa-lock"></i>
-                                                                </span>
-                    <input type="password" name="user_pword" class="form-control" placeholder="Password" data-error-msg="Password is required!" required>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">* Confirm Password :</label>
-            <div class="col-md-7">
-                <div class="input-group">
-                                                                <span class="input-group-addon">
-                                                                    <i class="fa fa-lock"></i>
-                                                                </span>
-                    <input type="password" name="user_confirm_pword" class="form-control" placeholder="Confirm Password" data-error-msg="Please confirm password!" required>
-                </div>
-
-                <span class="help-block m-b-none">Please make sure password match.</span>
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">* Firstname :</label>
-            <div class="col-md-7">
-                <div class="input-group">
-                                                                <span class="input-group-addon">
-                                                                    <i class="fa fa-users"></i>
-                                                                </span>
-                    <input type="text" name="user_fname" class="form-control" placeholder="Firstname" data-error-msg="Firstname is required!" required>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label"> Middlename :</label>
-            <div class="col-md-7">
-                <div class="input-group">
-                                                                <span class="input-group-addon">
-                                                                    <i class="fa fa-users"></i>
-                                                                </span>
-                    <input type="text" name="user_mname" class="form-control" placeholder="Middlename">
-                </div>
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">* Lastname :</label>
-            <div class="col-md-7">
-                <div class="input-group">
-                                                                <span class="input-group-addon">
-                                                                    <i class="fa fa-users"></i>
-                                                                </span>
-                    <input type="text" name="user_lname" class="form-control" placeholder="Lastname" data-error-msg="Lastname is required!" required>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">Birthdate :</label>
-
-            <div class="col-md-7">
-                <div class="input-group date">
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input id="txt_bdate" name="user_bdate" type="text" class="form-control" value="07/07/2016">
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">Address :</label>
-            <div class="col-md-7">
-                <textarea name="user_address" class="form-control"></textarea>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">Email Address :</label>
-            <div class="col-md-7">
-                <div class="input-group">
-                                                                <span class="input-group-addon">
-                                                                    <i class="fa fa-envelope-o"></i>
-                                                                </span>
-                    <input type="text" name="user_email" class="form-control" placeholder="Email Address">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">Landline :</label>
-            <div class="col-md-7">
-                <div class="input-group">
-                                                                <span class="input-group-addon">
-                                                                    <i class="fa fa-send"></i>
-                                                                </span>
-                    <input type="text" name="user_telephone" class="form-control" placeholder="Landline">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">Mobile No :</label>
-            <div class="col-md-7">
-                <div class="input-group">
-                                                                <span class="input-group-addon">
-                                                                    <i class="fa fa-send"></i>
-                                                                </span>
-                    <input type="text" name="user_mobile" class="form-control" placeholder="Mobile No">
-                </div>
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <label class="col-md-2 col-md-offset-1 control-label">Photo :</label>
-            <div class="col-md-5">
-                <div class="input-group">
-                    <div class="" style="border:1px solid black;height: 230px;width: 210px;vertical-align: middle;">
-
-                        <div id="div_img_user" style="position:relative;">
-                            <img name="img_user" src="assets/img/anonymous-icon.png" style="object-fit: fill; !important; height: 100%;width: 100%;" />
-                            <input type="file" name="file_upload[]" class="hidden">
+                                </tbody>
+                            </table>
                         </div>
-
-                        <div id="div_img_loader" style="display: none;">
-                            <img name="img_loader" src="assets/img/loader/ajax-loader-sm.gif" style="display: block;margin:40% auto auto auto; " />
-                        </div>
+                        <div class="panel-footer"></div>
                     </div>
 
-                    <button id="btn_browse" class="btn btn-primary "  style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Browse Photo</button>
-                    <button id="btn_remove_photo"  class="btn btn-primary" style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Remove</button>
                 </div>
+
+
+                <div id="div_user_fields" style="display: none;">
+                    <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h2>Purchase Order</h2>
+                                <div class="panel-ctrls" data-actions-container="" data-action-collapse='{"target": ".panel-body"}'></div>
+                            </div>
+
+                            <div class="panel-body">
+
+                                <div class="row custom_frame">
+                                <form id="frm_users" role="form" class="form-horizontal">
+
+                                        <br />
+                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
+                                            <label class="col-md-3  control-label">* PO # :</label>
+                                            <div class="col-md-9">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-code"></i>
+                                                    </span>
+                                                    <input type="text" name="po_no" class="form-control" placeholder="PO #" data-error-msg="PO # is required!" required>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12  form-group">
+                                            <label class="col-md-3 col-sm-12 col-xs-12 control-label">* Terms :</label>
+
+
+
+                                            <div class="col-md-4 col-sm-6 col-xs-6">
+                                                <div class="input-group bootstrap-touchspin">
+                                                    <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
+                                                    <input id="touchspin4" class="form-control" value="872" style="display: block;">
+                                                    <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
+                                                <span class="input-group-btn-vertical">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-5 col-sm-6 col-xs-6">
+                                                <select name="" id="cbo_term_type" class="form-control">
+                                                    <option>Day(s)</option>
+                                                </select>
+
+                                            </div>
+
+                                        </div>
+
+
+
+
+                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
+                                            <label class="col-md-3 control-label">Supplier :</label>
+
+                                            <div class="col-md-9">
+                                                <select name="" id="cbo_suppliers" data-error-msg="User group is required." required>
+                                                    <option value="0">[ Create New Supplier ]</option>
+                                                </select>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12  form-group">
+                                            <label class="col-md-3  control-label">Contact Person :</label>
+                                            <div class="col-md-9">
+                                                <div class="input-group">
+                                                            <span class="input-group-addon">
+                                                                <i class="fa fa-users"></i>
+                                                            </span>
+                                                    <input type="text" name="user_name" class="form-control" placeholder="Contact Person">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12  form-group">
+                                            <label class="col-md-3  control-label">* Deliver to :</label>
+                                            <div class="col-md-9">
+                                                    <textarea name="deliver" class="form-control" placeholder="Deliver to Address" data-error-msg="Deliver address is required!" required></textarea>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12  form-group">
+                                            <label class="col-md-3  control-label">* Remarks :</label>
+                                            <div class="col-md-9">
+                                                <textarea name="remarks" class="form-control" placeholder="Remarks"></textarea>
+
+                                            </div>
+                                        </div>
+
+
+                                </form>
+                                </div>
+
+                                <div class="row custom_frame">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <label class="control-label" style="font-family: Tahoma;"><strong>Enter PLU or Search Item :</strong></label>
+                                        <div id="custom-templates">
+                                            <input class="typeahead" type="text" placeholder="Enter PLU or Search Item">
+                                        </div><br /><br />
+
+
+                                        <table id="tbl_items" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                            <thead>
+                                            <tr>
+
+                                                <th>Qty</th>
+                                                <th>UM</th>
+                                                <th>Item #</th>
+                                                <th>Item</th>
+                                                <th>Unit Price</th>
+                                                <th>Discount</th>
+                                                <th>Tax</th>
+                                                <th><center>Action</center></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+
+                                                <td>10</td>
+                                                <td>pcs</td>
+                                                <td>234567812</td>
+                                                <td>Computer Case</td>
+                                                <td>1,500.00</td>
+                                                <td>0.00</td>
+                                                <td>Vat(12%)</td>
+                                                <td></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+                            </div>
+
+
+                                <div class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <button id="btn_save" class="btn-primary btn" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span>  Save Changes</button>
+                                            <button id="btn_cancel" class="btn-default btn" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                    </div>
+
+
+
+
+                </div>
+
+
+
+
             </div>
         </div>
-
-    </form>
-
-
-    <br /><br />
-
-
-
-
-
-
-
-
-</div>
-<div class="panel-footer">
-    <div class="row">
-        <div class="col-sm-10 col-sm-offset-3">
-            <button id="btn_save" class="btn-primary btn" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span>  Save Changes</button>
-            <button id="btn_cancel" class="btn-default btn" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"">Cancel</button>
-        </div>
     </div>
-
-
-</div>
-</div>
-</div>
-
-
-
-
-</div>
-</div>
-</div>
 </div> <!-- .container-fluid -->
 
 </div> <!-- #page-content -->
@@ -482,6 +449,14 @@
 
 
 
+<!-- twitter typehead -->
+<script src="assets/plugins/twittertypehead/handlebars.js"></script>
+<script src="assets/plugins/twittertypehead/bloodhound.min.js"></script>
+<script src="assets/plugins/twittertypehead/typeahead.bundle.min.js"></script>
+<script src="assets/plugins/twittertypehead/typeahead.jquery.min.js"></script>
+
+<!-- touchspin -->
+<script type="text/javascript" src="assets/plugins/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js"></script>
 
 
 <script>
@@ -538,14 +513,67 @@ $(document).ready(function(){
 
         });
 
-
-        _cboUserGroup=$("#cbo_user_groups").select2({
+        _cboUserGroup=$("#cbo_suppliers").select2({
             placeholder: "Please select user group",
             allowClear: true
         });
 
-        _cboUserGroup.select2('val', null)
 
+        var raw_data=[
+            {
+                "id": "12",
+                "description": "Computer Case"
+            },
+            {
+                "id": "123",
+                "description": "Motherboard"
+            },
+            {
+                "id": "1234",
+                "description": "Keyboard"
+            }];
+
+
+            var products = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('id','description'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                local : raw_data
+            });
+
+            var _objTypeHead=$('#custom-templates .typeahead');
+
+            _objTypeHead.typeahead(null, {
+                name: 'products',
+                display: 'description',
+                source: products,
+                templates: {
+                    header: [
+                        '<table width="100%"><tr><td width="50%" style="padding-left: 1%"><b>PLU</b></td><td width="30%" align="left"><b>Product</b></td></tr></table>'
+                    ].join('\n'),
+
+                    suggestion: Handlebars.compile('<table width="100%"><tr><td width="50%" style="padding-left: 1%">{{id}}</td><td width="30%" align="left">{{description}}</td></tr></table>')
+
+                }
+            }).on('keyup', this, function (event) {
+                if (event.keyCode == 13) {
+                    $('.tt-suggestion:first').click();
+                    _objTypeHead.typeahead('close');
+                    _objTypeHead.typeahead('val','');
+                }
+            }).bind('typeahead:select', function(ev, suggestion) {
+                if(_objTypeHead.typeahead('val')==''){ return false; }
+                alert(suggestion.id);
+            });
+
+            $('div.tt-menu').on('click','table.tt-suggestion',function(){
+                _objTypeHead.typeahead('val','');
+            });
+
+            $("input#touchspin4").TouchSpin({
+                verticalbuttons: true,
+                verticalupclass: 'fa fa-fw fa-plus',
+                verticaldownclass: 'fa fa-fw fa-minus'
+            });
 
 
     }();
@@ -587,6 +615,7 @@ $(document).ready(function(){
 
         $('#btn_new').click(function(){
             _txnMode="new";
+            $('.toggle-fullscreen').click();
             showList(false);
         });
 
@@ -653,7 +682,7 @@ $(document).ready(function(){
 
                 });
 
-                $('#cbo_user_groups').select2('val',data.user_group_id);
+
             });
 
             $('img[name="img_user"]').attr('src',data.photo_path);
@@ -677,17 +706,6 @@ $(document).ready(function(){
         });
 
 
-        _cboUserGroup.on("select2:select", function (e) {
-
-            var i=$(this).select2('val');
-            if(i==0){
-                $(this).select2('val',null)
-                $('#modal_user_group').modal('show');
-                clearFields($('#modal_user_group').find('form'));
-            }
-
-
-        });
 
 
         $('input[name="file_upload[]"]').change(function(event){
