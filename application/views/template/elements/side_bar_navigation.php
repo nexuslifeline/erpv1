@@ -5,11 +5,11 @@
                 <div class="widget-body">
                     <div class="userinfo">
                         <div class="avatar">
-                            <img src="assets/demo/avatar/avatar_15.png" class="img-responsive img-circle">
+                            <img src="<?php echo $this->session->user_photo; ?>" class="img-responsive img-circle">
                         </div>
                         <div class="info">
-                            <span class="username">Paul Christian Rueda</span>
-                            <span class="useremail">chrisrueda14@yahoo.com</span>
+                            <span class="username"><?php echo $this->session->user_fullname; ?></span>
+                            <span class="useremail"><?php echo $this->session->user_email; ?></span>
                         </div>
                     </div>
                 </div>
@@ -22,7 +22,7 @@
                         <li><a href="#"><i class="ti ti-home"></i><span>Dashboard</span><span class="badge badge-teal">2</span></a></li>
                         <li><a href="#"><i class="ti ti-package"></i><span>Purchasing</span></a>
                             <ul class="acc-menu">
-                                <li><a href="#">Purchase Order</a></li>
+                                <li><a href="Purchases">Purchase Order</a></li>
                                 <li><a href="#">Receiving</a></li>
                                 <li><a href="#">Record Payment</a></li>
                                 <li><a href="#">Issuance</a></li>

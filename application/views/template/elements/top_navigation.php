@@ -52,7 +52,7 @@
                         <li class="media notification-message">
                             <a href="#">
                                 <div class="media-left">
-                                    <img class="img-circle avatar" src="assets/demo/avatar/avatar_06.png" alt="" />
+                                    <img class="img-circle avatar" src="<?php echo $this->session->user_photo; ?>" alt="" />
                                 </div>
                                 <div class="media-body">
                                     <h4 class="notification-heading"><strong>Will Whedon</strong> <span class="text-gray">‒ The movie of this ...</span></h4>
@@ -98,7 +98,7 @@
 
         <li class="dropdown toolbar-icon-bg">
             <a href="#" class="dropdown-toggle username" data-toggle="dropdown">
-                <img class="img-circle" src="assets/demo/avatar/avatar_15.png" alt="" />
+                <img class="img-circle" src="<?php echo $this->session->user_photo; ?>" alt="" />
             </a>
             <ul class="dropdown-menu userinfo arrow">
                 <li><a href="#"><i class="ti ti-user"></i><span>Profile</span></a></li>

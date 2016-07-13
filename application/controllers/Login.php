@@ -52,7 +52,10 @@ class Login extends CORE_Controller {
                         $this->session->set_userdata(
                             array(
                                 'user_id'=>$result->row()->user_id,
-                                'user_group_id'=>$result->row()->user_group_id
+                                'user_group_id'=>$result->row()->user_group_id,
+                                'user_fullname'=>$result->row()->user_fullname,
+                                'user_email'=>$result->row()->user_email,
+                                'user_photo'=>$result->row()->photo_path
                             )
                         );
 
