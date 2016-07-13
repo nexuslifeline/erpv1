@@ -52,6 +52,9 @@
             min-width: 100%;
         }
 
+        .dropdown-menu > .active > a,.dropdown-menu > .active > a:hover{
+            background-color: dodgerblue;
+        }
 
         @keyframes spin {
             from { transform: scale(1) rotate(0deg); }
@@ -64,6 +67,23 @@
         }
 
 
+
+        /*table{
+            min-width: 700px;
+        }
+
+        .dataTables_filter{
+            min-width: 700px;
+        }
+
+        .dataTables_info{
+            min-width: 700px;
+        }
+
+        .dataTables_paginate{
+            float: left;
+            width: 100%;
+        }*/
 
     </style>
 </head>
@@ -308,19 +328,20 @@
                                                                    </div>
                                                                </div>
 
-                                                               <button id="btn_browse" class="btn btn-primary " style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Browse Photo</button>
-                                                               <button id="btn_remove_photo"  class="btn btn-primary" style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Remove</button>
+                                                               <button type="button" id="btn_browse" class="btn btn-primary "  style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Browse Photo</button>
+                                                               <button type="button" id="btn_remove_photo"  class="btn btn-primary" style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Remove</button>
                                                            </div>
                                                        </div>
                                                    </div>
 
+                                               </form>
 
 
                                                     <br /><br />
 
 
 
-                                               </form>
+
 
 
 
@@ -458,6 +479,8 @@
 
 <!-- Select2 -->
 <script src="assets/plugins/select2/select2.full.min.js"></script>
+
+
 
 
 
@@ -705,6 +728,8 @@
                     showList(true);
                 });
 
+
+
                 $('#btn_save').click(function(){
 
                     if(validateRequiredFields($('#frm_users'))){
@@ -873,6 +898,34 @@
 
 
         };
+
+
+
+
+        var substringMatcher = function(strs) {
+            return function findMatches(q, cb) {
+                var matches, substringRegex;
+
+                // an array that will be populated with substring matches
+                matches = [];
+
+                // regex used to determine if a string contains the substring `q`
+                substrRegex = new RegExp(q, 'i');
+
+                // iterate through the pool of strings and for any string that
+                // contains the substring `q`, add it to the `matches` array
+                $.each(strs, function(i, str) {
+                    if (substrRegex.test(str)) {
+                        matches.push(str);
+                    }
+                });
+
+                cb(matches);
+            };
+        };
+
+
+
 
 
 

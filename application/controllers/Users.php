@@ -45,6 +45,7 @@ class Users extends CORE_Controller
                 $m_users->user_telephone=$this->input->post('user_telephone',TRUE);
                 $m_users->user_bdate=date('Y-m-d',strtotime($this->input->post('user_bdate',TRUE)));
                 $m_users->user_group_id=$this->input->post('user_group_id',TRUE);
+                $m_users->photo_path=$this->input->post('photo_path',TRUE);
                 $m_users->save();
 
                 $user_account_id=$m_users->last_insert_id();
@@ -72,6 +73,7 @@ class Users extends CORE_Controller
                 $m_users->user_telephone=$this->input->post('user_telephone',TRUE);
                 $m_users->user_bdate=date('Y-m-d',strtotime($this->input->post('user_bdate',TRUE)));
                 $m_users->user_group_id=$this->input->post('user_group_id',TRUE);
+                $m_users->photo_path=$this->input->post('photo_path',TRUE);
                 $m_users->modify($user_account_id);
 
 
@@ -94,7 +96,37 @@ class Users extends CORE_Controller
                     $response['msg']='User account information successfully deleted.';
                     echo json_encode($response);
                 }
+                break;
+            case 'upload':
+                $allowed = array('png', 'jpg', 'jpeg','bmp');
 
+                $data=array();
+                $files=array();
+                $directory='assets/img/user/';
+
+                foreach($_FILES as $file){
+
+                    $server_file_name=uniqid('');
+                    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                    $file_path=$directory.$server_file_name.'.'.$extension;
+                    $orig_file_name=$file['name'];
+
+                    if(!in_array(strtolower($extension), $allowed)){
+                        $response['title']='Invalid!';
+                        $response['stat']='error';
+                        $response['msg']='Image is invalid. Please select a valid photo!';
+                        die(json_encode($response));
+                    }
+
+                    if(move_uploaded_file($file['tmp_name'],$file_path)){
+                        $response['title']='Success!';
+                        $response['stat']='success';
+                        $response['msg']='Image successfully uploaded.';
+                        $response['path']=$file_path;
+                        echo json_encode($response);
+                    }
+                }
+                break;
 
         }
 
