@@ -47,7 +47,7 @@
                                     <ul class="acc-menu">
                                         <li><a href="#">POS Convenient Store</a></li>
                                         <li><a href="#">POS Restaurant</a></li>
-                                        <li><a href="#">POS Trading</a></li>
+                                        <li><a href="tradings">POS Trading</a></li>
                                     </ul>
                                 </li>
                             </ul>
