@@ -81,6 +81,12 @@
             border-radius: 5px;
         }
 
+        .numeric{
+            text-align: right;
+        }
+
+
+
         @media screen and (max-width: 480px) {
 
             table{
@@ -100,10 +106,14 @@
                 width: 100%;
             }
         }
+
+
+
+
     </style>
 </head>
 
-<body class="animated-content">
+<body class="animated-content"  style="font-family: tahoma;">
 
 <?php echo $_top_navigation; ?>
 
@@ -134,6 +144,10 @@
             <div class="col-md-12">
 
                 <div id="div_user_list">
+                    <button id="btn_click" class="btn btn-success">Click me!</button>
+
+
+
                     <div class="panel panel-default">
                         <div class="panel-body table-responsive">
                             <table id="tbl_purchases" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -155,6 +169,11 @@
                                 </tbody>
                             </table>
                         </div>
+
+
+
+
+
                         <div class="panel-footer"></div>
                     </div>
 
@@ -171,7 +190,7 @@
                             <div class="panel-body">
 
                                 <div class="row custom_frame">
-                                <form id="frm_users" role="form" class="form-horizontal">
+                                <form id="frm_purchases" role="form" class="form-horizontal">
 
                                         <br />
                                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
@@ -195,15 +214,17 @@
                                             <div class="col-md-4 col-sm-6 col-xs-6">
                                                 <div class="input-group bootstrap-touchspin">
                                                     <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
-                                                    <input id="touchspin4" class="form-control" value="872" style="display: block;">
+                                                    <input id="touchspin4" name="terms" class="form-control" value="872" style="display: block;">
                                                     <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                                                 <span class="input-group-btn-vertical">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-5 col-sm-6 col-xs-6">
-                                                <select name="" id="cbo_term_type" class="form-control">
+                                                <select name="duration" id="cbo_term_type" class="form-control">
                                                     <option>Day(s)</option>
+                                                    <option>Months(s)</option>
+                                                    <option>Year(s)</option>
                                                 </select>
 
                                             </div>
@@ -214,12 +235,16 @@
 
 
                                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
-                                            <label class="col-md-3 control-label">Supplier :</label>
+                                            <label class="col-md-3 control-label">* Supplier :</label>
 
                                             <div class="col-md-9">
-                                                <select name="" id="cbo_suppliers" data-error-msg="User group is required." required>
+                                                <select name="supplier" id="cbo_suppliers" data-error-msg="Supplier is required." required>
                                                     <option value="0">[ Create New Supplier ]</option>
+                                                    <?php foreach($suppliers as $supplier){ ?>
+                                                        <option value="<?php echo $supplier->supplier_id; ?>" data-tax-type="<?php echo $supplier->tax_type_id; ?>"><?php echo $supplier->supplier_name; ?></option>
+                                                    <?php } ?>
                                                 </select>
+
 
                                             </div>
 
@@ -233,7 +258,7 @@
                                                             <span class="input-group-addon">
                                                                 <i class="fa fa-users"></i>
                                                             </span>
-                                                    <input type="text" name="user_name" class="form-control" placeholder="Contact Person">
+                                                    <input type="text" name="contact_person" class="form-control" placeholder="Contact Person">
                                                 </div>
                                             </div>
                                         </div>
@@ -242,17 +267,32 @@
                                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12  form-group">
                                             <label class="col-md-3  control-label">* Deliver to :</label>
                                             <div class="col-md-9">
-                                                    <textarea name="deliver" class="form-control" placeholder="Deliver to Address" data-error-msg="Deliver address is required!" required></textarea>
+                                                    <textarea name="deliver_to_address" class="form-control" placeholder="Deliver to Address" data-error-msg="Deliver address is required!" required></textarea>
 
                                             </div>
                                         </div>
 
                                         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12  form-group">
-                                            <label class="col-md-3  control-label">* Remarks :</label>
+                                            <label class="col-md-3  control-label">Remarks :</label>
                                             <div class="col-md-9">
                                                 <textarea name="remarks" class="form-control" placeholder="Remarks"></textarea>
 
                                             </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
+                                            <label class="col-md-3 control-label">* Tax type :</label>
+
+                                            <div class="col-md-9">
+                                                <select name="tax_type" id="cbo_tax_type">
+                                                    <?php foreach($tax_types as $tax_type){ ?>
+                                                        <option value="<?php echo $tax_type->tax_type_id; ?>" data-tax-rate="<?php echo $tax_type->tax_rate; ?>"><?php echo $tax_type->tax_type; ?></option>
+                                                    <?php } ?>
+                                                </select>
+
+
+                                            </div>
+
                                         </div>
 
 
@@ -266,35 +306,85 @@
                                             <input class="typeahead" type="text" placeholder="Enter PLU or Search Item">
                                         </div><br /><br />
 
+                                        <form id="frm_items">
 
-                                        <table id="tbl_items" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                        <table id="tbl_items" class="table table-striped table-bordered" cellspacing="0" width="100%" style="font-font:tahoma;">
                                             <thead>
                                             <tr>
 
-                                                <th>Qty</th>
-                                                <th>UM</th>
-                                                <th>Item #</th>
-                                                <th>Item</th>
-                                                <th>Unit Price</th>
-                                                <th>Discount</th>
-                                                <th>Tax</th>
+                                                <th width="10%">Qty</th>
+                                                <th width="5%">UM</th>
+                                                <th width="30%">Item</th>
+                                                <th width="12%" style="text-align: right">Unit Price</th>
+                                                <th width="12%" style="text-align: right">Discount</th>
+                                                <th style="display: none;">T.D</th> <!-- total discount -->
+                                                <th>Tax %</th>
+                                                <th width="12%" style="text-align: right">Total</th>
+                                                <th style="display: none;">V.I</th> <!-- vat input -->
+                                                <th style="display: none;">N.V</th> <!-- net of vat -->
+                                                <td style="display: none;">Item ID</td><!-- product id -->
                                                 <th><center>Action</center></th>
+
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
+                                            <!--<tr>
 
-                                                <td>10</td>
-                                                <td>pcs</td>
-                                                <td>234567812</td>
-                                                <td>Computer Case</td>
-                                                <td>1,500.00</td>
-                                                <td>0.00</td>
-                                                <td>Vat(12%)</td>
+                                                <td width="10%"><input type="text" class="numeric form-control" align="right"></td>
+                                                <td width="5%">pcs</td>
+                                                <td width="30%">Computer Case</td>
+                                                <td width="12%"><input type="text" class="numeric form-control"></td>
+                                                <td width="12%"><input type="text" class="numeric form-control"></td>
                                                 <td></td>
-                                            </tr>
+                                                <td width="15%">
+                                                    <select class="form-control">
+                                                        <?php foreach($tax_types as $tax_type){ ?>
+                                                            <option value="<?php echo $tax_type->tax_type_id; ?>"><?php echo $tax_type->tax_type; ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </td>
+                                                <td width="12%" align="right"><input type="text" class="numeric form-control"></td>
+                                                <td></td>
+                                                <td></td>
+
+                                                <td><button type="button" class="btn btn-default"><i class="fa fa-trash"></i></button></td>
+                                            </tr>-->
                                             </tbody>
+
+
                                         </table>
+
+                                        </form>
+
+                                        <div class="row">
+                                            <div class="col-lg-3 col-lg-offset-9">
+                                                <table id="tbl_purchase_summary" class="table invoice-total">
+                                                    <tbody>
+
+                                                    <tr>
+                                                        <td><strong>Discount :</strong></td>
+                                                        <td align="right">0.00</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td><strong>Total before Tax :</strong></td>
+                                                        <td align="right">0.00</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Tax :</strong></td>
+                                                        <td align="right">0.00</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h4><strong>Total After Tax :</strong></h4></td>
+                                                        <td align="right"><h3><b>0.00</b></h3></td>
+                                                    </tr>
+
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
 
                                     </div>
                                 </div>
@@ -361,34 +451,37 @@
 </div><!---modal-->
 
 
-<div id="modal_user_group" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
+<div id="modal_new_supplier" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
     <div class="modal-dialog modal-md">
         <div class="modal-content"><!---content--->
             <div class="modal-header">
                 <button type="button" class="close"   data-dismiss="modal" aria-hidden="true">X</button>
-                <h4 class="modal-title"><span id="modal_mode"> </span>New User Group</h4>
+                <h4 class="modal-title"><span id="modal_mode"> </span>New Supplier</h4>
 
             </div>
 
             <div class="modal-body">
                 <form id="frm_user_group">
                     <div class="form-group">
-                        <label>* User Group :</label>
+                        <label>* Supplier :</label>
+                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-users"></i>
+                                                </span>
+                            <input type="text" name="supplier_name" class="form-control" placeholder="Supplier" data-error-msg="Supplier name is required." required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>* Email :</label>
                         <div class="input-group">
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-envelope-o"></i>
                                                 </span>
-                            <input type="text" name="user_group" class="form-control" placeholder="User group" data-error-msg="Category name is required." required>
+                            <input type="text" name="email_address" class="form-control" placeholder="Email" data-error-msg="Email address is required." required>
                         </div>
                     </div>
 
-
-                    <div class="form-group">
-                        <label>Description :</label>
-                        <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <textarea name="user_group_desc" class="form-control"></textarea>
-                        </div>
-                    </div>
                 </form>
 
 
@@ -458,11 +551,37 @@
 <!-- touchspin -->
 <script type="text/javascript" src="assets/plugins/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js"></script>
 
+<!-- numeric formatter -->
+<script src="assets/plugins/formatter/autoNumeric.js" type="text/javascript"></script>
+<script src="assets/plugins/formatter/accounting.js" type="text/javascript"></script>
 
 <script>
-$(document).ready(function(){
-    var dt; var _txnMode; var _selectedID; var _selectRowObj; var _cboUserGroup;
 
+
+
+
+$(document).ready(function(){
+    var dt; var _txnMode; var _selectedID; var _selectRowObj; var _cboSuppliers; var _cboTaxType;
+
+    var oTableItems={
+        qty : 'td:eq(0)',
+        unit_price : 'td:eq(3)',
+        discount : 'td:eq(4)',
+        total_line_discount : 'td:eq(5)',
+        tax : 'td:eq(6)',
+        total : 'td:eq(7)',
+        vat_input : 'td:eq(8)',
+        net_vat : 'td:eq(9)'
+
+    };
+
+
+    var oTableDetails={
+        discount : 'tr:eq(0) > td:eq(1)',
+        before_tax : 'tr:eq(1) > td:eq(1)',
+        tax_amount : 'tr:eq(2) > td:eq(1)',
+        after_tax : 'tr:eq(3) > td:eq(1)'
+    };
 
 
     var initializeControls=function(){
@@ -483,7 +602,7 @@ $(document).ready(function(){
                 { targets:[2],data: "supplier_name" },
                 { targets:[3],data: "terms" },
                 { targets:[4],data: "contact_person" },
-                { targets:[5],data: "user_group" },
+                { targets:[5],data: "deliver_to_address" },
                 {
                     targets:[6],
                     render: function (data, type, full, meta){
@@ -504,6 +623,9 @@ $(document).ready(function(){
         }();
 
 
+
+
+
         $('#txt_bdate').datepicker({
             todayBtn: "linked",
             keyboardNavigation: false,
@@ -513,25 +635,20 @@ $(document).ready(function(){
 
         });
 
-        _cboUserGroup=$("#cbo_suppliers").select2({
-            placeholder: "Please select user group",
+        _cboSuppliers=$("#cbo_suppliers").select2({
+            placeholder: "Please select supplier.",
             allowClear: true
         });
 
+        _cboSuppliers.select2('val',null);
 
-        var raw_data=[
-            {
-                "id": "12",
-                "description": "Computer Case"
-            },
-            {
-                "id": "123",
-                "description": "Motherboard"
-            },
-            {
-                "id": "1234",
-                "description": "Keyboard"
-            }];
+        _cboTaxType=$('#cbo_tax_type').select2({
+            placeholder: "Please select tax type.",
+            allopwClear: true
+        });
+
+
+        var raw_data=<?php echo json_encode($products); ?>;
 
 
             var products = new Bloodhound({
@@ -548,10 +665,10 @@ $(document).ready(function(){
                 source: products,
                 templates: {
                     header: [
-                        '<table width="100%"><tr><td width="50%" style="padding-left: 1%"><b>PLU</b></td><td width="30%" align="left"><b>Product</b></td></tr></table>'
+                        '<table width="100%"><tr><td width=20%" style="padding-left: 1%;"><b>PLU</b></td><td width="30%" align="left"><b>Description 1</b></td><td width="20%" align="left"><b>Description 2</b></td><td width="20%" align="right" style="padding-right: 2%;"><b>SRP</b></td></tr></table>'
                     ].join('\n'),
 
-                    suggestion: Handlebars.compile('<table width="100%"><tr><td width="50%" style="padding-left: 1%">{{id}}</td><td width="30%" align="left">{{description}}</td></tr></table>')
+                    suggestion: Handlebars.compile('<table width="100%"><tr><td width="20%" style="padding-left: 1%">{{plu}}</td><td width="30%" align="left">{{description1}}</td><td width="20%" align="left">{{description2}}</td><td width="20%" align="right" style="padding-right: 2%;">{{SRP}}</td></tr></table>')
 
                 }
             }).on('keyup', this, function (event) {
@@ -561,8 +678,37 @@ $(document).ready(function(){
                     _objTypeHead.typeahead('val','');
                 }
             }).bind('typeahead:select', function(ev, suggestion) {
-                if(_objTypeHead.typeahead('val')==''){ return false; }
-                alert(suggestion.id);
+                //if(_objTypeHead.typeahead('val')==''){ return false; }
+                //console.log(suggestion);
+
+                var tax_id=$('#cbo_tax_type').select2('val');
+                var tax_rate=parseFloat($('#cbo_tax_type').find('option[value="'+tax_id+'"]').data('tax-rate'));
+
+                $('#tbl_items > tbody').prepend(newRowItem({
+                    qty : "1",
+                    plu : suggestion.plu,
+                    unit_id : suggestion.unit_id,
+                    unit : suggestion.unit_name,
+                    item_id: suggestion.id,
+                    description1 : suggestion.description1,
+                    tax_exempt : false,
+                    tax_rate : tax_rate,
+                    unit_price : suggestion.srp,
+                    discount : "0.00",
+                    tax_type_id : "1",
+                    total : "1,000.00"
+                }));
+
+                //var row=$('#tbl_items > tbody').find('tr').first();
+                //var cbo=row.find(oTableItems.tax).find('select');
+                //cbo.val(tax_id);
+
+
+
+                reInitializeNumeric();
+                reComputeTotal();
+
+                //alert("dd")
             });
 
             $('div.tt-menu').on('click','table.tt-suggestion',function(){
@@ -613,9 +759,27 @@ $(document).ready(function(){
         } );
 
 
+
+        _cboSuppliers.on("select2:select", function (e) {
+
+            var i=$(this).select2('val');
+
+            if(i==0){ //new supplier
+                _cboSuppliers.select2('val',null)
+                $('#modal_new_supplier').modal('show');
+                clearFields($('#modal_new_supplier').find('form'));
+            }else{
+                var obj_supplier=$('#cbo_suppliers').find('option[value="'+i+'"]');
+                _cboTaxType.select2('val',obj_supplier.data('tax-type')); //set tax type base on selected Supplier
+            }
+
+
+        });
+
+
         $('#btn_new').click(function(){
             _txnMode="new";
-            $('.toggle-fullscreen').click();
+            //$('.toggle-fullscreen').click();
             showList(false);
         });
 
@@ -647,7 +811,7 @@ $(document).ready(function(){
                     }
                 }).done(function(response){
                     showNotification(response);
-                    $('#modal_user_group').modal('hide');
+                    $('#modal_new_supplier').modal('hide');
 
                     var _group=response.row_added[0];
                     $('#cbo_user_groups').append('<option value="'+_group.user_group_id+'" selected>'+_group.user_group+'</option>');
@@ -698,12 +862,50 @@ $(document).ready(function(){
             $('#modal_confirmation').modal('show');
         });
 
+
+        $('#tbl_items tbody').on('keyup','input.numeric',function(){
+            var row=$(this).closest('tr');
+
+            var price=parseFloat(accounting.unformat(row.find(oTableItems.unit_price).find('input.numeric').val()));
+            var discount=parseFloat(accounting.unformat(row.find(oTableItems.discount).find('input.numeric').val()));
+            var qty=parseFloat(accounting.unformat(row.find(oTableItems.qty).find('input.numeric').val()));
+            var tax_rate=parseFloat(accounting.unformat(row.find(oTableItems.tax).find('input.numeric').val()))/100;
+
+            if(discount>price){
+                showNotification({title:"Invalid",stat:"error",msg:"Discount must not greater than unit price."});
+                row.find(oTableItems.discount).find('input.numeric').val('');
+            }
+
+            var discounted_price=price-discount;
+            var line_total_discount=discount*qty;
+            var line_total=discounted_price*qty;
+            var net_vat=line_total/(1+tax_rate);
+            var vat_input=line_total-net_vat;
+
+            $(oTableItems.total,row).find('input.numeric').val(accounting.formatNumber(line_total,2)); // line total amount
+            $(oTableItems.total_line_discount,row).find('input.numeric').val(line_total_discount); //line total discount
+            $(oTableItems.net_vat,row).find('input.numeric').val(net_vat); //net of vat
+            $(oTableItems.vat_input,row).find('input.numeric').val(vat_input); //vat input
+
+            //console.log(net_vat);
+            reComputeTotal();
+
+
+        });
+
+
+
+
+
+
+
         $('#btn_yes').click(function(){
             removeCustomer().done(function(response){
                 showNotification(response);
                 dt.row(_selectRowObj).remove().draw();
             });
         });
+
 
 
 
@@ -720,7 +922,7 @@ $(document).ready(function(){
                 data.append(key,value);
             });
 
-            console.log(_files);
+            //console.log(_files);
 
             $.ajax({
                 url : 'Users/transaction/upload',
@@ -750,12 +952,12 @@ $(document).ready(function(){
 
         $('#btn_save').click(function(){
 
-            if(validateRequiredFields($('#frm_users'))){
+            if(validateRequiredFields($('#frm_purchases'))){
                 if(_txnMode=="new"){
-                    createUserAccount().done(function(response){
+                    createPurchaseOrder().done(function(response){
                         showNotification(response);
                         dt.row.add(response.row_added[0]).draw();
-                        clearFields($('#frm_users'));
+                        clearFields($('#frm_purchases'));
                     }).always(function(){
                         showSpinningProgress($('#btn_save'));
                     });
@@ -763,7 +965,7 @@ $(document).ready(function(){
                     updateUserAccount().done(function(response){
                         showNotification(response);
                         dt.row(_selectRowObj).data(response.row_updated[0]).draw();
-                        clearFields($('#frm_users'));
+                        clearFields($('#frm_purchases'));
                         showList(true);
                     }).always(function(){
                         showSpinningProgress($('#btn_save'));
@@ -772,6 +974,13 @@ $(document).ready(function(){
 
             }
 
+        });
+
+
+
+        $('#tbl_items > tbody').on('click','button[name="remove_item"]',function(){
+                $(this).closest('tr').remove();
+                reComputeTotal();
         });
 
 
@@ -810,22 +1019,26 @@ $(document).ready(function(){
     };
 
 
-    var createUserAccount=function(){
-        var _data=$('#frm_users').serializeArray();
-        _data.push({name : "photo_path" ,value : $('img[name="img_user"]').attr('src')});
-        _data.push({name : "user_group_id" ,value : $('#cbo_user_groups').select2('val')});
+    var createPurchaseOrder=function(){
+        var _data=$('#frm_purchases,#frm_items').serializeArray();
+
+        var tbl_summary=$('#tbl_purchase_summary');
+        _data.push({name : "summary_discount", value : tbl_summary.find(oTableDetails.discount).text()});
+        _data.push({name : "summary_before_discount", value :tbl_summary.find(oTableDetails.before_tax).text()});
+        _data.push({name : "summary_tax_amount", value : tbl_summary.find(oTableDetails.tax_amount).text()});
+        _data.push({name : "summary_after_tax", value : tbl_summary.find(oTableDetails.after_tax).text()});
 
         return $.ajax({
             "dataType":"json",
             "type":"POST",
-            "url":"Users/transaction/create",
+            "url":"Purchases/transaction/create",
             "data":_data,
             "beforeSend": showSpinningProgress($('#btn_save'))
         });
     };
 
     var updateUserAccount=function(){
-        var _data=$('#frm_users').serializeArray();
+        var _data=$('#frm_purchases').serializeArray();
         _data.push({name : "photo_path" ,value : $('img[name="img_user"]').attr('src')});
         _data.push({name : "user_group_id" ,value : $('#cbo_user_groups').select2('val')});
         _data.push({name : "user_id" ,value : _selectedID});
@@ -918,33 +1131,59 @@ $(document).ready(function(){
     };
 
 
+    var getFloat=function(f){
+        return parseFloat(accounting.unformat(f));
+    };
 
+    var newRowItem=function(d){
+        var total=getFloat(d.qty)*getFloat(d.unit_price);
+        var net_vat=total/(1+(getFloat(d.tax_rate)/100));
+        var vat_input=total-net_vat;
 
-    var substringMatcher = function(strs) {
-        return function findMatches(q, cb) {
-            var matches, substringRegex;
-
-            // an array that will be populated with substring matches
-            matches = [];
-
-            // regex used to determine if a string contains the substring `q`
-            substrRegex = new RegExp(q, 'i');
-
-            // iterate through the pool of strings and for any string that
-            // contains the substring `q`, add it to the `matches` array
-            $.each(strs, function(i, str) {
-                if (substrRegex.test(str)) {
-                    matches.push(str);
-                }
-            });
-
-            cb(matches);
-        };
+        return '<tr>'+
+                        '<td width="10%"><input nam="po_qty[]" type="text" class="numeric form-control" value="'+ d.qty+'"></td>'+
+                        '<td width="5%">'+ d.unit+'</td>'+
+                        '<td width="30%">'+d.description1+'</td>'+
+                        '<td width="11%"><input name="po_price[]" type="text" class="numeric form-control" value="'+d.unit_price+'" style="text-align:right;"></td>'+
+                        '<td width="11%"><input name="po_discount[]" type="text" class="numeric form-control" value="0.00" style="text-align:right;"></td>'+
+                        '<td style="display: none;" width="11%"><input name="po_total_discount[]" type="text" class="numeric form-control" value="0.00" readonly></td>'+
+                        '<td width="11%"><input name="po_tax_rate[]" type="text" class="numeric form-control" value="'+ accounting.formatNumber(d.tax_rate,2)+'"></td>'+
+                        '<td width="11%" align="right"><input name="po_line_total[]" type="text" class="numeric form-control" value="'+total+'" readonly></td>'+
+                        '<td style="display: none;"><input name="tax_amount[]" type="text" class="numeric form-control" value="'+vat_input+'" readonly></td>'+
+                        '<td style="display: none;"><input name="non_tax_amount[]" type="text" class="numeric form-control" value="'+net_vat+'" readonly></td>'+
+                        '<td style="display: none;"><input name="product_id[]" type="text" class="numeric form-control" value="'+ d.item_id+'" readonly></td>'+
+                        '<td align="center"><button type="button" name="remove_item" class="btn btn-default"><i class="fa fa-trash"></i></button></td>'+
+                    '</tr>';
     };
 
 
 
+    var reComputeTotal=function(){
+        var rows=$('#tbl_items > tbody tr');
+        var tbl_summary=$('#tbl_purchase_summary');
 
+        var discounts=0; var before_tax=0; var after_tax=0; var tax_amount=0;
+
+        $.each(rows,function(){
+            discounts+=parseFloat(accounting.unformat($(oTableItems.total_line_discount,$(this)).find('input.numeric').val()));
+            before_tax+=parseFloat(accounting.unformat($(oTableItems.net_vat,$(this)).find('input.numeric').val()));
+            //alert(before_tax);
+            tax_amount+=parseFloat(accounting.unformat($(oTableItems.vat_input,$(this)).find('input.numeric').val()));
+            after_tax+=parseFloat(accounting.unformat($(oTableItems.total,$(this)).find('input.numeric').val()));
+        });
+
+        tbl_summary.find(oTableDetails.discount).html('<b>'+accounting.formatNumber(discounts,2)+'</b>');
+        tbl_summary.find(oTableDetails.before_tax).html('<b>'+accounting.formatNumber(before_tax,2)+'</b>');
+        tbl_summary.find(oTableDetails.tax_amount).html('<b>'+accounting.formatNumber(tax_amount,2)+'</b>');
+        tbl_summary.find(oTableDetails.after_tax).html('<h3><b>'+accounting.formatNumber(after_tax,2)+'</b></h3>');
+
+    };
+
+
+
+    var reInitializeNumeric=function(){
+        $('.numeric').autoNumeric('init');
+    };
 
 
 

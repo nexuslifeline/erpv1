@@ -19,6 +19,7 @@ class Brands extends CORE_Controller
         $data['title'] = 'Brand Management';
 
         $this->load->view('brands_view', $data);
+
     }
 
     function transaction($txn = null) {

@@ -8,12 +8,13 @@ class Login extends CORE_Controller {
         parent::__construct('');
         $this->load->model('Users_model');
         $this->load->model('User_groups_model');
+        $this->load->model('Tax_types_model');
     }
 
 
     public function index()
     {
-        $this->createDefaultUsers();
+        $this->create_required_default_data();
 
         $data['_def_css_files']=$this->load->view('template/assets/css_files','',TRUE);
         $data['_def_js_files']=$this->load->view('template/assets/js_files','',TRUE);
@@ -23,14 +24,19 @@ class Login extends CORE_Controller {
     }
 
 
-    function createDefaultUsers(){
+    function create_required_default_data(){
 
-        $users=$this->Users_model;
-        $users->create_default_user();
+        //create default user : the admin
+        $m_users=$this->Users_model;
+        $m_users->create_default_user();
 
-        $user_groups=$this->User_groups_model;
-        $user_groups->create_default_user_group();
+        //create default user group : the Super User
+        $m_user_groups=$this->User_groups_model;
+        $m_user_groups->create_default_user_group();
 
+        //create default tax types : Non-vat , Vatted(12%)
+        $m_tax_types=$this->Tax_types_model;
+        $m_tax_types->create_default_tax_type();
     }
 
 

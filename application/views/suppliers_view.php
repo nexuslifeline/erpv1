@@ -179,7 +179,7 @@
                                                                 <div class="" style="border:1px solid black;height: 230px;width: 210px;vertical-align: middle;">
 
                                                                     <div id="div_img_supplier" style="position:relative;">
-                                                                        <img name="img_supplier" src="assets/img/anonymous-icon.png" style="object-fit: fill; !important; height: 100%;width: 100%;" />
+                                                                        <img name="img_supplier"  src="assets/img/anonymous-icon.png" style="object-fit: fill; !important; height: 100%;width: 100%;" />
                                                                         <input type="file" name="file_upload[]" class="hidden">
                                                                     </div>
 
@@ -188,8 +188,8 @@
                                                                     </div>
                                                                 </div>
 
-                                                                <button id="btn_browse" class="btn btn-primary" style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Browse Photo</button>
-                                                                <button id="btn_remove_photo"  class="btn btn-primary" style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Remove</button>
+                                                                <button id="btn_browse" type="button" class="btn btn-primary" style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Browse Photo</button>
+                                                                <button id="btn_remove_photo" type="button"  class="btn btn-primary" style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Remove</button>
                                                             </div>
                                                         </div>
                                                     </div><br /><br />
