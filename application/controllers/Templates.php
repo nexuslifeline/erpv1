@@ -20,14 +20,14 @@ class Templates extends CORE_Controller {
                 $m_purchases=$this->Purchases_model;
                 $m_po_items=$this->Purchase_items_model;
 
-                $temp=$m_purchases->get_list(
+                $info=$m_purchases->get_list(
                         $filter_value,
                         'purchase_order.*,CONCAT_WS(" ",purchase_order.terms,purchase_order.duration)as term_description,suppliers.supplier_name,suppliers.address,suppliers.email_address,suppliers.landline',
                         array(
                             array('suppliers','suppliers.supplier_id=purchase_order.supplier_id','left')
                         )
                     );
-                $data['purchase_info']=$temp[0];
+                $data['purchase_info']=$info[0];
 
                 $data['po_items']=$m_po_items->get_list(
                         array('purchase_order_id'=>$filter_value),

@@ -1,12 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Reports extends CORE_Controller {
+class Email extends CORE_Controller {
     function __construct() {
         parent::__construct('');
-        $this->validate_session();
-        $this->load->model('Purchases_model');
-        $this->load->model('Purchase_items_model');
+        //$this->validate_session();
+        //$this->load->model('Purchases_model');
+        //$this->load->model('Purchase_items_model');
     }
 
     public function index() {
@@ -16,14 +16,13 @@ class Reports extends CORE_Controller {
     //layout = po,
     //$type = pdf,preview
     //$filter_value=criteria
-    function layout($layout=null,$type=null,$filter_value=null){
+    function send($layout=null,$filter_value=null){
         switch($layout){
             case 'po' :
-                $m_purchases=$this->Purchases_model;
+                /*$m_purchases=$this->Purchases_model;
                 $m_po_items=$this->Purchase_items_model;
 
-                //load mPDF library
-                $dl=0;
+
                 $pdfFilePath = $filter_value.".pdf"; //generate filename base on id
 
                 $this->load->library('m_pdf');
@@ -50,18 +49,26 @@ class Reports extends CORE_Controller {
                 );
 
                 $content=$this->load->view('template/po_content',$data,TRUE); //load the template
-                $pdf->setFooter('{PAGENO}');
+*/
 
 
-                $pdf->WriteHTML($content);
 
-                if($type=='pdf'){
-                    //download it.
-                    $pdf->Output($pdfFilePath,"D");
-                }else{
-                    //just output it on browser
-                    $pdf->Output();
-                }
+                $this->load->library('email');
+
+                $this->email->from('jdevsystems@jdevsolution.com', 'Paul Christian Rueda');
+                $this->email->to('chrisrueda14@gmail.com');
+                //$this->email->cc('another@another-example.com');
+                //$this->email->bcc('them@their-example.com');
+
+                $this->email->subject('Email Test');
+                $this->email->message('Testing the email class.');
+
+                $this->email->send();
+
+
+                //$pdf->WriteHTML($content);
+
+
 
                 break;
         }
@@ -69,3 +76,14 @@ class Reports extends CORE_Controller {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
