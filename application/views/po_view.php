@@ -73,7 +73,7 @@
         }
 
         .custom_frame{
-            padding: .5% .8% .5% 1%;
+
             border: 1px solid lightgray;
             margin: 1% 1% 1% 1%;
             -webkit-border-radius: 5px;
@@ -144,7 +144,7 @@
             <div class="col-md-12">
 
                 <div id="div_user_list">
-                    <button id="btn_click" class="btn btn-success">Click me!</button>
+
 
 
 
@@ -157,8 +157,10 @@
                                     <th>PO#</th>
                                     <th>Vendor</th>
                                     <th>Terms</th>
-                                    <th>Contact Person</th>
                                     <th>Deliver to</th>
+                                    <th>Approved</th>
+                                    <th>Status</th>
+                                    <th>Sent</th>
                                     <th><center>Action</center></th>
                                 </tr>
                                 </thead>
@@ -184,7 +186,7 @@
                     <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h2>Purchase Order</h2>
-                                <div class="panel-ctrls" data-actions-container="" data-action-collapse='{"target": ".panel-body"}'></div>
+                                <div class="panel-ctrls" data-actions-container=""></div>
                             </div>
 
                             <div class="panel-body">
@@ -214,7 +216,7 @@
                                             <div class="col-md-4 col-sm-6 col-xs-6">
                                                 <div class="input-group bootstrap-touchspin">
                                                     <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
-                                                    <input id="touchspin4" name="terms" class="form-control" value="872" style="display: block;">
+                                                    <input id="touchspin4" name="terms" class="form-control" value="1" style="display: block;">
                                                     <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                                                 <span class="input-group-btn-vertical">
                                                 </div>
@@ -300,11 +302,11 @@
                                 </div>
 
                                 <div class="row custom_frame">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><br />
                                         <label class="control-label" style="font-family: Tahoma;"><strong>Enter PLU or Search Item :</strong></label>
                                         <div id="custom-templates">
                                             <input class="typeahead" type="text" placeholder="Enter PLU or Search Item">
-                                        </div><br /><br />
+                                        </div><br />
 
                                         <form id="frm_items">
 
@@ -600,11 +602,20 @@ $(document).ready(function(){
                 },
                 { targets:[1],data: "po_no" },
                 { targets:[2],data: "supplier_name" },
-                { targets:[3],data: "terms" },
-                { targets:[4],data: "contact_person" },
-                { targets:[5],data: "deliver_to_address" },
+                { targets:[3],data: "term_description" },
+                { targets:[4],data: "deliver_to_address" },
+                { targets:[5],data: "approval_status" },
+                { targets:[6],data: "order_status" },
                 {
-                    targets:[6],
+                    targets:[7],data: null,
+                    render: function (data, type, full, meta){
+
+                        return '<center><i class="fa fa-check-circle" style="color: green;"></i></center>';
+                    }
+
+                },
+                {
+                    targets:[8],
                     render: function (data, type, full, meta){
                         var btn_edit='<button class="btn btn-default btn-sm" name="edit_info"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i> </button>';
                         var btn_trash='<button class="btn btn-default btn-sm" name="remove_info" style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>';
@@ -652,7 +663,7 @@ $(document).ready(function(){
 
 
             var products = new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('id','description'),
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('product_code','product_desc','product_desc1'),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
                 local : raw_data
             });
@@ -665,10 +676,10 @@ $(document).ready(function(){
                 source: products,
                 templates: {
                     header: [
-                        '<table width="100%"><tr><td width=20%" style="padding-left: 1%;"><b>PLU</b></td><td width="30%" align="left"><b>Description 1</b></td><td width="20%" align="left"><b>Description 2</b></td><td width="20%" align="right" style="padding-right: 2%;"><b>SRP</b></td></tr></table>'
+                        '<table width="100%"><tr><td width=20%" style="padding-left: 1%;"><b>PLU</b></td><td width="30%" align="left"><b>Description 1</b></td><td width="20%" align="left"><b>Description 2</b></td><td width="20%" align="right" style="padding-right: 2%;"><b>Cost</b></td></tr></table>'
                     ].join('\n'),
 
-                    suggestion: Handlebars.compile('<table width="100%"><tr><td width="20%" style="padding-left: 1%">{{plu}}</td><td width="30%" align="left">{{description1}}</td><td width="20%" align="left">{{description2}}</td><td width="20%" align="right" style="padding-right: 2%;">{{SRP}}</td></tr></table>')
+                    suggestion: Handlebars.compile('<table width="100%"><tr><td width="20%" style="padding-left: 1%">{{product_code}}</td><td width="30%" align="left">{{product_desc}}</td><td width="20%" align="left">{{produdct_desc1}}</td><td width="20%" align="right" style="padding-right: 2%;">{{purchase_cost}}</td></tr></table>')
 
                 }
             }).on('keyup', this, function (event) {
@@ -684,24 +695,44 @@ $(document).ready(function(){
                 var tax_id=$('#cbo_tax_type').select2('val');
                 var tax_rate=parseFloat($('#cbo_tax_type').find('option[value="'+tax_id+'"]').data('tax-rate'));
 
+                var total=getFloat(suggestion.purchase_cost);
+                var net_vat=0;
+                var vat_input=0;
+
+                if(suggestion.is_tax_excempt=="0"){ //not tax excempt
+                    net_vat=total/(1+(getFloat(tax_rate)/100));
+                    vat_input=total-net_vat;
+                }else{
+                    tax_rate=0;
+                    net_vat=total;
+                    vat_input=0;
+
+                    if(tax_id!="1"){ //if supplier is taxable, notify the user that this item is tax excempt
+                        showNotification({title:"Tax Excempt!",stat:"info",msg:"This item is tax excempt."});
+                    }
+
+                }
+
+
                 $('#tbl_items > tbody').prepend(newRowItem({
-                    qty : "1",
-                    plu : suggestion.plu,
+                    po_qty : "1",
+                    product_code : suggestion.product_code,
                     unit_id : suggestion.unit_id,
-                    unit : suggestion.unit_name,
-                    item_id: suggestion.id,
-                    description1 : suggestion.description1,
+                    unit_name : suggestion.unit_name,
+                    product_id: suggestion.product_id,
+                    product_desc : suggestion.product_desc,
+                    po_line_total_discount : "0.00",
                     tax_exempt : false,
-                    tax_rate : tax_rate,
-                    unit_price : suggestion.srp,
-                    discount : "0.00",
-                    tax_type_id : "1",
-                    total : "1,000.00"
+                    po_tax_rate : tax_rate,
+                    po_price : suggestion.purchase_cost,
+                    po_discount : "0.00",
+                    tax_type_id : null,
+                    po_line_total : total,
+                    po_non_tax_amount: net_vat,
+                    po_tax_amount:vat_input
                 }));
 
-                //var row=$('#tbl_items > tbody').find('tr').first();
-                //var cbo=row.find(oTableItems.tax).find('select');
-                //cbo.val(tax_id);
+
 
 
 
@@ -747,11 +778,23 @@ $(document).ready(function(){
             else {
                 tr.addClass( 'details' );
                 //console.log(row.data());
-                row.child( format( row.data() ) ).show();
-                // Add to the 'open' array
-                if ( idx === -1 ) {
-                    detailRows.push( tr.attr('id') );
-                }
+                var d=row.data();
+
+                $.ajax({
+                    "dataType":"html",
+                    "type":"POST",
+                    "url":"Templates/layout/po/"+ d.purchase_order_id+'/all',
+                    "beforeSend" : function(){
+                        row.child( '<center><br /><img src="assets/img/loader/ajax-loader-lg.gif" /><br /><br /></center>' ).show();
+                    }
+                }).done(function(response){
+                    row.child( response ).show();
+                    // Add to the 'open' array
+                    if ( idx === -1 ) {
+                        detailRows.push( tr.attr('id') );
+                    }
+                });
+
 
 
 
@@ -780,6 +823,7 @@ $(document).ready(function(){
         $('#btn_new').click(function(){
             _txnMode="new";
             //$('.toggle-fullscreen').click();
+            clearFields($('#frm_purchases'));
             showList(false);
         });
 
@@ -835,7 +879,7 @@ $(document).ready(function(){
             _txnMode="edit";
             _selectRowObj=$(this).closest('tr');
             var data=dt.row(_selectRowObj).data();
-            _selectedID=data.user_id;
+            _selectedID=data.purchase_order_id;
 
             $('input,textarea').each(function(){
                 var _elem=$(this);
@@ -846,10 +890,56 @@ $(document).ready(function(){
 
                 });
 
-
+                $('#cbo_suppliers').select2('val',data.supplier_id);
             });
 
-            $('img[name="img_user"]').attr('src',data.photo_path);
+            var tbl_summary=$('#tbl_purchase_summary');
+            tbl_summary.find(oTableDetails.discount).html('<b>'+accounting.formatNumber(data.total_discount,2)+'</b>');
+            tbl_summary.find(oTableDetails.before_tax).html('<b>'+accounting.formatNumber(data.total_before_tax,2)+'</b>');
+            tbl_summary.find(oTableDetails.tax_amount).html('<b>'+accounting.formatNumber(data.total_tax_amount,2)+'</b>');
+            tbl_summary.find(oTableDetails.after_tax).html('<h3><b>'+accounting.formatNumber(data.total_after_tax,2)+'</b></h3>');
+
+
+            $.ajax({
+                url : 'Purchases/transaction/items/'+data.purchase_order_id,
+                type : "GET",
+                cache : false,
+                dataType : 'json',
+                processData : false,
+                contentType : false,
+                beforeSend : function(){
+                    $('#tbl_items > tbody').html('<tr><td align="center" colspan="8"><br /><img src="assets/img/loader/ajax-loader-sm.gif" /><br /><br /></td></tr>');
+                },
+                success : function(response){
+                    var rows=response.data;
+                    $('#tbl_items > tbody').html('');
+
+                    $.each(rows,function(i,value){
+
+                        $('#tbl_items > tbody').prepend(newRowItem({
+                            po_qty : value.po_qty,
+                            product_code : value.product_code,
+                            unit_id : value.unit_id,
+                            unit_name : value.unit_name,
+                            product_id: value.product_id,
+                            product_desc : value.product_desc,
+                            po_line_total_discount : value.po_line_total_discount,
+                            tax_exempt : false,
+                            po_tax_rate : value.po_tax_rate,
+                            po_price : value.po_price,
+                            po_discount : value.po_discount,
+                            tax_type_id : null,
+                            po_line_total : value.po_line_total,
+                            po_non_tax_amount: value.non_tax_amount,
+                            po_tax_amount:value.tax_amount
+                        }));
+                    });
+                }
+            });
+
+
+
+
             showList(false);
 
         });
@@ -962,7 +1052,7 @@ $(document).ready(function(){
                         showSpinningProgress($('#btn_save'));
                     });
                 }else{
-                    updateUserAccount().done(function(response){
+                    updatePurchaseOrder().done(function(response){
                         showNotification(response);
                         dt.row(_selectRowObj).data(response.row_updated[0]).draw();
                         clearFields($('#frm_purchases'));
@@ -1037,16 +1127,20 @@ $(document).ready(function(){
         });
     };
 
-    var updateUserAccount=function(){
-        var _data=$('#frm_purchases').serializeArray();
-        _data.push({name : "photo_path" ,value : $('img[name="img_user"]').attr('src')});
-        _data.push({name : "user_group_id" ,value : $('#cbo_user_groups').select2('val')});
-        _data.push({name : "user_id" ,value : _selectedID});
+    var updatePurchaseOrder=function(){
+        var _data=$('#frm_purchases,#frm_items').serializeArray();
+
+        var tbl_summary=$('#tbl_purchase_summary');
+        _data.push({name : "summary_discount", value : tbl_summary.find(oTableDetails.discount).text()});
+        _data.push({name : "summary_before_discount", value :tbl_summary.find(oTableDetails.before_tax).text()});
+        _data.push({name : "summary_tax_amount", value : tbl_summary.find(oTableDetails.tax_amount).text()});
+        _data.push({name : "summary_after_tax", value : tbl_summary.find(oTableDetails.after_tax).text()});
+        _data.push({name : "purchase_order_id" ,value : _selectedID});
 
         return $.ajax({
             "dataType":"json",
             "type":"POST",
-            "url":"Users/transaction/update",
+            "url":"Purchases/transaction/update",
             "data":_data,
             "beforeSend": showSpinningProgress($('#btn_save'))
         });
@@ -1087,45 +1181,15 @@ $(document).ready(function(){
     };
 
     var clearFields=function(f){
-        $('input[required],textarea',f).val('');
-        $(f).find('select').select2('val',null);
+        $('input,textarea',f).val('');
         $(f).find('input:first').focus();
+        $('#tbl_items > tbody').html('');
     };
 
 
     function format ( d ) {
-        // `d` is the original data object for the row
-        //alert(d.photo_path);
-        return '<br /><table style="margin-left:10%;width: 80%;">' +
-        '<thead>' +
-        '</thead>' +
-        '<tbody>' +
-        '<tr>' +
-        '<td width="20%">Name : </td><td width="50%"><b>'+ d.user_name+'</b></td>' +
-        '<td rowspan="5" valign="top"><div class="avatar">'+
-        '<img src="'+ d.photo_path+'" class="img-circle" style="margin-top:0px;height: 100px;width: 100px;">'+
-        '</div></td>' +
-        '</tr>' +
-        '<tr>' +
-        '<td>Address : </td><td><b>'+ d.user_address+'</b></td>' +
-        '</tr>' +
-        '<tr>' +
-        '<td>Email : </td><td>'+ d.user_email+'</td>' +
-        '</tr>' +
-        '<tr>' +
-        '<td>Mobile Nos. : </td><td>'+ d.user_mobile+'</td>' +
-        '</tr>' +
-        '<tr>' +
-        '<td>Landline. : </td><td>'+ d.user_telephone+'</td>' +
-        '</tr>' +
-        '<tr>' +
-        '<td>Active : </td><td><i class="fa fa-check"></i></td>' +
-        '</tr>' +
-        '</tbody></table><br />';
 
-
-
-
+        //return
 
 
     };
@@ -1136,22 +1200,20 @@ $(document).ready(function(){
     };
 
     var newRowItem=function(d){
-        var total=getFloat(d.qty)*getFloat(d.unit_price);
-        var net_vat=total/(1+(getFloat(d.tax_rate)/100));
-        var vat_input=total-net_vat;
+
 
         return '<tr>'+
-                        '<td width="10%"><input nam="po_qty[]" type="text" class="numeric form-control" value="'+ d.qty+'"></td>'+
-                        '<td width="5%">'+ d.unit+'</td>'+
-                        '<td width="30%">'+d.description1+'</td>'+
-                        '<td width="11%"><input name="po_price[]" type="text" class="numeric form-control" value="'+d.unit_price+'" style="text-align:right;"></td>'+
-                        '<td width="11%"><input name="po_discount[]" type="text" class="numeric form-control" value="0.00" style="text-align:right;"></td>'+
-                        '<td style="display: none;" width="11%"><input name="po_total_discount[]" type="text" class="numeric form-control" value="0.00" readonly></td>'+
-                        '<td width="11%"><input name="po_tax_rate[]" type="text" class="numeric form-control" value="'+ accounting.formatNumber(d.tax_rate,2)+'"></td>'+
-                        '<td width="11%" align="right"><input name="po_line_total[]" type="text" class="numeric form-control" value="'+total+'" readonly></td>'+
-                        '<td style="display: none;"><input name="tax_amount[]" type="text" class="numeric form-control" value="'+vat_input+'" readonly></td>'+
-                        '<td style="display: none;"><input name="non_tax_amount[]" type="text" class="numeric form-control" value="'+net_vat+'" readonly></td>'+
-                        '<td style="display: none;"><input name="product_id[]" type="text" class="numeric form-control" value="'+ d.item_id+'" readonly></td>'+
+                        '<td width="10%"><input name="po_qty[]" type="text" class="numeric form-control" value="'+ d.po_qty+'"></td>'+
+                        '<td width="5%">'+ d.unit_name+'</td>'+
+                        '<td width="30%">'+d.product_desc+'</td>'+
+                        '<td width="11%"><input name="po_price[]" type="text" class="numeric form-control" value="'+accounting.formatNumber(d.po_price,2)+'" style="text-align:right;"></td>'+
+                        '<td width="11%"><input name="po_discount[]" type="text" class="numeric form-control" value="'+ accounting.formatNumber(d.po_discount,2)+'" style="text-align:right;"></td>'+
+                        '<td style="display: none;" width="11%"><input name="po_line_total_discount[]" type="text" class="numeric form-control" value="'+ accounting.formatNumber(d.po_line_total_discount,2)+'" readonly></td>'+
+                        '<td width="11%"><input name="po_tax_rate[]" type="text" class="numeric form-control" value="'+ accounting.formatNumber(d.po_tax_rate,2)+'"></td>'+
+                        '<td width="11%" align="right"><input name="po_line_total[]" type="text" class="numeric form-control" value="'+ d.po_line_total+'" readonly></td>'+
+                        '<td style="display: none;"><input name="tax_amount[]" type="text" class="numeric form-control" value="'+ d.po_tax_amount+'" readonly></td>'+
+                        '<td style="display: none;"><input name="non_tax_amount[]" type="text" class="numeric form-control" value="'+ d.po_non_tax_amount+'" readonly></td>'+
+                        '<td style="display: none;"><input name="product_id[]" type="text" class="numeric form-control" value="'+ d.product_id+'" readonly></td>'+
                         '<td align="center"><button type="button" name="remove_item" class="btn btn-default"><i class="fa fa-trash"></i></button></td>'+
                     '</tr>';
     };

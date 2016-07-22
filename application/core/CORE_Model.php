@@ -71,7 +71,7 @@ class CORE_model extends CI_Model
 
 
 
-    function get_list($where_array=null,$select_list=null,$join_array=null){
+    function get_list($where_filter=null,$select_list=null,$join_array=null,$order_by=null){
 
         $this->db->select(($select_list===null?$this->table.'.*':(is_array($select_list)?join(',',$select_list):$select_list)));
         $this->db->from($this->table);
@@ -84,7 +84,11 @@ class CORE_model extends CI_Model
         }
 
         //filter
-        if($where_array!=null){$this->db->where($where_array); }
+        if($where_filter!=null&&is_array($where_filter)){$this->db->where($where_filter); } //if the parameter is not null and provided as array then add where filter
+        if($where_filter!=null&&!is_array($where_filter)){$this->db->where($this->pk_id,$where_filter); } //if the parameter is not null and provided as value then add where filter on primary key
+
+        $this->db->order_by($order_by==null?$this->pk_id.' ASC':(is_array($order_by)?join(',',$order_by):$order_by));
+
 
         $query = $this->db->get();
         return $query->result();

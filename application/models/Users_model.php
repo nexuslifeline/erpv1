@@ -36,7 +36,7 @@ class Users_model extends CORE_Model{
 
     function get_user_list($id=null){
 
-        $this->db->select('ua.user_name,ua.user_lname,ua.user_fname,ua.user_mname');
+        $this->db->select('ua.user_name,ua.user_lname,ua.user_fname,ua.user_mname,ua.photo_path');
         $this->db->select('ua.user_address,ua.user_email,ua.user_mobile,ua.user_telephone');
         $this->db->select('DATE_FORMAT(ua.user_bdate,"%m/%d/%Y")as user_bdate,ua.user_group_id');
         $this->db->select('ua.is_active,ug.user_group,CONCAT_WS(" ",ua.user_fname,ua.user_mname,ua.user_lname)as full_name');

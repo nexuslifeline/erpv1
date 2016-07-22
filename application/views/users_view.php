@@ -856,7 +856,7 @@
         };
 
         var clearFields=function(f){
-            $('input[required],textarea',f).val('');
+            $('input,textarea',f).val('');
             $(f).find('select').select2('val',null);
             $(f).find('input:first').focus();
         };
