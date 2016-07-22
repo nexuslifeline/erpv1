@@ -7,6 +7,7 @@ class Reports extends CORE_Controller {
         $this->validate_session();
         $this->load->model('Purchases_model');
         $this->load->model('Purchase_items_model');
+        $this->load->model('Company_model');
     }
 
     public function index() {
@@ -21,6 +22,7 @@ class Reports extends CORE_Controller {
             case 'po' :
                 $m_purchases=$this->Purchases_model;
                 $m_po_items=$this->Purchase_items_model;
+                $m_company=$this->Company_model;
 
                 //load mPDF library
                 $dl=0;
@@ -37,8 +39,10 @@ class Reports extends CORE_Controller {
                     )
                 );
 
-                $data['purchase_info']=$info[0];
+                $company=$m_company->get_list();
 
+                $data['purchase_info']=$info[0];
+                $data['company_info']=$company[0];
                 $data['po_items']=$m_po_items->get_list(
                     array('purchase_order_id'=>$filter_value),
                     'purchase_order_items.*,products.product_desc,units.unit_name',

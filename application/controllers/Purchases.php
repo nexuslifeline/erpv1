@@ -274,7 +274,7 @@ class Purchases extends CORE_Controller
                         $response['stat'] = 'success';
                         $response['msg'] = 'Purchase order successfully updated.';
 
-                        $response['row_updated'] = $response['data']=$m_purchases->get_list(
+                        $response['row_updated'] = $m_purchases->get_list(
                             $po_id,
                             array(
                                 'purchase_order.*',

@@ -7,6 +7,8 @@ class Email extends CORE_Controller {
         $this->validate_session();
         $this->load->model('Purchases_model');
         $this->load->model('Purchase_items_model');
+        $this->load->model('Company_model');
+
     }
 
     public function index() {
@@ -21,7 +23,7 @@ class Email extends CORE_Controller {
             case 'po' :
                 $m_purchases=$this->Purchases_model;
                 $m_po_items=$this->Purchase_items_model;
-
+                $m_company=$this->Company_model;
 
                 $pdfFilePath = $filter_value.".pdf"; //generate filename base on id
 
@@ -35,10 +37,10 @@ class Email extends CORE_Controller {
                         array('suppliers','suppliers.supplier_id=purchase_order.supplier_id','left')
                     )
                 );
-
+                $company=$m_company->get_list();
 
                 $data['purchase_info']=$info[0];
-
+                $data['company_info']=$company[0];
                 $data['po_items']=$m_po_items->get_list(
                     array('purchase_order_id'=>$filter_value),
                     'purchase_order_items.*,products.product_desc,units.unit_name',
@@ -68,9 +70,31 @@ class Email extends CORE_Controller {
                 //$this->email->set_mailtype('html');
 
                 if($this->email->send()){
+                    $m_purchases->is_email_sent=1;
+                    $m_purchases->modify($filter_value);
+
                     $response['title']='Sent';
                     $response['stat']='success';
                     $response['msg']='Email successfully sent.';
+                    $response['row_updated'] = $response['data']=$m_purchases->get_list(
+                        $filter_value,
+                        array(
+                            'purchase_order.*',
+                            'CONCAT_WS(" ",CAST(purchase_order.terms AS CHAR),purchase_order.duration)as term_description',
+                            'suppliers.supplier_name',
+                            'tax_types.tax_type',
+                            'approval_status.approval_status',
+                            'order_status.order_status'
+                        ),
+                        array(
+                            array('suppliers','suppliers.supplier_id=purchase_order.supplier_id','left'),
+                            array('tax_types','tax_types.tax_type_id=purchase_order.tax_type_id','left'),
+                            array('approval_status','approval_status.approval_id=purchase_order.approval_id','left'),
+                            array('order_status','order_status.order_status_id=purchase_order.order_status_id','left')
+                        )
+                    );
+
+
                     echo json_encode($response);
                 }
 

@@ -26,9 +26,9 @@
 
             <span>Company :</span>
             <address>
-                <strong>JDEV IT Business Solutions</strong><br>
-                <strong>Balibago, Angeles City, Pampanga</strong><br>
-                <abbr title="Phone">P:</abbr> (045) 322-3542
+                <strong><?php echo $company_info->company_name; ?></strong><br>
+                <strong><?php echo $company_info->company_address; ?></strong><br>
+                <abbr title="Phone">P:</abbr> <?php echo $company_info->landline; ?>
             </address>
             <br />
             <span>Deliver to :</span>

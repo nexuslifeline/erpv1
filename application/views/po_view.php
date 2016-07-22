@@ -609,8 +609,15 @@ $(document).ready(function(){
                 {
                     targets:[7],data: null,
                     render: function (data, type, full, meta){
+                        var _attribute='';
+                        //console.log(data.is_email_sent);
+                        if(data.is_email_sent=="1"){
+                            _attribute=' class="fa fa-check-circle" style="color:green;" ';
+                        }else{
+                            _attribute=' class="fa fa-times-circle" style="color:red;" ';
+                        }
 
-                        return '<center><i class="fa fa-check-circle" style="color: green;"></i></center>';
+                        return '<center><i '+_attribute+'></i></center>';
                     }
 
                 },
@@ -831,6 +838,7 @@ $(document).ready(function(){
                 "data": {email:$(this).data('supplier-email')}
             }).done(function(response){
                 showNotification(response);
+                dt.row(_selectRowObj).data(response.row_updated[0]).draw();
             });
         });
 

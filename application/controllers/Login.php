@@ -9,6 +9,9 @@ class Login extends CORE_Controller {
         $this->load->model('Users_model');
         $this->load->model('User_groups_model');
         $this->load->model('Tax_types_model');
+        $this->load->model('Approval_status_model');
+        $this->load->model('Order_status_model');
+
     }
 
 
@@ -37,6 +40,14 @@ class Login extends CORE_Controller {
         //create default tax types : Non-vat , Vatted(12%)
         $m_tax_types=$this->Tax_types_model;
         $m_tax_types->create_default_tax_type();
+
+        //create default approval status
+        $m_approval=$this->Approval_status_model;
+        $m_approval->create_default_approval_status();
+
+        //create default order status
+        $m_approval=$this->Order_status_model;
+        $m_approval->create_default_order_status();
     }
 
 
