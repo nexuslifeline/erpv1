@@ -90,6 +90,10 @@
                                                     <thead>
                                                     <tr>
                                                         <th>Brand Name</th>
+                                                        <th>First Name</th>
+                                                        <th>Middle Name</th>
+                                                        <th>Last Name</th>
+                                                        <th>Mobile No.</th>
                                                         <th><center>Action</center></th>
                                                     </tr>
                                                     </thead>
@@ -109,19 +113,68 @@
                                                 <div class="panel-ctrls" data-actions-container="" data-action-collapse='{"target": ".panel-body"}'></div>
                                             </div>
 
-                                            <div class="panel-body">
+                                            <div class="panel-body center">
                                                 <form id="frm_brand" role="form" class="form-horizontal row-border">
                                                     <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-2 control-label">* Brand Name :</label>
+                                                        <label class="col-md-4 control-label">Brand Name :</label>
                                                         <div class="col-md-4">
                                                             <div class="input-group">
-                                                                                    <span class="input-group-addon">
-                                                                                        <i class="fa fa-users"></i>
-                                                                                    </span>
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-user"></i>
+                                                                </span>
                                                                 <input type="text" name="brand_name" class="form-control" placeholder="Brand Name" data-error-msg="Brand name is required!" required>
                                                             </div>
                                                         </div>
                                                     </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label">First Name :</label>
+                                                        <div class="col-md-4">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-send"></i>
+                                                                </span>
+                                                                <input type="text" name="fname" class="form-control" placeholder="a Test field" data-error-msg="test field required" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label">Middle Name :</label>
+                                                        <div class="col-md-4">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-send"></i>
+                                                                </span>
+                                                                <input type="text" name="mname" class="form-control" placeholder="a Test field" data-error-msg="test field required" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label">Last Name :</label>
+                                                        <div class="col-md-4">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-send"></i>
+                                                                </span>
+                                                                <input type="text" name="lname" class="form-control" placeholder="a Test field" data-error-msg="test field required" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label">Mobile No. :</label>
+                                                        <div class="col-md-4">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-send"></i>
+                                                                </span>
+                                                                <input type="text" name="m_num" class="form-control" placeholder="a Test field" data-error-msg="test field required" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                     <br/>
                                                 </form>
                                             </div>
@@ -202,8 +255,12 @@ $(document).ready(function(){
             "columns": [
 
                 { targets:[0],data: "brand_name" },
+                { targets:[2],data: "fname" },
+                { targets:[3],data: "mname" },
+                { targets:[4],data: "lname" },
+                { targets:[5],data: "m_num" },
                 {
-                    targets:[1],
+                    targets:[6],
                     render: function (data, type, full, meta){
                         var btn_edit='<button class="btn btn-default btn-sm" name="edit_info"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i> </button>';
                         var btn_trash='<button class="btn btn-default btn-sm" name="remove_info" style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>';
@@ -380,7 +437,7 @@ $(document).ready(function(){
         });
     };
 
-    var removeBrand=function(){
+    var removebrand=function(){
         return $.ajax({
             "dataType":"json",
             "type":"POST",

@@ -22,6 +22,8 @@
     <link type="text/css" href="assets/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet">
     <link type="text/css" href="assets/plugins/datatables/dataTables.themify.css" rel="stylesheet">
 
+    <link href="assets/plugins/select2/select2.min.css" rel="stylesheet">
+
     <style>
 
         .toolbar{
@@ -45,7 +47,9 @@
             animation: spin 1s infinite linear;
             -webkit-animation: spin2 1s infinite linear;
         }
-
+        .select2-container{
+            min-width: 100%;
+        }
         @keyframes spin {
             from { transform: scale(1) rotate(0deg); }
             to { transform: scale(1) rotate(360deg); }
@@ -92,11 +96,8 @@
                                                         <th></th>
                                                         <th>Product Code</th>
                                                         <th>Description 1</th>
-                                                        <th>Description 2</th>
                                                         <th>Category</th>
-                                                        <th>Department</th>
                                                         <th>Unit</th>
-                                                        <th>Equivalent Points</th>
                                                         <th><center>Action</center></th>
                                                     </tr>
                                                     </thead>
@@ -130,7 +131,7 @@
                                                                                     <span class="input-group-addon">
                                                                                         <i class="fa fa-file-code-o"></i>
                                                                                     </span>
-                                                                <input type="text" name="product_code" class="form-control" value="" readonly>
+                                                                <input type="text" name="product_code" class="form-control" value="">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -150,18 +151,22 @@
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">* Category :</label>
+                                                        <label class="col-md-2 col-md-offset-1 control-label"> * Category :</label>
+
                                                         <div class="col-md-7">
-                                                            <select name="product_cat" id="" class="form-control">
-                                                                <option value="">Select Category</option>
+                                                            <select name="category_id" id="product_category" data-error-msg="Category is required." required>
+                                                                <option value="0">[ Create Category ]</option>
                                                                 <?php
                                                                 foreach($product_cat as $row)
                                                                 {
-                                                                    echo '<option value="'.$row->category_name.'">'.$row->category_name.'</option>';
+                                                                    echo '<option value="'.$row->category_id  .'">'.$row->category_name.'</option>';
                                                                 }
                                                                 ?>
                                                             </select>
+
+
                                                         </div>
+
                                                     </div>
 
                                                     <div class="form-group">
@@ -180,18 +185,21 @@
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">* Unit :</label>
+                                                        <label class="col-md-2 col-md-offset-1 control-label">Unit :</label>
+
                                                         <div class="col-md-7">
-                                                            <select name="product_unit" id="" class="form-control">
-                                                                <option value="">Select Unit</option>
+                                                            <select name="unit_id" id="product_unit" data-error-msg="Unit is required." required>
+                                                                <option value="0">[ Create Unit ]</option>
                                                                 <?php
                                                                 foreach($product_unit as $row)
                                                                 {
-                                                                    echo '<option value="'.$row->unit_name.'">'.$row->unit_name.'</option>';
+                                                                    echo '<option value="'.$row->unit_id.'">'.$row->unit_name.'</option>';
                                                                 }
                                                                 ?>
                                                             </select>
+
                                                         </div>
+
                                                     </div>
 
                                                     <div class="form-group">
@@ -327,6 +335,86 @@
                 </div>
             </div><!---modal-->
 
+            <div id="modal_category_group" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content"><!---content--->
+                        <div class="modal-header">
+                            <button type="button" class="close"   data-dismiss="modal" aria-hidden="true">X</button>
+                            <h4 class="modal-title"><span id="modal_mode"> </span>New Category Group</h4>
+
+                        </div>
+
+                        <div class="modal-body">
+                            <form id="frm_category_group">
+                                <div class="form-group">
+                                    <label>* Category Name :</label>
+                                    <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-envelope-o"></i>
+                                                </span>
+                                        <input type="text" name="category_name" class="form-control" placeholder="Category Name" data-error-msg="Category name is required." required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Description :</label>
+                                    <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <textarea name="category_desc" placeholder="Category Description" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button id="btn_create_category_group" type="button" class="btn btn-primary"  style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span> Create</button>
+                            <button id="btn_close_unit_group" type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Cancel</button>
+                        </div>
+                    </div><!---content---->
+                </div>
+            </div><!---modal-->
+
+            <div id="modal_unit_group" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content"><!---content--->
+                        <div class="modal-header">
+                            <button type="button" class="close"   data-dismiss="modal" aria-hidden="true">X</button>
+                            <h4 class="modal-title"><span id="modal_mode"> </span>New Unit Group</h4>
+
+                        </div>
+
+                        <div class="modal-body">
+                            <form id="frm_unit_group">
+                                <div class="form-group">
+                                    <label>* Unit Name :</label>
+                                    <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-envelope-o"></i>
+                                                </span>
+                                        <input type="text" name="unit_name" class="form-control" placeholder="Unit Name" data-error-msg="Unit name is required." required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Description :</label>
+                                    <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <textarea name="unit_desc" placeholder="Unit Description" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button id="btn_create_unit_group" type="button" class="btn btn-primary"  style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span> Create</button>
+                            <button id="btn_close_unit_group" type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Cancel</button>
+                        </div>
+                    </div><!---content---->
+                </div>
+            </div><!---modal-->
+
             <footer role="contentinfo">
                 <div class="clearfix">
                     <ul class="list-unstyled list-inline pull-left">
@@ -351,6 +439,9 @@
 <script type="text/javascript" src="assets/plugins/datatables/jquery.dataTables.js"></script>
 <script type="text/javascript" src="assets/plugins/datatables/dataTables.bootstrap.js"></script>
 
+<!-- Select2 -->
+<script src="assets/plugins/select2/select2.full.min.js"></script>
+
 <script>
 
 $(document).ready(function(){
@@ -371,13 +462,10 @@ $(document).ready(function(){
                 },
                 { targets:[1],data: "product_code" },
                 { targets:[2],data: "product_desc" },
-                { targets:[3],data: "product_desc1" },
-                { targets:[4],data: "product_cat" },
-                { targets:[5],data: "product_dept" },
-                { targets:[6],data: "product_unit" },
-                { targets:[7],data: "equivalent_points" },
+                { targets:[3],data: "category_name" },
+                { targets:[4],data: "unit_name" },
                 {
-                    targets:[8],
+                    targets:[5],
                     render: function (data, type, full, meta){
                         var btn_edit='<button class="btn btn-default btn-sm" name="edit_info"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i> </button>';
                         var btn_trash='<button class="btn btn-default btn-sm" name="remove_info" style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>';
@@ -388,6 +476,46 @@ $(document).ready(function(){
             ]
         });
 
+        _product_category=$("#product_category").select2({
+            placeholder: "Please select category",
+            allowClear: true
+        });
+
+        _product_category.select2('val', null);
+
+        _product_category.on("select2:select", function (e) {
+
+            var i=$(this).select2('val');
+            if(i==0){
+                $(this).select2('val',null)
+                $('#modal_category_group').modal('show');
+                clearFields($('#modal_category_group').find('form'));
+            }
+
+
+        });
+
+        _product_unit=$("#product_unit").select2({
+            placeholder: "Please select Unit",
+            allowClear: true
+        });
+
+        _product_unit.select2('val', null);
+
+        _product_unit.on("select2:select", function (e) {
+
+            var i=$(this).select2('val');
+            if(i==0){
+                $(this).select2('val',null)
+                $('#modal_unit_group').modal('show');
+                clearFields($('#modal_unit_group').find('form'));
+            }
+
+
+        });
+
+
+
         var createToolBarButton=function(){
             var _btnNew='<button class="btn btn-primary"  id="btn_new" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;" data-toggle="modal" data-target="" data-placement="left" title="New product" >'+
                 '<i class="fa fa-users"></i> New product</button>';
@@ -395,6 +523,67 @@ $(document).ready(function(){
         }();
     }();
 
+    $('#btn_create_category_group').click(function(){
+
+        var btn=$(this);
+
+        if(validateRequiredFields($('#frm_category_group'))){
+            var data=$('#frm_category_group').serializeArray();
+
+            $.ajax({
+                "dataType":"json",
+                "type":"POST",
+                "url":"Categories/transaction/create",
+                "data":data,
+                "beforeSend" : function(){
+                    showSpinningProgress(btn);
+                }
+            }).done(function(response){
+                showNotification(response);
+                $('#modal_category_group').modal('hide');
+
+                var _group=response.row_added[0];
+                $('#product_category').append('<option value="'+_group.category_id+'" selected>'+_group.category_name+'</option>');
+                $('#product_category').select2('val',_group.category_id);
+
+            }).always(function(){
+                showSpinningProgress(btn);
+            });
+        }
+
+
+    });
+
+    $('#btn_create_unit_group').click(function(){
+
+        var btn=$(this);
+
+        if(validateRequiredFields($('#frm_unit_group'))){
+            var data=$('#frm_unit_group').serializeArray();
+
+            $.ajax({
+                "dataType":"json",
+                "type":"POST",
+                "url":"Units/transaction/create",
+                "data":data,
+                "beforeSend" : function(){
+                    showSpinningProgress(btn);
+                }
+            }).done(function(response){
+                showNotification(response);
+                $('#modal_unit_group').modal('hide');
+
+                var _group=response.row_added[0];
+                $('#product_unit').append('<option value="'+_group.unit_id+'" selected>'+_group.unit_name+'</option>');
+                $('#product_unit').select2('val',_group.unit_id);
+
+            }).always(function(){
+                showSpinningProgress(btn);
+            });
+        }
+
+
+    });
     var bindEventHandlers=(function(){
         var detailRows = [];
 
@@ -421,6 +610,7 @@ $(document).ready(function(){
         } );
 
         $('#btn_new').click(function(){
+            clearFields($('#frm_product'))
             _txnMode="new";
             showList(false);
         });
@@ -438,6 +628,8 @@ $(document).ready(function(){
                         _elem.val(value);
                     }
                 });
+                $('#product_category').select2('val',data.category_id);
+                $('#product_unit').select2('val',data.unit_id);
             });
             showList(false);
         });
@@ -490,12 +682,12 @@ $(document).ready(function(){
         });
 
         $('#btn_save').click(function(){
-            if(validateRequiredFields()){
+            if(validateRequiredFields($('#frm_product'))){
                 if(_txnMode=="new"){
                     createProduct().done(function(response){
                         showNotification(response);
                         dt.row.add(response.row_added[0]).draw();
-                        clearFields();
+                        clearFields($('#frm_product'))
 
                     }).always(function(){
                         showSpinningProgress($('#btn_save'));
@@ -504,7 +696,7 @@ $(document).ready(function(){
                     updateProduct().done(function(response){
                         showNotification(response);
                         dt.row(_selectRowObj).data(response.row_updated[0]).draw();
-                        clearFields();
+                        clearFields($('#frm_product'))
                         showList(true);
                     }).always(function(){
                         showSpinningProgress($('#btn_save'));
@@ -514,11 +706,11 @@ $(document).ready(function(){
         });
     })();
 
-    var validateRequiredFields=function(){
+    var validateRequiredFields=function(f){
         var stat=true;
 
         $('div.form-group').removeClass('has-error');
-        $('input[required],textarea[required]','#frm_product').each(function(){
+        $('input[required],textarea[required]',f).each(function(){
             if($(this).val()==""){
                 showNotification({title:"Error!",stat:"error",msg:$(this).data('error-msg')});
                 $(this).closest('div.form-group').addClass('has-error');
@@ -544,6 +736,7 @@ $(document).ready(function(){
     var updateProduct=function(){
         var _data=$('#frm_product').serializeArray();
         _data.push({name : "product_id" ,value : _selectedID});
+
 
         return $.ajax({
             "dataType":"json",
@@ -586,9 +779,10 @@ $(document).ready(function(){
         $(e).find('span').toggleClass('glyphicon glyphicon-refresh spinning');
     };
 
-    var clearFields=function(){
-        $('input[required],textarea','#frm_product').val('');
-        $('form').find('input:first').focus();
+    var clearFields=function(f){
+        $('input,textarea',f).val('');
+        $(f).find('select').select2('val',null);
+        $(f).find('input:first').focus();
     };
 
     function format ( d ) {
