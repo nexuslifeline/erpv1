@@ -56,7 +56,7 @@ class Email extends CORE_Controller {
                 $this->load->library('email');
 
                 $this->email->from('jdevsystems@jdevsolution.com', 'Paul Christian Rueda');
-                $this->email->to('chrisrueda14@gmail.com');
+                $this->email->to('chrisrueda14@yahoo.com');
                 //$this->email->cc('another@another-example.com');
                 //$this->email->bcc('them@their-example.com');
 
@@ -67,7 +67,7 @@ class Email extends CORE_Controller {
 
 
                 //$pdf->WriteHTML($content);
-
+                echo "success";
 
 
                 break;
