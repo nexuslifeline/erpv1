@@ -72,6 +72,7 @@
                                 <li><a href="products">Product Management</a></li>
                                 <li><a href="suppliers">Supplier Management</a></li>
                                 <li><a href="customers">Customer Management</a></li>
+                                <li><a href="tax">Tax Management</a></li>
                             </ul>
                         </li>
 
@@ -79,6 +80,7 @@
                             <ul class="acc-menu">
                                 <li><a href="#">Setup User Group</a></li>
                                 <li><a href="users">Create User Account</a></li>
+                                <li><a href="company">Setup Company Info</a></li>
                             </ul>
                         </li>
 

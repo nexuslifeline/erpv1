@@ -8,6 +8,7 @@ class Suppliers extends CORE_Controller {
         $this->validate_session();
         $this->load->model('Suppliers_model');
         $this->load->model('Supplier_photos_model');
+        $this->load->model('Tax_model');
     }
 
     public function index() {
@@ -17,7 +18,7 @@ class Suppliers extends CORE_Controller {
         $data['_side_bar_navigation']=$this->load->view('template/elements/side_bar_navigation','',TRUE);
         $data['_top_navigation']=$this->load->view('template/elements/top_navigation','',TRUE);
         $data['title']='Supplier Management';
-
+        $data['tax_type']=$this->Tax_model->get_list();
         $this->load->view('suppliers_view',$data);
     }
 
@@ -26,7 +27,16 @@ class Suppliers extends CORE_Controller {
         switch($txn) {
             case 'list':
                 $m_suppliers=$this->Suppliers_model;
-                $response['data']=$m_suppliers->get_supplier_list();
+                $response['data']=$m_suppliers->get_list(
+                        array('suppliers.is_deleted'=>FALSE),
+                        'suppliers.*,tax_types.tax_type,tax_types.tax_rate',
+
+                        array(
+                            array('tax_types','tax_types.tax_type_id=suppliers.tax_type_id','left')
+
+                        )
+
+                );
                 echo json_encode($response);
 
                 break;
@@ -40,6 +50,7 @@ class Suppliers extends CORE_Controller {
                 $m_suppliers->email_address=$this->input->post('email_address',TRUE);
                 $m_suppliers->landline=$this->input->post('landline',TRUE);
                 $m_suppliers->mobile_no=$this->input->post('mobile_no',TRUE);
+                $m_suppliers->tax_type_id=$this->input->post('tax_type_id',TRUE);
                 $m_suppliers->save();
 
                 $supplier_id=$m_suppliers->last_insert_id();
@@ -51,7 +62,18 @@ class Suppliers extends CORE_Controller {
                 $response['title']='Success!';
                 $response['stat']='success';
                 $response['msg']='supplier information successfully created.';
-                $response['row_added']=$m_suppliers->get_supplier_list($supplier_id);
+                $response['row_added']= $m_suppliers->get_list(
+
+                    $supplier_id,
+
+                    'suppliers.*,tax_types.tax_type,tax_types.tax_rate',
+
+                    array(
+                        array('tax_types','tax_types.tax_type_id=suppliers.tax_type_id','left')
+
+                    )
+
+                );
                 echo json_encode($response);
 
                 break;
@@ -82,6 +104,7 @@ class Suppliers extends CORE_Controller {
                 $m_suppliers->email_address=$this->input->post('email_address',TRUE);
                 $m_suppliers->landline=$this->input->post('landline',TRUE);
                 $m_suppliers->mobile_no=$this->input->post('mobile_no',TRUE);
+                $m_suppliers->tax_type_id=$this->input->post('tax_type_id',TRUE);
                 $m_suppliers->modify($supplier_id);
 
                 $m_photos->delete_via_fk($supplier_id);
@@ -92,7 +115,14 @@ class Suppliers extends CORE_Controller {
                 $response['title']='Success!';
                 $response['stat']='success';
                 $response['msg']='supplier information successfully updated.';
-                $response['row_updated']=$m_suppliers->get_supplier_list($supplier_id);
+                $response['row_updated']=$m_suppliers->get_list(
+                    $supplier_id,
+                        'suppliers.*,tax_types.tax_type,tax_types.tax_rate',
+
+                        array(
+                            array('tax_types','tax_types.tax_type_id=suppliers.tax_type_id','left')
+
+                        ));
                 echo json_encode($response);
 
                 break;

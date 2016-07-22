@@ -32,7 +32,12 @@ class Brands extends CORE_Controller
             case 'create':
                 $m_brands = $this->Brands_model;
 
+
                 $m_brands->brand_name = $this->input->post('brand_name', TRUE);
+                $m_brands->fname = $this->input->post('fname', TRUE);
+                $m_brands->mname = $this->input->post('mname', TRUE);
+                $m_brands->lname = $this->input->post('lname', TRUE);
+                $m_brands->m_num = $this->input->post('m_num', TRUE);
                 $m_brands->save();
 
                 $brand_id = $m_brands->last_insert_id();
@@ -66,6 +71,10 @@ class Brands extends CORE_Controller
 
                 $brand_id=$this->input->post('brand_id',TRUE);
                 $m_brands->brand_name=$this->input->post('brand_name',TRUE);
+                $m_brands->fname=$this->input->post('fname',TRUE);
+                $m_brands->mname=$this->input->post('mname',TRUE);
+                $m_brands->lname=$this->input->post('lname',TRUE);
+                $m_brands->m_num=$this->input->post('m_num',TRUE);
 
                 $m_brands->modify($brand_id);
 
