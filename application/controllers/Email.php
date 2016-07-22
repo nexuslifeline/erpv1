@@ -55,6 +55,9 @@ class Email extends CORE_Controller {
 
                 $this->load->library('email');
 
+                $email_setting  = array('mailtype'=>'html');
+                $this->email->initialize($email_setting);
+
                 $this->email->from('jdevsystems@jdevsolution.com', 'Paul Christian Rueda');
                 $this->email->to('chrisrueda14@yahoo.com');
                 //$this->email->cc('another@another-example.com');
@@ -62,16 +65,14 @@ class Email extends CORE_Controller {
 
                 $this->email->subject('Purchase Order : '.$filter_value);
                 $this->email->message($content);
+                //$this->email->set_mailtype('html');
 
-                $this->email->send();
-
-
-                //$pdf->WriteHTML($content);
-                $response['title']='Sent';
-                $response['stat']='success';
-                $response['msg']='Email successfully sent.';
-                echo json_encode($response);
-
+                if($this->email->send()){
+                    $response['title']='Sent';
+                    $response['stat']='success';
+                    $response['msg']='Email successfully sent.';
+                    echo json_encode($response);
+                }
 
                 break;
         }
