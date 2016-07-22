@@ -636,7 +636,7 @@
             return $.ajax({
                 "dataType":"json",
                 "type":"POST",
-                "url":"Company/transaction/update",
+                "url":"Suppliers/transaction/update",
                 "data":_data,
                 "beforeSend": showSpinningProgress($('#btn_save'))
             });
