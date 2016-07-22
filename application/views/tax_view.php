@@ -82,7 +82,7 @@
 
                     <ol class="breadcrumb">
                         <li><a href="dashboard">Dashboard</a></li>
-                        <li><a href="suppliers">Suppliers</a></li>
+                        <li><a href="tax">Tax</a></li>
                     </ol>
 
                     <div class="container-fluid">
@@ -90,18 +90,16 @@
                             <div class="row">
                                 <div class="col-md-12">
 
-                                    <div id="div_supplier_list">
+                                    <div id="div_tax_list">
                                         <div class="panel panel-default">
                                             <div class="panel-body table-responsive">
-                                                <table id="tbl_suppliers" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                                <table id="tbl_tax" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                                     <thead>
                                                     <tr>
                                                         <th></th>
-                                                        <th>Supplier Name</th>
-                                                        <th>Address</th>
-                                                        <th>Landline</th>
-                                                        <th>Mobile</th>
-                                                        <th>Tax Name</th>
+                                                        <th>Tax</th>
+                                                        <th>Tax Rate</th>
+                                                        <th>Description</th>
                                                         <th><center>Action</center></th>
                                                     </tr>
                                                     </thead>
@@ -114,106 +112,48 @@
                                         </div>
                                     </div>
 
-                                    <div id="div_supplier_fields" style="display: none;">
+                                    <div id="div_tax_fields" style="display: none;">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
-                                                <h2>Supplier Information</h2>
+                                                <h2>Tax Information</h2>
                                                 <div class="panel-ctrls" data-actions-container="" data-action-collapse='{"target": ".panel-body"}'></div>
                                             </div>
 
                                             <div class="panel-body">
-                                                <form id="frm_supplier" role="form" class="form-horizontal row-border">
+                                                <form id="frm_tax" role="form" class="form-horizontal row-border">
                                                     <div class="form-group">
-                                                        <label class="col-md-2 control-label">* Supplier Name :</label>
-                                                        <div class="col-md-9">
+                                                        <label class="col-md-4 control-label">* Tax Name :</label>
+                                                        <div class="col-md-4">
                                                             <div class="input-group">
                                                                             <span class="input-group-addon">
                                                                                 <i class="fa fa-users"></i>
                                                                             </span>
-                                                                <input type="text" name="supplier_name" class="form-control" placeholder="Supplier Name" data-error-msg="Supplier Name is required!" required>
+                                                                <input type="text" name="tax_type" class="form-control" placeholder="Tax Name" data-error-msg="Tax Type Name is required!" required>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <label class="col-md-2 control-label">* Address :</label>
-                                                        <div class="col-md-9">
-                                                            <textarea name="address" class="form-control" data-error-msg="Supplier address is required!" required placeholder="Address"></textarea>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label class="col-md-2 control-label">Email Address :</label>
-                                                        <div class="col-md-9">
+                                                        <label class="col-md-4 control-label">* Tax rate :</label>
+                                                        <div class="col-md-4">
                                                             <div class="input-group">
                                                                             <span class="input-group-addon">
-                                                                                <i class="fa fa-envelope-o"></i>
+                                                                                <i class="fa fa-users"></i>
                                                                             </span>
-                                                                <input type="text" name="email_address" class="form-control" placeholder="Email Address" data-error-msg="Supplier Email Address is required!" required>
+                                                                <input type="number" name="tax_rate" class="form-control" placeholder="Tax Rate" data-error-msg="Tax Rate is required!" required>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <label class="col-md-2 control-label">Landline :</label>
-                                                        <div class="col-md-9">
-                                                            <div class="input-group">
-                                                                            <span class="input-group-addon">
-                                                                                <i class="fa fa-send"></i>
-                                                                            </span>
-                                                                <input type="text" name="landline" class="form-control" placeholder="Landline">
-                                                            </div>
-                                                        </div>
+                                                        <label class="col-md-4 control-label"> Description :</label>
+                                                        <div class="col-md-4">
+                                                            <textarea name="description" class="form-control" data-error-msg="Description address is required!" placeholder="Description"></textarea>
+                                                    </div>
                                                     </div>
 
-                                                    <div class="form-group">
-                                                        <label class="col-md-2 control-label">Mobile No :</label>
-                                                        <div class="col-md-9">
-                                                            <div class="input-group">
-                                                                            <span class="input-group-addon">
-                                                                                <i class="fa fa-send"></i>
-                                                                            </span>
-                                                                <input type="text" name="mobile_no" class="form-control" placeholder="Mobile No">
-                                                            </div>
-                                                        </div>
-                                                    </div>
 
-                                                    <div class="form-group">
-                                                        <label class="col-md-2 control-label"> *Tax Type :</label>
-                                                        <div class="col-md-9">
-                                                                <select name="" id="tax_group" data-error-msg="Tax Type is required." required>
-                                                                    <option value="0">[ Create Tax Type Group ]</option>
-                                                                    <?php foreach($tax_type as $group){ ?>
-                                                                        <option value="<?php echo $group->tax_type_id; ?>"><?php echo $group->tax_type; ?></option>
-                                                                    <?php } ?>
-                                                                </select>
-                                                        </div>
-                                                    </div>
-
-                                                    <span class="help-block m-b-none">Required. Please select the correct user group of the user.</span>
-
-
-                                                    <div class="form-group">
-                                                        <label class="col-md-2 control-label">Photo :</label>
-                                                        <div class="col-md-5">
-                                                            <div class="input-group">
-                                                                <div class="" style="border:1px solid black;height: 230px;width: 210px;vertical-align: middle;">
-
-                                                                    <div id="div_img_supplier" style="position:relative;">
-                                                                        <img name="img_supplier"  src="assets/img/anonymous-icon.png" style="object-fit: fill; !important; height: 100%;width: 100%;" />
-                                                                        <input type="file" name="file_upload[]" class="hidden">
-                                                                    </div>
-
-                                                                    <div id="div_img_loader" style="display: none;">
-                                                                        <img name="img_loader" src="assets/img/loader/ajax-loader-sm.gif" style="display: block;margin:40% auto auto auto; " />
-                                                                    </div>
-                                                                </div>
-
-                                                                <button id="btn_browse" type="button" class="btn btn-primary" style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Browse Photo</button>
-                                                                <button id="btn_remove_photo" type="button"  class="btn btn-primary" style="margin-top: 2%;text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Remove</button>
-                                                            </div>
-                                                        </div>
-                                                    </div><br /><br />
+                                                        <br /><br />
                                                 </form>
 
                                             </div>
@@ -259,7 +199,7 @@
                 </div>
             </div><!---modal-->
 
-            <div id="modal_tax_group" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
+            <div id="modal__group" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
                 <div class="modal-dialog modal-md">
                     <div class="modal-content"><!---content--->
                         <div class="modal-header">
@@ -341,10 +281,10 @@
         var dt; var _txnMode; var _selectedID; var _selectRowObj; var _taxTypeGroup;
 
         var initializeControls=function() {
-            dt=$('#tbl_suppliers').DataTable({
+            dt=$('#tbl_tax').DataTable({
                 "dom": '<"toolbar">frtip',
                 "bLengthChange":false,
-                "ajax" : "Suppliers/transaction/list",
+                "ajax" : "Tax/transaction/list",
                 "columns": [
                     {
                         "targets": [0],
@@ -353,13 +293,11 @@
                         "data":           null,
                         "defaultContent": ""
                     },
-                    { targets:[1],data: "supplier_name" },
-                    { targets:[2],data: "address" },
-                    { targets:[3],data: "landline" },
-                    { targets:[4],data: "mobile_no" },
-                    { targets:[5],data: "tax_type" },
+                    { targets:[1],data: "tax_type" },
+                    { targets:[2],data: "tax_rate" },
+                    { targets:[3],data: "description" },
                     {
-                        targets:[6],
+                        targets:[4],
                         render: function (data, type, full, meta){
                             var btn_edit='<button class="btn btn-default btn-sm" name="edit_info"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i> </button>';
                             var btn_trash='<button class="btn btn-default btn-sm" name="remove_info" style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>';
@@ -371,76 +309,19 @@
             });
 
 
-            _taxTypeGroup=$("#tax_group").select2({
-                placeholder: "Please select user group",
-                allowClear: true
-            });
-
-            _taxTypeGroup.select2('val', null)
-
-
-
-
 
             var createToolBarButton=function() {
-                var _btnNew='<button class="btn btn-primary"  id="btn_new" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;" data-toggle="modal" data-target="" data-placement="left" title="New supplier" >'+
-                    '<i class="fa fa-users"></i> New Supplier</button>';
+                var _btnNew='<button class="btn btn-primary"  id="btn_new" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;" data-toggle="modal" data-target="" data-placement="left" title="New Tax" >'+
+                    '<i class="fa fa-users"></i> New Tax</button>';
                 $("div.toolbar").html(_btnNew);
             }();
         }();
-
-        _taxTypeGroup.on("select2:select", function (e) {
-
-            var i=$(this).select2('val');
-            if(i==0){
-                $(this).select2('val',null)
-                $('#modal_tax_group').modal('show');
-                clearFields($('#modal_tax_group').find('form'));
-            }
-
-
-        });
-
-        $('#btn_create_tax_group').click(function(){
-
-            var btn=$(this);
-
-            if(validateRequiredFields($('#frm_tax_group'))){
-                var data=$('#frm_tax_group').serializeArray();
-
-                $.ajax({
-                    "dataType":"json",
-                    "type":"POST",
-                    "url":"Tax_groups/transaction/create",
-                    "data":data,
-                    "beforeSend" : function(){
-                        showSpinningProgress(btn);
-                    }
-                }).done(function(response){
-                    showNotification(response);
-                    $('#modal_tax_group').modal('hide');
-
-                    var _group=response.row_added[0];
-                    $('#tax_group').append('<option value="'+_group.tax_type_id+'" selected>'+_group.tax_type+'</option>');
-                    $('#tax_group').select2('val',_group.tax_type_id);
-
-                }).always(function(){
-                    showSpinningProgress(btn);
-                });
-            }
-
-
-
-
-
-        });
-
 
 
         var bindEventHandlers=(function(){
             var detailRows = [];
 
-            $('#tbl_suppliers tbody').on( 'click', 'tr td.details-control', function () {
+            $('#tbl_tax tbody').on( 'click', 'tr td.details-control', function () {
                 var tr = $(this).closest('tr');
                 var row = dt.row( tr );
                 var idx = $.inArray( tr.attr('id'), detailRows );
@@ -465,7 +346,6 @@
 
             $('#btn_new').click(function(){
                 _txnMode="new";
-                clearFields($('#frm_supplier'))
                 showList(false);
             });
 
@@ -480,12 +360,12 @@
                 $('img[name="img_supplier"]').attr('src','assets/img/anonymous-icon.png');
             });
 
-            $('#tbl_suppliers tbody').on('click','button[name="edit_info"]',function(){
+            $('#tbl_tax tbody').on('click','button[name="edit_info"]',function(){
                 ///alert("ddd");
                 _txnMode="edit";
                 _selectRowObj=$(this).closest('tr');
                 var data=dt.row(_selectRowObj).data();
-                _selectedID=data.supplier_id;
+                _selectedID=data.tax_type_id;
 
                 $('input,textarea').each(function(){
                     var _elem=$(this);
@@ -494,7 +374,7 @@
                             _elem.val(value);
                         }
                     });
-                    $('#tax_group').select2('val',data.tax_type_id);
+
                 });
 
                 $('img[name="img_supplier"]').attr('src',data.photo_path);
@@ -502,74 +382,42 @@
 
             });
 
-            $('#tbl_suppliers tbody').on('click','button[name="remove_info"]',function(){
+            $('#tbl_tax tbody').on('click','button[name="remove_info"]',function(){
                 _selectRowObj=$(this).closest('tr');
                 var data=dt.row(_selectRowObj).data();
-                _selectedID=data.supplier_id;
+                _selectedID=data.tax_type_id;
 
                 $('#modal_confirmation').modal('show');
             });
 
             $('#btn_yes').click(function(){
-                removeSupplier().done(function(response){
+                removeTax().done(function(response){
                     showNotification(response);
                     dt.row(_selectRowObj).remove().draw();
                 });
             });
 
 
-
-            $('input[name="file_upload[]"]').change(function(event){
-                var _files=event.target.files;
-
-                $('#div_img_supplier').hide();
-                $('#div_img_loader').show();
-
-                var data=new FormData();
-                $.each(_files,function(key,value){
-                    data.append(key,value);
-                });
-
-                console.log(_files);
-
-                $.ajax({
-                    url : 'Suppliers/transaction/upload',
-                    type : "POST",
-                    data : data,
-                    cache : false,
-                    dataType : 'json',
-                    processData : false,
-                    contentType : false,
-                    success : function(response){
-                        //console.log(response);
-                        //alert(response.path);
-                        $('#div_img_loader').hide();
-                        $('#div_img_supplier').show();
-                        $('img[name="img_supplier"]').attr('src',response.path);
-                    }
-                });
-            });
-
             $('#btn_cancel').click(function(){
                 showList(true);
             });
 
             $('#btn_save').click(function() {
-                if(validateRequiredFields($('#frm_supplier'))) {
+                if(validateRequiredFields($('#frm_tax'))) {
                     if(_txnMode=="new"){
-                        createSupplier().done(function(response){
+                        createTax().done(function(response){
                             showNotification(response);
                             dt.row.add(response.row_added[0]).draw();
-                            clearFields($('#frm_supplier'))
+                            clearFields($('#frm_tax'));
 
                         }).always(function(){
                             showSpinningProgress($('#btn_save'));
                         });
                     }else{
-                        updateSupplier().done(function(response){
+                        updateTax().done(function(response){
                             showNotification(response);
                             dt.row(_selectRowObj).data(response.row_updated[0]).draw();
-                            clearFields($('#frm_supplier'))
+                            clearFields($('#frm_tax'))
                             showList(true);
                         }).always(function(){
                             showSpinningProgress($('#btn_save'));
@@ -613,51 +461,47 @@
 
 
 
-        var createSupplier=function() {
-            var _data=$('#frm_supplier').serializeArray();
-            _data.push({name : "photo_path" ,value : $('img[name="img_supplier"]').attr('src')});
-            _data.push({name : "tax_type_id" ,value : $('#tax_group').select2('val')});
+        var createTax=function() {
+            var _data=$('#frm_tax').serializeArray();
 
             return $.ajax({
                 "dataType":"json",
                 "type":"POST",
-                "url":"Suppliers/transaction/create",
+                "url":"Tax/transaction/create",
                 "data":_data,
                 "beforeSend": showSpinningProgress($('#btn_save'))
             });
         };
 
-        var updateSupplier=function() {
-            var _data=$('#frm_supplier').serializeArray();
-            _data.push({name : "photo_path" ,value : $('img[name="img_supplier"]').attr('src')});
-            _data.push({name : "tax_type_id" ,value : $('#tax_group').select2('val')});
-            _data.push({name : "supplier_id" ,value : _selectedID});
+        var updateTax=function() {
+            var _data=$('#frm_tax').serializeArray();
+            _data.push({name : "tax_type_id" ,value : _selectedID});
 
             return $.ajax({
                 "dataType":"json",
                 "type":"POST",
-                "url":"Suppliers/transaction/update",
+                "url":"Tax/transaction/update",
                 "data":_data,
                 "beforeSend": showSpinningProgress($('#btn_save'))
             });
         };
 
-        var removeSupplier=function() {
+        var removeTax=function() {
             return $.ajax({
                 "dataType":"json",
                 "type":"POST",
-                "url":"Suppliers/transaction/delete",
-                "data":{supplier_id : _selectedID}
+                "url":"Tax/transaction/delete",
+                "data":{tax_type_id : _selectedID}
             });
         };
 
         var showList=function(b){
             if(b){
-                $('#div_supplier_list').show();
-                $('#div_supplier_fields').hide();
+                $('#div_tax_list').show();
+                $('#div_tax_fields').hide();
             }else{
-                $('#div_supplier_list').hide();
-                $('#div_supplier_fields').show();
+                $('#div_tax_list').hide();
+                $('#div_tax_fields').show();
             }
         };
 
@@ -676,9 +520,9 @@
 
         var clearFields=function(f){
             $('input,textarea',f).val('');
-            $(f).find('select').select2('val',null);
             $(f).find('input:first').focus();
         };
+
 
         function format ( d ) {
             // `d` is the original data object for the row

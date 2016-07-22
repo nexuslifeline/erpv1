@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'jdevsolution.ipagemysql.com',
-	'username' => 'jdev',
-	'password' => '!jdev123456',
+	'hostname' => 'localhost',
+	'username' => 'root',
+	'password' => 'bss',
 	'database' => 'erp',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
