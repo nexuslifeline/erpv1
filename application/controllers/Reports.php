@@ -26,8 +26,8 @@ class Reports extends CORE_Controller {
                 $dl=0;
                 $pdfFilePath = $filter_value.".pdf"; //generate filename base on id
 
-                $this->load->library('m_pdf');
-                $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                $this->load->library('M_pdf');
+                $pdf = $this->M_pdf->load(); //pass the instance of the mpdf class
 
                 $info=$m_purchases->get_list(
                     $filter_value,
