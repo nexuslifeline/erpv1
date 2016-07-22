@@ -1,3 +1,5 @@
+<?php error_reporting(E_ALL); ini_set('display_errors', 1); ?>
+
 <div>
 <center><table width="95%" cellpadding="5" style="font-family: tahoma;font-size: 11">
     <tr>

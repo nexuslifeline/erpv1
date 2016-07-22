@@ -820,6 +820,20 @@ $(document).ready(function(){
         });
 
 
+        $('#tbl_purchases tbody').on('click','#btn_email',function(){
+            _selectRowObj=$(this).parents('tr').prev();
+            var d=dt.row(_selectRowObj).data();
+
+            $.ajax({
+                "dataType":"json",
+                "type":"POST",
+                "url":"Email/send/po/"+ d.purchase_order_id,
+                "data": {email:$(this).data('supplier-email')}
+            }).done(function(response){
+                showNotification(response);
+            });
+        });
+
         $('#btn_new').click(function(){
             _txnMode="new";
             //$('.toggle-fullscreen').click();

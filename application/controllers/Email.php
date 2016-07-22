@@ -4,9 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Email extends CORE_Controller {
     function __construct() {
         parent::__construct('');
-        //$this->validate_session();
-        //$this->load->model('Purchases_model');
-        //$this->load->model('Purchase_items_model');
+        $this->validate_session();
+        $this->load->model('Purchases_model');
+        $this->load->model('Purchase_items_model');
     }
 
     public function index() {
@@ -19,7 +19,7 @@ class Email extends CORE_Controller {
     function send($layout=null,$filter_value=null){
         switch($layout){
             case 'po' :
-                /*$m_purchases=$this->Purchases_model;
+                $m_purchases=$this->Purchases_model;
                 $m_po_items=$this->Purchase_items_model;
 
 
@@ -49,7 +49,7 @@ class Email extends CORE_Controller {
                 );
 
                 $content=$this->load->view('template/po_content',$data,TRUE); //load the template
-*/
+
 
 
 
@@ -60,14 +60,17 @@ class Email extends CORE_Controller {
                 //$this->email->cc('another@another-example.com');
                 //$this->email->bcc('them@their-example.com');
 
-                $this->email->subject('Email Test');
-                $this->email->message('Testing the email class.');
+                $this->email->subject('Purchase Order : '.$filter_value);
+                $this->email->message($content);
 
                 $this->email->send();
 
 
                 //$pdf->WriteHTML($content);
-                echo "success";
+                $response['title']='Sent';
+                $response['stat']='success';
+                $response['msg']='Email successfully sent.';
+                echo json_encode($response);
 
 
                 break;
