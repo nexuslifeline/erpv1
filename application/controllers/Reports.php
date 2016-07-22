@@ -29,13 +29,17 @@ class Reports extends CORE_Controller {
                 $this->load->library('m_pdf');
                 $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
 
-                $data['purchase_info']=$m_purchases->get_list(
+                $info=$m_purchases->get_list(
                     $filter_value,
                     'purchase_order.*,suppliers.supplier_name,suppliers.address,suppliers.email_address,suppliers.landline',
                     array(
                         array('suppliers','suppliers.supplier_id=purchase_order.supplier_id','left')
                     )
                 )[0];
+
+
+                $data['purchase_info']=$info[0];
+
                 $data['po_items']=$m_po_items->get_list(
                     array('purchase_order_id'=>$filter_value),
                     'purchase_order_items.*,products.product_desc,units.unit_name',
