@@ -182,15 +182,13 @@
                                                         <label class="col-md-2 control-label"> *Tax Type :</label>
                                                         <div class="col-md-9">
                                                                 <select name="" id="tax_group" data-error-msg="Tax Type is required." required>
-                                                                    <option value="0">[ Create Tax Type Group ]</option>
+                                                                    <option value="0">[ Create Tax Type ]</option>
                                                                     <?php foreach($tax_type as $group){ ?>
                                                                         <option value="<?php echo $group->tax_type_id; ?>"><?php echo $group->tax_type; ?></option>
                                                                     <?php } ?>
                                                                 </select>
                                                         </div>
                                                     </div>
-
-                                                    <span class="help-block m-b-none">Required. Please select the correct user group of the user.</span>
 
 
                                                     <div class="form-group">
@@ -276,7 +274,7 @@
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-envelope-o"></i>
                                                 </span>
-                                        <input type="text" name="tax_name" class="form-control" placeholder="Tax group" data-error-msg="Tax name is required." required>
+                                        <input type="text" name="tax_type" class="form-control" placeholder="Tax group" data-error-msg="Tax name is required." required>
                                     </div>
                                 </div>
 
@@ -372,7 +370,7 @@
 
 
             _taxTypeGroup=$("#tax_group").select2({
-                placeholder: "Please select user group",
+                placeholder: "Please select type of tax",
                 allowClear: true
             });
 
@@ -411,7 +409,7 @@
                 $.ajax({
                     "dataType":"json",
                     "type":"POST",
-                    "url":"Tax_groups/transaction/create",
+                    "url":"Tax/transaction/create",
                     "data":data,
                     "beforeSend" : function(){
                         showSpinningProgress(btn);

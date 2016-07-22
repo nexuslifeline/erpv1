@@ -8,7 +8,7 @@ class Tax extends CORE_Controller {
         $this->validate_session();
         $this->load->model('Suppliers_model');
         $this->load->model('Supplier_photos_model');
-        $this->load->model('Tax_model');
+        $this->load->model('Tax_types_model');
     }
 
     public function index() {
@@ -18,7 +18,7 @@ class Tax extends CORE_Controller {
         $data['_side_bar_navigation']=$this->load->view('template/elements/side_bar_navigation','',TRUE);
         $data['_top_navigation']=$this->load->view('template/elements/top_navigation','',TRUE);
         $data['title']='Supplier Management';
-        $data['tax_type']=$this->Tax_model->get_list();
+        $data['tax_type']=$this->Tax_types_model->get_list();
         $this->load->view('tax_view',$data);
     }
 
@@ -26,7 +26,7 @@ class Tax extends CORE_Controller {
     function transaction($txn=null) {
         switch($txn) {
             case 'list':
-                $m_tax=$this->Tax_model;
+                $m_tax=$this->Tax_types_model;
                 $response['data']=$m_tax->get_list(
                     array('tax_types.is_deleted'=>FALSE)
                 );
@@ -35,7 +35,7 @@ class Tax extends CORE_Controller {
                 break;
 
             case 'create':
-                $m_tax=$this->Tax_model;
+                $m_tax=$this->Tax_types_model;
 
                 $m_tax->tax_type=$this->input->post('tax_type',TRUE);
                 $m_tax->tax_rate=$this->input->post('tax_rate',TRUE);
@@ -52,7 +52,7 @@ class Tax extends CORE_Controller {
                 break;
 
             case 'delete':
-                $m_tax=$this->Tax_model;
+                $m_tax=$this->Tax_types_model;
                 $tax_type_id=$this->input->post('tax_type_id',TRUE);
 
                 $m_tax->is_deleted=1;
@@ -67,7 +67,7 @@ class Tax extends CORE_Controller {
                 break;
 
             case 'update':
-                $m_tax=$this->Tax_model;
+                $m_tax=$this->Tax_types_model;
                 $tax_type_id=$this->input->post('tax_type_id',TRUE);
                 $m_tax->tax_type=$this->input->post('tax_type',TRUE);
                 $m_tax->tax_rate=$this->input->post('tax_rate',TRUE);
