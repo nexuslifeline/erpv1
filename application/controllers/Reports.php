@@ -37,7 +37,6 @@ class Reports extends CORE_Controller {
                     )
                 );
 
-
                 $data['purchase_info']=$info[0];
 
                 $data['po_items']=$m_po_items->get_list(
