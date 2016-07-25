@@ -260,7 +260,7 @@
 
                                                        <div class="col-md-7">
                                                            <div class="input-group date">
-                                                               <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input id="txt_bdate" name="user_bdate" type="text" class="form-control" value="07/07/2016">
+                                                               <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input id="txt_bdate" name="user_bdate" type="text" class="form-control" value="<?php echo date("m/d/Y"); ?>">
                                                            </div>
 
                                                        </div>

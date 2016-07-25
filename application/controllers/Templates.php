@@ -7,6 +7,8 @@ class Templates extends CORE_Controller {
         $this->validate_session();
         $this->load->model('Purchases_model');
         $this->load->model('Purchase_items_model');
+        $this->load->model('Delivery_invoice_model');
+        $this->load->model('Delivery_invoice_item_model');
         $this->load->model('Company_model');
     }
 
@@ -17,7 +19,7 @@ class Templates extends CORE_Controller {
 
     function layout($layout=null,$filter_value=null,$type=null){
         switch($layout){
-            case 'po':
+            case 'po': //purchase order
                 $m_purchases=$this->Purchases_model;
                 $m_po_items=$this->Purchase_items_model;
                 $m_company=$this->Company_model;
@@ -50,6 +52,41 @@ class Templates extends CORE_Controller {
 
 
                 break;
+            //****************************************************
+            case 'dr': //delivery invoice
+                $m_delivery=$this->Delivery_invoice_model;
+                $m_dr_items=$this->Delivery_invoice_item_model;
+                $m_company=$this->Company_model;
+
+                $info=$m_delivery->get_list(
+                    $filter_value,
+                    'delivery_invoice.*,CONCAT_WS(" ",delivery_invoice.terms,delivery_invoice.duration)as term_description,suppliers.supplier_name,suppliers.address,suppliers.email_address,suppliers.landline',
+                    array(
+                        array('suppliers','suppliers.supplier_id=delivery_invoice.supplier_id','left')
+                    )
+                );
+
+                $company=$m_company->get_list();
+
+                $data['delivery_info']=$info[0];
+                $data['company_info']=$company[0];
+                $data['dr_items']=$m_dr_items->get_list(
+                    array('dr_invoice_id'=>$filter_value),
+                    'delivery_invoice_items.*,products.product_desc,units.unit_name',
+                    array(
+                        array('products','products.product_id=delivery_invoice_items.product_id','left'),
+                        array('units','units.unit_id=delivery_invoice_items.unit_id','left')
+                    )
+                );
+
+
+                echo $this->load->view('template/dr_content',$data,TRUE);
+                echo $this->load->view('template/dr_content_menus',$data,TRUE);
+
+
+
+                break;
+
         }
     }
 

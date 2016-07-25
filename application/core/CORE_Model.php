@@ -71,9 +71,9 @@ class CORE_model extends CI_Model
 
 
 
-    function get_list($where_filter=null,$select_list=null,$join_array=null,$order_by=null){
+    function get_list($where_filter=null,$select_list=null,$join_array=null,$order_by=null,$group_by=null,$auto_select_escape=TRUE){
 
-        $this->db->select(($select_list===null?$this->table.'.*':(is_array($select_list)?join(',',$select_list):$select_list)));
+        $this->db->select(($select_list===null?$this->table.'.*':(is_array($select_list)?join(',',$select_list):$select_list)),$auto_select_escape);
         $this->db->from($this->table);
 
         //left joins
