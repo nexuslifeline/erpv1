@@ -29,10 +29,11 @@ class Suppliers extends CORE_Controller {
                 $m_suppliers=$this->Suppliers_model;
                 $response['data']=$m_suppliers->get_list(
                         array('suppliers.is_deleted'=>FALSE),
-                        'suppliers.*,tax_types.tax_type,tax_types.tax_rate',
+                        'suppliers.*,tax_types.tax_type,supplier_photos.photo_path,tax_types.tax_rate',
 
                         array(
-                            array('tax_types','tax_types.tax_type_id=suppliers.tax_type_id','left')
+                            array('tax_types','tax_types.tax_type_id=suppliers.tax_type_id','left'),
+                            array('supplier_photos','supplier_photos.supplier_id=suppliers.supplier_id','left')
 
                         )
 

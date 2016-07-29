@@ -31,19 +31,7 @@ class Products extends CORE_Controller
         switch ($txn) {
             case 'list':
                 $m_products = $this->Products_model;
-                $response['data'] = $m_products->get_list(
-
-                    array('products.is_deleted'=>FALSE),
-
-                    'products.product_code,products.product_id,products.product_desc,products.category_id,products.unit_id,categories.category_name,units.unit_name',
-
-                    array(
-                        array('categories','categories.category_id=products.category_id','left'),
-                        array('units','units.unit_id=products.unit_id','left')
-                    )
-
-
-                );
+                $response['data']=$this->response_rows(array('products.is_deleted'=>FALSE));
                 echo json_encode($response);
                 break;
 
@@ -54,19 +42,22 @@ class Products extends CORE_Controller
                 $m_products->product_desc = $this->input->post('product_desc', TRUE);
                 $m_products->product_desc1 = $this->input->post('product_desc1', TRUE);
                 $m_products->category_id = $this->input->post('category_id', TRUE);
-                $m_products->product_dept = $this->input->post('product_dept', TRUE);
-                $m_products->unit_id = $this->input->post('unit_id', TRUE);
-                $m_products->product_vat = $this->input->post('product_vat', TRUE);
-                $m_products->equivalent_points = $this->input->post('equivalent_points', TRUE);
-                $m_products->product_warn = $this->input->post('product_warn', TRUE);
-                $m_products->product_ideal = $this->input->post('product_ideal', TRUE);
 
+                $m_products->unit_id = $this->input->post('unit_id', TRUE);
+                $m_products->is_inventory = $this->input->post('inventory',TRUE);
+                $m_products->is_tax_exempt =$this->input->post('tax_exempt',TRUE)?1:0;
+
+                $m_products->equivalent_points = $this->get_numeric_value($this->input->post('equivalent_points', TRUE));
+                $m_products->product_warn =$this->get_numeric_value( $this->input->post('product_warn', TRUE));
+                $m_products->product_ideal =$this->get_numeric_value( $this->input->post('product_ideal', TRUE));
                 $m_products->markup_percent = $this->input->post('markup_percent', TRUE);
-                $m_products->sale_price = $this->input->post('sale_price', TRUE);
-                $m_products->whole_sale = $this->input->post('whole_sale', TRUE);
-                $m_products->retailer_price = $this->input->post('retailer_price', TRUE);
-                $m_products->special_disc = $this->input->post('special_disc', TRUE);
-                $m_products->valued_customer = $this->input->post('valued_customer', TRUE);
+                $m_products->sale_price =$this->get_numeric_value($this->input->post('sale_price', TRUE));
+                $m_products->purchase_cost =$this->get_numeric_value($this->input->post('purchase_cost', TRUE));
+                $m_products->whole_sale = $this->get_numeric_value($this->input->post('whole_sale', TRUE));
+                $m_products->retailer_price =$this->get_numeric_value( $this->input->post('retailer_price', TRUE));
+                $m_products->special_disc = $this->get_numeric_value($this->input->post('special_disc', TRUE));
+                $m_products->valued_customer =$this->get_numeric_value( $this->input->post('valued_customer', TRUE));
+
                 $m_products->save();
 
                 $product_id = $m_products->last_insert_id();
@@ -75,17 +66,7 @@ class Products extends CORE_Controller
                 $response['stat'] = 'success';
                 $response['msg'] = 'product information successfully created.';
 
-                $response['row_added']= $m_products->get_list();
-
-                $response['row_added'] = $m_products->get_list(
-
-                    $product_id,
-                    'products.product_code,products.product_desc,products.category_id,products.unit_id,categories.category_name,units.unit_name',
-
-                    array(
-                        array('categories','categories.category_id=products.category_id','left'),
-                        array('units','units.unit_id=products.unit_id','left')
-                    ));
+                $response['row_added'] = $this->response_rows($product_id);
                 echo json_encode($response);
 
                 break;
@@ -99,7 +80,7 @@ class Products extends CORE_Controller
                 if($m_products->modify($product_id)){
                     $response['title']='Success!';
                     $response['stat']='success';
-                    $response['msg']='product information successfully deleted.';
+                    $response['msg']='Product information successfully deleted.';
 
                     echo json_encode($response);
                 }
@@ -114,38 +95,56 @@ class Products extends CORE_Controller
                 $m_products->product_desc = $this->input->post('product_desc', TRUE);
                 $m_products->product_desc1 = $this->input->post('product_desc1', TRUE);
                 $m_products->category_id = $this->input->post('category_id', TRUE);
-                $m_products->product_dept = $this->input->post('product_dept', TRUE);
-                $m_products->unit_id = $this->input->post('unit_id', TRUE);
-                $m_products->product_vat = $this->input->post('product_vat', TRUE);
-                $m_products->equivalent_points = $this->input->post('equivalent_points', TRUE);
-                $m_products->product_warn = $this->input->post('product_warn', TRUE);
-                $m_products->product_ideal = $this->input->post('product_ideal', TRUE);
 
+                $m_products->unit_id = $this->input->post('unit_id', TRUE);
+                $m_products->is_inventory = $this->input->post('inventory',TRUE);
+                $m_products->is_tax_exempt =$this->input->post('tax_exempt',TRUE)?1:0;
+
+
+                $m_products->equivalent_points = $this->get_numeric_value($this->input->post('equivalent_points', TRUE));
+                $m_products->product_warn =$this->get_numeric_value( $this->input->post('product_warn', TRUE));
+                $m_products->product_ideal =$this->get_numeric_value( $this->input->post('product_ideal', TRUE));
                 $m_products->markup_percent = $this->input->post('markup_percent', TRUE);
-                $m_products->sale_price = $this->input->post('sale_price', TRUE);
-                $m_products->whole_sale = $this->input->post('whole_sale', TRUE);
-                $m_products->retailer_price = $this->input->post('retailer_price', TRUE);
-                $m_products->special_disc = $this->input->post('special_disc', TRUE);
-                $m_products->valued_customer = $this->input->post('valued_customer', TRUE);
+                $m_products->sale_price =$this->get_numeric_value($this->input->post('sale_price', TRUE));
+                $m_products->purchase_cost =$this->get_numeric_value($this->input->post('purchase_cost', TRUE));
+                $m_products->whole_sale = $this->get_numeric_value($this->input->post('whole_sale', TRUE));
+                $m_products->retailer_price =$this->get_numeric_value( $this->input->post('retailer_price', TRUE));
+                $m_products->special_disc = $this->get_numeric_value($this->input->post('special_disc', TRUE));
+                $m_products->valued_customer =$this->get_numeric_value( $this->input->post('valued_customer', TRUE));
 
                 $m_products->modify($product_id);
 
                 $response['title']=$product_id;
                 $response['stat']='success';
-                $response['msg']='product information successfully updated.';
-                $response['row_updated']=$m_products->get_list(
-
-                    $product_id,
-
-                    'products.product_code,products.product_id,products.product_desc,products.category_id,products.unit_id,categories.category_name,units.unit_name',
-
-                    array(
-                        array('categories','categories.category_id=products.category_id','left'),
-                        array('units','units.unit_id=products.unit_id','left')
-                    ));
+                $response['msg']='Product information successfully updated.';
+                $response['row_updated']=$this->response_rows($product_id);
                 echo json_encode($response);
 
                 break;
         }
     }
+
+
+
+
+
+    function response_rows($filter){
+        return $this->Products_model->get_list(
+            $filter,
+
+            'products.*,categories.category_name,units.unit_name,0 as on_hand',
+
+            array(
+                array('categories','categories.category_id=products.category_id','left'),
+                array('units','units.unit_id=products.unit_id','left')
+            )
+        );
+    }
+
+
+
+
+
+
+
 }

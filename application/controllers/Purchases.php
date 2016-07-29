@@ -13,6 +13,7 @@ class Purchases extends CORE_Controller
         $this->load->model('Tax_types_model');
         $this->load->model('Products_model');
         $this->load->model('Purchase_items_model');
+        $this->load->model('Delivery_invoice_model');
 
     }
 
@@ -45,7 +46,7 @@ class Purchases extends CORE_Controller
                            'products.product_code',
                            'products.product_desc',
                            'products.product_desc1',
-                            'products.is_tax_excempt',
+                            'products.is_tax_exempt',
                            'FORMAT(products.sale_price,2)as sale_price',
                             'FORMAT(products.purchase_cost,2)as purchase_cost',
                            'products.unit_id',
@@ -70,25 +71,39 @@ class Purchases extends CORE_Controller
             switch ($txn){
                 case 'list':  //this returns JSON of Purchase Order to be rendered on Datatable
                     $m_purchases=$this->Purchases_model;
-                    $response['data']=$m_purchases->get_list(
-                            $id_filter,
-                            array(
-                                'purchase_order.*',
-                                'CONCAT_WS(" ",CAST(purchase_order.terms AS CHAR),purchase_order.duration)as term_description',
-                                'suppliers.supplier_name',
-                                'tax_types.tax_type',
-                                'approval_status.approval_status',
-                                'order_status.order_status'
-                            ),
-                            array(
-                                array('suppliers','suppliers.supplier_id=purchase_order.supplier_id','left'),
-                                array('tax_types','tax_types.tax_type_id=purchase_order.tax_type_id','left'),
-                                array('approval_status','approval_status.approval_id=purchase_order.approval_id','left'),
-                                array('order_status','order_status.order_status_id=purchase_order.order_status_id','left')
-                            )
+                    $response['data']=$this->row_response(
+                        array(
+                            'purchase_order.is_deleted'=>FALSE,
+                            'purchase_order.is_active'=>TRUE
+                        )
                     );
+                    echo json_encode($response);
+                    break;
 
 
+                case 'open':  //this returns PO that are already approved
+                    $m_purchases=$this->Purchases_model;
+                    //$where_filter=null,$select_list=null,$join_array=null,$order_by=null,$group_by=null,$auto_select_escape=TRUE,$custom_where_filter=null
+                    $response['data']= $m_purchases->get_list(
+
+                        'purchase_order.is_deleted=FALSE AND purchase_order.is_active=TRUE AND (purchase_order.order_status_id=1 OR purchase_order.order_status_id=3)',
+
+                        array(
+                            'purchase_order.*',
+                            'CONCAT_WS(" ",CAST(purchase_order.terms AS CHAR),purchase_order.duration)as term_description',
+                            'suppliers.supplier_name',
+                            'tax_types.tax_type',
+                            'approval_status.approval_status',
+                            'order_status.order_status'
+                        ),
+                        array(
+                            array('suppliers','suppliers.supplier_id=purchase_order.supplier_id','left'),
+                            array('tax_types','tax_types.tax_type_id=purchase_order.tax_type_id','left'),
+                            array('approval_status','approval_status.approval_id=purchase_order.approval_id','left'),
+                            array('order_status','order_status.order_status_id=purchase_order.order_status_id','left')
+                        )
+
+                    );
                     echo json_encode($response);
                     break;
 
@@ -107,7 +122,7 @@ class Purchases extends CORE_Controller
                         ),
                         array(
                             array('products','products.product_id=purchase_order_items.product_id','left'),
-                            array('units','units.unit_id=units.unit_id','left')
+                            array('units','units.unit_id=purchase_order_items.unit_id','left')
                         ),
                         'purchase_order_items.po_item_id DESC'
                     );
@@ -115,7 +130,12 @@ class Purchases extends CORE_Controller
 
                     echo json_encode($response);
                     break;
+                case 'item-balance':
+                    $m_items=$this->Purchase_items_model;
+                    $response['data']=$m_items->get_products_with_balance_qty($id_filter);
+                    echo json_encode($response);
 
+                    break;
                 case 'create':
                     $m_purchases=$this->Purchases_model;
 
@@ -132,7 +152,7 @@ class Purchases extends CORE_Controller
                     $m_purchases->begin();
 
                     $m_purchases->set('date_created','NOW()'); //treat NOW() as function and not string
-                    $m_purchases->po_no=$this->input->post('po_no',TRUE);
+                    //$m_purchases->po_no=$this->input->post('po_no',TRUE);
                     $m_purchases->terms=$this->input->post('terms',TRUE);
                     $m_purchases->duration=$this->input->post('duration',TRUE);
                     $m_purchases->deliver_to_address=$this->input->post('deliver_to_address',TRUE);
@@ -179,6 +199,11 @@ class Purchases extends CORE_Controller
                         $m_po_items->save();
                     }
 
+                    //update po number base on formatted last insert id
+                    $m_purchases->po_no='PO-'.date('Ymd').'-'.$po_id;
+                    $m_purchases->modify($po_id);
+
+
                     $m_purchases->commit();
 
 
@@ -188,23 +213,7 @@ class Purchases extends CORE_Controller
                         $response['stat'] = 'success';
                         $response['msg'] = 'Purchase order successfully created.';
 
-                        $response['row_added'] = $response['data']=$m_purchases->get_list(
-                            $po_id,
-                            array(
-                                'purchase_order.*',
-                                'CONCAT_WS(" ",CAST(purchase_order.terms AS CHAR),purchase_order.duration)as term_description',
-                                'suppliers.supplier_name',
-                                'tax_types.tax_type',
-                                'approval_status.approval_status',
-                                'order_status.order_status'
-                            ),
-                            array(
-                                array('suppliers','suppliers.supplier_id=purchase_order.supplier_id','left'),
-                                array('tax_types','tax_types.tax_type_id=purchase_order.tax_type_id','left'),
-                                array('approval_status','approval_status.approval_id=purchase_order.approval_id','left'),
-                                array('order_status','order_status.order_status_id=purchase_order.order_status_id','left')
-                            )
-                        );
+                        $response['row_added'] = $this->row_response($po_id);
 
                         echo json_encode($response);
                     }
@@ -218,7 +227,7 @@ class Purchases extends CORE_Controller
 
                     $m_purchases->begin();
                     $m_purchases->set('date_created','NOW()'); //treat NOW() as function and not string
-                    $m_purchases->po_no=$this->input->post('po_no',TRUE);
+                    //$m_purchases->po_no=$this->input->post('po_no',TRUE);
                     $m_purchases->terms=$this->input->post('terms',TRUE);
                     $m_purchases->duration=$this->input->post('duration',TRUE);
                     $m_purchases->deliver_to_address=$this->input->post('deliver_to_address',TRUE);
@@ -274,30 +283,69 @@ class Purchases extends CORE_Controller
                         $response['stat'] = 'success';
                         $response['msg'] = 'Purchase order successfully updated.';
 
-                        $response['row_updated'] = $m_purchases->get_list(
-                            $po_id,
-                            array(
-                                'purchase_order.*',
-                                'CONCAT_WS(" ",CAST(purchase_order.terms AS CHAR),purchase_order.duration)as term_description',
-                                'suppliers.supplier_name',
-                                'tax_types.tax_type',
-                                'approval_status.approval_status',
-                                'order_status.order_status'
-                            ),
-                            array(
-                                array('suppliers','suppliers.supplier_id=purchase_order.supplier_id','left'),
-                                array('tax_types','tax_types.tax_type_id=purchase_order.tax_type_id','left'),
-                                array('approval_status','approval_status.approval_id=purchase_order.approval_id','left'),
-                                array('order_status','order_status.order_status_id=purchase_order.order_status_id','left')
-                            )
-                        );
+                        $response['row_updated'] = $this->row_response($po_id);
 
                         echo json_encode($response);
                     }
 
 
                     break;
+                case 'delete':
+                    $m_purchases=$this->Purchases_model;
+                    $purchase_order_id=$this->input->post('purchase_order_id',TRUE);
+
+                    //validations
+                    $m_delivery=$this->Delivery_invoice_model;
+                    if(count($m_delivery->get_list(array('delivery_invoice.purchase_order_id'=>$purchase_order_id,'delivery_invoice.is_deleted'=>FALSE,'delivery_invoice.is_active'=>TRUE)))>0){
+                        $response['title']='Error!';
+                        $response['stat']='error';
+                        $response['msg']='Sorry, you cannot delete purchase order that is already been received.';
+                        echo json_encode($response);
+                        exit;
+                    }
+
+
+
+
+
+                    $m_purchases->is_deleted=1;
+                    if($m_purchases->modify($purchase_order_id)){
+                        $response['title']='Success!';
+                        $response['stat']='success';
+                        $response['msg']='Purchase order successfully deleted.';
+                        echo json_encode($response);
+                    }
+                    break;
             }
 
+
+
+
+
+
+
+
+    }
+
+
+
+    function row_response($filter_value){
+        return $this->Purchases_model->get_list(
+            $filter_value,
+            array(
+                'purchase_order.*',
+                'CONCAT_WS(" ",CAST(purchase_order.terms AS CHAR),purchase_order.duration)as term_description',
+                'suppliers.supplier_name',
+                'tax_types.tax_type',
+                'approval_status.approval_status',
+                'order_status.order_status'
+            ),
+            array(
+                array('suppliers','suppliers.supplier_id=purchase_order.supplier_id','left'),
+                array('tax_types','tax_types.tax_type_id=purchase_order.tax_type_id','left'),
+                array('approval_status','approval_status.approval_id=purchase_order.approval_id','left'),
+                array('order_status','order_status.order_status_id=purchase_order.order_status_id','left')
+            )
+        );
     }
 }

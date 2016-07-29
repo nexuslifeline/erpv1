@@ -24,6 +24,10 @@
 
     <link href="assets/plugins/select2/select2.min.css" rel="stylesheet">
 
+
+    <link type="text/css" href="assets/plugins/iCheck/skins/minimal/blue.css" rel="stylesheet">              <!-- iCheck -->
+    <link type="text/css" href="assets/plugins/iCheck/skins/minimal/_all.css" rel="stylesheet">                   <!-- Custom Checkboxes / iCheck -->
+
     <style>
 
         .toolbar{
@@ -60,11 +64,16 @@
             to { -webkit-transform: rotate(360deg); }
         }
 
+        .numeric{
+            text-align: right;
+            width: 60%;
+        }
+
     </style>
 
 </head>
 
-<body class="animated-content">
+<body class="animated-content" style="font-family: tahoma;">
 
 <?php echo $_top_navigation; ?>
 
@@ -94,10 +103,11 @@
                                                     <thead>
                                                     <tr>
                                                         <th></th>
-                                                        <th>Product Code</th>
-                                                        <th>Description 1</th>
+                                                        <th>PLU</th>
+                                                        <th>Description</th>
                                                         <th>Category</th>
                                                         <th>Unit</th>
+                                                        <th style="text-align:right;">On hand</th>
                                                         <th><center>Action</center></th>
                                                     </tr>
                                                     </thead>
@@ -118,14 +128,10 @@
                                             </div>
 
                                             <div class="panel-body">
-                                                <div class="">
-                                                <h3>General</h3>
-                                                <hr/>
-                                                &nbsp;
-                                                </div>
+                                                <br />
                                                 <form id="frm_product" role="form" class="form-horizontal row-border">
                                                     <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">Product Code :</label>
+                                                        <label class="col-md-2 col-md-offset-1 control-label">PLU :</label>
                                                         <div class="col-md-7">
                                                             <div class="input-group">
                                                                                     <span class="input-group-addon">
@@ -169,20 +175,7 @@
 
                                                     </div>
 
-                                                    <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">* Department :</label>
-                                                        <div class="col-md-7">
-                                                            <select name="product_dept" id="" class="form-control">
-                                                                <option value="">Select Department</option>
-                                                                <?php
-                                                                foreach($product_dept as $row)
-                                                                {
-                                                                    echo '<option value="'.$row->department_name.'">'.$row->department_name.'</option>';
-                                                                }
-                                                                ?>
-                                                            </select>
-                                                        </div>
-                                                    </div>
+
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Unit :</label>
@@ -204,92 +197,89 @@
 
                                                     <div class="form-group">
                                                         <div class="col-md-7 col-md-offset-3">
-                                                            <input type="checkbox" name="product_vat"> <b>Vat Exempt</b>
+
+                                                            <label><input type="checkbox" name="tax_exempt" value="1"  checked>Tax Exempt</label>
                                                         </div>
+
+
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Equivalent Points :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="equivalent_points" class="form-control">
+                                                            <input type="text" name="equivalent_points" class="form-control numeric">
                                                         </div>
                                                     </div>
 
-                                                    <h3>Inventory</h3>
-                                                    <hr/>
-                                                    &nbsp;
+
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Warn Qty :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="product_warn" class="form-control">
+                                                            <input type="text" name="product_warn" class="form-control numeric">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Ideal Qty :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="product_ideal" class="form-control">
+                                                            <input type="text" name="product_ideal" class="form-control numeric">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <div class="col-md-7 col-md-offset-3">
-                                                            <input type="radio" name="product_radio"> <b>Inventory</b>
-                                                            <input type="radio" name="product_radio" style="margin-left: 10px;"> <b>Non-Inventory</b>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            <label><input type="radio" name="inventory" value="1" checked>Inventory Item</label>
+                                                            <label><input type="radio" name="inventory" value="0">Non-inventory Item</label>
                                                         </div>
                                                     </div>
-
-                                                    <h3>Pricing</h3>
-                                                    <hr/>
-                                                    &nbsp;
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Purchase Cost :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="purchase_cost" class="form-control">
+                                                            <input type="text" name="purchase_cost" class="form-control numeric">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Markup Percent :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="markup_percent" class="form-control">
+                                                            <input type="text" name="markup_percent" class="form-control  numeric">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Sale Price :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="sale_price" class="form-control">
+                                                            <input type="text" name="sale_price" class="form-control  numeric">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Whole Sale Price :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="whole_sale" class="form-control">
+                                                            <input type="text" name="whole_sale" class="form-control  numeric">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Retailer Price :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="retailer_price" class="form-control">
+                                                            <input type="text" name="retailer_price" class="form-control  numeric">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Special Discount Price :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="special_disc" class="form-control">
+                                                            <input type="text" name="special_disc" class="form-control  numeric">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Valued Customer Price :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="valued_customer" class="form-control">
+                                                            <input type="text" name="valued_customer" class="form-control  numeric">
                                                         </div>
                                                     </div>
                                                     <br /><br />
@@ -432,15 +422,19 @@
 <?php echo $_switcher_settings; ?>
 <?php echo $_def_js_files; ?>
 
-<script src="assets/plugins/spinner/dist/spin.min.js"></script>
-<script src="assets/plugins/spinner/dist/ladda.min.js"></script>
-
 
 <script type="text/javascript" src="assets/plugins/datatables/jquery.dataTables.js"></script>
 <script type="text/javascript" src="assets/plugins/datatables/dataTables.bootstrap.js"></script>
 
 <!-- Select2 -->
 <script src="assets/plugins/select2/select2.full.min.js"></script>
+
+
+<!-- numeric formatter -->
+<script src="assets/plugins/formatter/autoNumeric.js" type="text/javascript"></script>
+<script src="assets/plugins/formatter/accounting.js" type="text/javascript"></script>
+
+
 
 <script>
 
@@ -465,7 +459,13 @@ $(document).ready(function(){
                 { targets:[3],data: "category_name" },
                 { targets:[4],data: "unit_name" },
                 {
-                    targets:[5],
+                    targets:[5],data: "on_hand",
+                    render: function (data, type, full, meta) {
+                        return accounting.formatNumber(data,2);
+                    }
+                },
+                {
+                    targets:[6],
                     render: function (data, type, full, meta){
                         var btn_edit='<button class="btn btn-default btn-sm" name="edit_info"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i> </button>';
                         var btn_trash='<button class="btn btn-default btn-sm" name="remove_info" style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>';
@@ -473,7 +473,13 @@ $(document).ready(function(){
                         return '<center>'+btn_edit+btn_trash+'</center>';
                     }
                 }
-            ]
+            ],
+            "rowCallback":function( row, data, index ){
+
+                $(row).find('td').eq(5).attr({
+                    "align": "right"
+                });
+            }
         });
 
         _product_category=$("#product_category").select2({
@@ -514,11 +520,11 @@ $(document).ready(function(){
 
         });
 
-
+        $('.numeric').autoNumeric('init');
 
         var createToolBarButton=function(){
-            var _btnNew='<button class="btn btn-primary"  id="btn_new" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;" data-toggle="modal" data-target="" data-placement="left" title="New product" >'+
-                '<i class="fa fa-users"></i> New product</button>';
+            var _btnNew='<button class="btn btn-primary"  id="btn_new" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;" data-toggle="modal" data-target="" data-placement="left" title="Create New product" >'+
+                '<i class="fa fa-file"></i> Create New product</button>';
             $("div.toolbar").html(_btnNew);
         }();
     }();
@@ -621,6 +627,13 @@ $(document).ready(function(){
             var data=dt.row(_selectRowObj).data();
             _selectedID=data.product_id;
 
+            $('#product_category').select2('val',data.category_id);
+            $('#product_unit').select2('val',data.unit_id);
+
+           // alert($('input[name="tax_exempt"]').length);
+            //$('input[name="tax_exempt"]').val(0);
+            //$('input[name="inventory"]').val(data.is_inventory);
+
             $('input,textarea').each(function(){
                 var _elem=$(this);
                 $.each(data,function(name,value){
@@ -628,10 +641,10 @@ $(document).ready(function(){
                         _elem.val(value);
                     }
                 });
-                $('#product_category').select2('val',data.category_id);
-                $('#product_unit').select2('val',data.unit_id);
             });
+
             showList(false);
+
         });
 
         $('#tbl_products tbody').on('click','button[name="remove_info"]',function(){
@@ -735,9 +748,12 @@ $(document).ready(function(){
 
     var updateProduct=function(){
         var _data=$('#frm_product').serializeArray();
+
+        console.log(_data);
         _data.push({name : "product_id" ,value : _selectedID});
+        //_data.push({name:"is_inventory",value: $('input[name="is_inventory"]').val()});
 
-
+        //alert($('input[name="is_inventory"]').val());
         return $.ajax({
             "dataType":"json",
             "type":"POST",
@@ -800,16 +816,16 @@ $(document).ready(function(){
         '<td>Product Description 2 : </td><td>'+ d.product_desc1+'</td>' +
         '</tr>' +
         '<tr>' +
-        '<td>Category : </td><td>'+ d.product_cat+'</td>' +
+        '<td>Category : </td><td>'+ d.category_name+'</td>' +
         '</tr>' +
         '<tr>' +
-        '<td>Department : </td><td>'+ d.product_dept+'</td>' +
+        '<td>Department : </td><td>na</td>' +
         '</tr>' +
         '<tr>' +
-        '<td>Unit : </td><td>'+ d.product_unit+'</td>' +
+        '<td>Unit : </td><td>'+ d.unit_name+'</td>' +
         '</tr>' +
         '<tr>' +
-        '<td>Vat Exempt : </td><td>'+ d.product_vat+'</td>' +
+        '<td>Vat Exempt : </td><td>'+ d.is_tax_exempt+'</td>' +
         '</tr>' +
         '<tr>' +
         '<td>Equivalent Points : </td><td>'+ d.equivalent_points+'</td>' +
@@ -843,6 +859,18 @@ $(document).ready(function(){
         '</tr>' +
         '</tbody></table><br />';
     };
+
+
+
+   /* $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green',
+    });*/
+
+
+    // apply input changes, which were done outside the plugin
+    //$('input:radio').iCheck('update');
+
 });
 
 </script>

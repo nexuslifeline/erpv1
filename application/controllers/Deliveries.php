@@ -13,6 +13,7 @@ class Deliveries extends CORE_Controller
         $this->load->model('Tax_types_model');
         $this->load->model('Products_model');
         $this->load->model('Delivery_invoice_item_model');
+        $this->load->model('Purchases_model');
 
     }
 
@@ -45,7 +46,7 @@ class Deliveries extends CORE_Controller
                 'products.product_code',
                 'products.product_desc',
                 'products.product_desc1',
-                'products.is_tax_excempt',
+                'products.is_tax_exempt',
                 'FORMAT(products.sale_price,2)as sale_price',
                 'FORMAT(products.purchase_cost,2)as purchase_cost',
                 'products.unit_id',
@@ -70,14 +71,15 @@ class Deliveries extends CORE_Controller
         switch ($txn){
             case 'list':  //this returns JSON of Purchase Order to be rendered on Datatable
                 $m_delivery_invoice=$this->Delivery_invoice_model;
-                $response['data']=$this->response_rows($id_filter);
+                $response['data']=$this->response_rows(
+                    'delivery_invoice.is_active=TRUE AND delivery_invoice.is_deleted=FALSE'.($id_filter==null?'':' AND delivery_invoice.dr_invoice_id='.$id_filter)
+                );
                 echo json_encode($response);
                 break;
 
-
+            ////****************************************items/products of selected purchase invoice***********************************************
             case 'items': //items on the specific PO, loads when edit button is called
                 $m_items=$this->Delivery_invoice_item_model;
-
                 $response['data']=$m_items->get_list(
                     array('dr_invoice_id'=>$id_filter),
                     array(
@@ -89,7 +91,7 @@ class Deliveries extends CORE_Controller
                     ),
                     array(
                         array('products','products.product_id=delivery_invoice_items.product_id','left'),
-                        array('units','units.unit_id=units.unit_id','left')
+                        array('units','units.unit_id=delivery_invoice_items.unit_id','left')
                     ),
                     'delivery_invoice_items.dr_invoice_item_id DESC'
                 );
@@ -98,6 +100,8 @@ class Deliveries extends CORE_Controller
                 echo json_encode($response);
                 break;
 
+
+            //***************************************create new purchase invoice************************************************
             case 'create':
                 $m_delivery_invoice=$this->Delivery_invoice_model;
 
@@ -110,11 +114,21 @@ class Deliveries extends CORE_Controller
                     exit;
                 }
 
+                //get purchase order id base on po number
+                $m_po=$this->Purchases_model;
+                $arr_po_info=$m_po->get_list(
+                    array('purchase_order.po_no'=>$this->input->post('po_no',TRUE)),
+                    'purchase_order.purchase_order_id'
+                );
+                $purchase_order_id=(count($arr_po_info)>0?$arr_po_info[0]->purchase_order_id:0);
+
 
                 $m_delivery_invoice->begin();
 
                 $m_delivery_invoice->set('date_created','NOW()'); //treat NOW() as function and not string
-                $m_delivery_invoice->dr_invoice_no=$this->input->post('dr_invoice_no',TRUE);
+
+                $m_delivery_invoice->purchase_order_id=$purchase_order_id;
+                //$m_delivery_invoice->dr_invoice_no=$this->input->post('dr_invoice_no',TRUE);
                 $m_delivery_invoice->external_ref_no=$this->input->post('external_ref_no',TRUE);
                 $m_delivery_invoice->contact_person=$this->input->post('contact_person',TRUE);
                 $m_delivery_invoice->terms=$this->input->post('terms',TRUE);
@@ -122,7 +136,7 @@ class Deliveries extends CORE_Controller
                 $m_delivery_invoice->supplier_id=$this->input->post('supplier',TRUE);
                 $m_delivery_invoice->remarks=$this->input->post('remarks',TRUE);
                 $m_delivery_invoice->tax_type_id=$this->input->post('tax_type',TRUE);
-                $m_delivery_invoice->date_received=date('Y-m-d',strtotime($this->input->post('date_received',TRUE)));
+                $m_delivery_invoice->date_delivered=date('Y-m-d',strtotime($this->input->post('date_delivered',TRUE)));
                 $m_delivery_invoice->date_due=date('Y-m-d',strtotime($this->input->post('date_due',TRUE)));
                 $m_delivery_invoice->posted_by_user=$this->session->user_id;
                 $m_delivery_invoice->total_discount=$this->get_numeric_value($this->input->post('summary_discount',TRUE));
@@ -162,6 +176,15 @@ class Deliveries extends CORE_Controller
                     $m_dr_items->save();
                 }
 
+                //update invoice number base on formatted last insert id
+                $m_delivery_invoice->dr_invoice_no='P-INV-'.date('Ymd').'-'.$dr_invoice_id;
+                $m_delivery_invoice->modify($dr_invoice_id);
+
+                //update status of po
+                $m_po->order_status_id=$this->get_po_status($purchase_order_id);
+                $m_po->modify($purchase_order_id);
+
+
                 $m_delivery_invoice->commit();
 
 
@@ -178,13 +201,26 @@ class Deliveries extends CORE_Controller
 
                 break;
 
+
+            ////***************************************update purchase invoice************************************************
             case 'update':
                 $m_delivery_invoice=$this->Delivery_invoice_model;
                 $dr_invoice_id=$this->input->post('dr_invoice_id',TRUE);
 
+
+                //get purchase order id base on po number
+                $m_po=$this->Purchases_model;
+                $arr_po_info=$m_po->get_list(
+                    array('purchase_order.po_no'=>$this->input->post('po_no',TRUE)),
+                    'purchase_order.purchase_order_id'
+                );
+                $purchase_order_id=(count($arr_po_info)>0?$arr_po_info[0]->purchase_order_id:0);
+
                 $m_delivery_invoice->begin();
                 $m_delivery_invoice->set('date_created','NOW()'); //treat NOW() as function and not string
-                $m_delivery_invoice->dr_invoice_no=$this->input->post('dr_invoice_no',TRUE);
+
+                $m_delivery_invoice->purchase_order_id=$purchase_order_id;
+                //$m_delivery_invoice->dr_invoice_no=$this->input->post('dr_invoice_no',TRUE);
                 $m_delivery_invoice->external_ref_no=$this->input->post('external_ref_no',TRUE);
                 $m_delivery_invoice->contact_person=$this->input->post('contact_person',TRUE);
                 $m_delivery_invoice->terms=$this->input->post('terms',TRUE);
@@ -192,7 +228,7 @@ class Deliveries extends CORE_Controller
                 $m_delivery_invoice->supplier_id=$this->input->post('supplier',TRUE);
                 $m_delivery_invoice->remarks=$this->input->post('remarks',TRUE);
                 $m_delivery_invoice->tax_type_id=$this->input->post('tax_type',TRUE);
-                $m_delivery_invoice->date_received=date('Y-m-d',strtotime($this->input->post('date_received',TRUE)));
+                $m_delivery_invoice->date_delivered=date('Y-m-d',strtotime($this->input->post('date_delivered',TRUE)));
                 $m_delivery_invoice->date_due=date('Y-m-d',strtotime($this->input->post('date_due',TRUE)));
                 $m_delivery_invoice->modified_by_user=$this->session->user_id;
                 $m_delivery_invoice->total_discount=$this->get_numeric_value($this->input->post('summary_discount',TRUE));
@@ -233,6 +269,10 @@ class Deliveries extends CORE_Controller
                     $m_dr_items->save();
                 }
 
+                //update status of po
+                $m_po->order_status_id=$this->get_po_status($purchase_order_id);
+                $m_po->modify($purchase_order_id);
+
                 $m_delivery_invoice->commit();
 
 
@@ -248,31 +288,92 @@ class Deliveries extends CORE_Controller
 
 
                 break;
+
+
+            //***************************************************************************************
+            case 'delete':
+                $m_delivery_invoice=$this->Delivery_invoice_model;
+                $dr_invoice_id=$this->input->post('dr_invoice_id',TRUE);
+
+                //mark purchase invoice as deleted
+                $m_delivery_invoice->is_deleted=1;
+                $m_delivery_invoice->modify($dr_invoice_id);
+
+                //********************************************************************************************************************
+                //if purchase invoice is mark as deleted, make sure purchase order status is updated(open, closed, partially invoice)
+                $po_info=$m_delivery_invoice->get_list($dr_invoice_id,'delivery_invoice.purchase_order_id'); //get purchase order first
+                if(count($po_info)>0){ //make sure po info return resultset before executing other process
+                    $purchase_order_id=$po_info[0]->purchase_order_id; //pass it to variable
+                    //update purchase order status
+                    $m_purchases=$this->Purchases_model;
+                    $m_purchases->order_status_id=$this->get_po_status($purchase_order_id);
+                    $m_purchases->modify($purchase_order_id);
+                }
+                //********************************************************************************************************************
+
+                $response['title']='Success!';
+                $response['stat']='success';
+                $response['msg']='Purchase invoice successfully deleted.';
+                echo json_encode($response);
+
+                break;
+            //***************************************************************************************
+
+            case 'test':
+                $m_po=$this->Purchases_model;
+                $row=$m_po->get_po_balance_qty($id_filter);
+                echo json_encode($row);
+                break;
+            //***************************************************************************************
         }
 
     }
 
 
 
-
+//**************************************user defined*************************************************
     function response_rows($filter_value,$order_by=null){
         return $this->Delivery_invoice_model->get_list(
             $filter_value,
             array(
                 'delivery_invoice.*',
                 'DATE_FORMAT(delivery_invoice.date_due,"%m/%d/%Y")as date_due',
-                'DATE_FORMAT(delivery_invoice.date_received,"%m/%d/%Y")as date_received',
+                'DATE_FORMAT(delivery_invoice.date_delivered,"%m/%d/%Y")as date_delivered',
                 'CONCAT_WS(" ",CAST(delivery_invoice.terms AS CHAR),delivery_invoice.duration)as term_description',
                 'suppliers.supplier_name',
-                'tax_types.tax_type'
+                'tax_types.tax_type',
+                'purchase_order.po_no'
             ),
             array(
                 array('suppliers','suppliers.supplier_id=delivery_invoice.supplier_id','left'),
-                array('tax_types','tax_types.tax_type_id=delivery_invoice.tax_type_id','left')
+                array('tax_types','tax_types.tax_type_id=delivery_invoice.tax_type_id','left'),
+                array('purchase_order','purchase_order.purchase_order_id=delivery_invoice.purchase_order_id','left')
             ),
             $order_by
         );
     }
+
+
+    function get_po_status($id){
+            //NOTE : 1 means open, 2 means Closed, 3 means partially invoice
+            $m_delivery=$this->Delivery_invoice_model;
+
+            if(count($m_delivery->get_list(
+                        array('delivery_invoice.purchase_order_id'=>$id,'delivery_invoice.is_active'=>TRUE,'delivery_invoice.is_deleted'=>FALSE),
+                        'delivery_invoice.dr_invoice_id'))==0 ){ //means no po found on delivery/purchase invoice that means this po is still open
+
+                return 1;
+
+            }else{
+
+                $m_po=$this->Purchases_model;
+                $row=$m_po->get_po_balance_qty($id);
+                return ($row[0]->Balance>0?3:2);
+
+            }
+
+    }
+//***************************************************************************************
 
 
 

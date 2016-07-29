@@ -167,10 +167,11 @@
                 <tr>
                     <th></th>
                     <th>Invoice #</th>
-                    <th>External Ref#</th>
-                    <th>Terms</th>
                     <th>Supplier</th>
-                    <th>Received</th>
+                    <th>External Ref#</th>
+                    <th>PO #</th>
+                    <th>Terms</th>
+                    <th>Delivered</th>
                     <th><center>Action</center></th>
                 </tr>
                 </thead>
@@ -196,10 +197,18 @@
 <div class="panel panel-default">
 <div class="panel-heading">
     <h2>Purchase Invoice</h2>
+
+
+
+    <div class="pull-right"><strong>[ <a id="btn_receive_po" href="#" style="text-decoration: underline;">Receive from Purchase Order</a> ]</strong></div>
     <div class="panel-ctrls" data-actions-container=""></div>
 </div>
 
 <div class="panel-body">
+
+
+
+
 
 <div class="row custom_frame">
     <form id="frm_deliveries" role="form" class="form-horizontal">
@@ -214,19 +223,32 @@
                                                     <span class="input-group-addon">
                                                         <i class="fa fa-code"></i>
                                                     </span>
-                        <input type="text" name="dr_invoice_no" class="form-control" placeholder="Invoice No." data-error-msg="Invoice No. is required!" required>
+                        <input type="text" name="dr_invoice_no" class="form-control" placeholder="P-INV-YYYYMMDD-XXX" readonly>
                     </div>
                 </div>
+
             </div>
 
             <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
-                <label class="col-md-3  control-label">* Ref # :</label>
+                <label class="col-md-3  control-label">PO # :</label>
                 <div class="col-md-9">
                     <div class="input-group">
                                                     <span class="input-group-addon">
                                                         <i class="fa fa-code"></i>
                                                     </span>
-                        <input type="text" name="external_ref_no" class="form-control" placeholder="External Ref No." data-error-msg="External Ref No. is required!" required>
+                        <input type="text" name="po_no" class="form-control" placeholder="PO #">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
+                <label class="col-md-3  control-label">Ref # :</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-code"></i>
+                                                    </span>
+                        <input type="text" name="external_ref_no" class="form-control" placeholder="External Ref No.">
                     </div>
                 </div>
             </div>
@@ -245,6 +267,7 @@
 
                 <div class="col-md-5 col-sm-6 col-xs-6">
                     <select name="duration" id="cbo_term_type" class="form-control">
+                        <option>NA</option>
                         <option>Day(s)</option>
                         <option>Months(s)</option>
                         <option>Year(s)</option>
@@ -253,11 +276,6 @@
                 </div>
 
             </div>
-
-
-
-
-
 
 
             <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
@@ -275,15 +293,11 @@
                 </div>
 
             </div>
-        </div>
-
-
-        <div class="row">
 
 
 
             <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
-                <label class="col-md-3  control-label">Contact Person :</label>
+                <label class="col-md-3  control-label">Contact :</label>
                 <div class="col-md-9">
                     <div class="input-group">
                                                     <span class="input-group-addon">
@@ -293,6 +307,16 @@
                     </div>
                 </div>
             </div>
+
+
+
+
+
+        </div>
+
+
+        <div class="row">
+
 
             <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
                 <label class="col-md-3 control-label">* Tax type :</label>
@@ -310,6 +334,9 @@
             </div>
 
 
+
+
+
             <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
                 <label class="col-md-3  control-label">Due Date : </label>
                 <div class="col-md-9">
@@ -323,16 +350,18 @@
             </div>
 
             <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
-                <label class="col-md-3  control-label">Delivery Date : </label>
+                <label class="col-md-3  control-label">Delivery : </label>
                 <div class="col-md-9">
                     <div class="input-group">
                         <span class="input-group-addon">
                              <i class="fa fa-calendar"></i>
                         </span>
-                        <input type="text" name="date_received" class="date-picker form-control" value="<?php echo date("m/d/Y"); ?>" placeholder="Due Date" data-error-msg="Delivery Date is required!" required>
+                        <input type="text" name="date_delivered" class="date-picker form-control" value="<?php echo date("m/d/Y"); ?>" placeholder="Due Date" data-error-msg="Delivery Date is required!" required>
                     </div>
                 </div>
             </div>
+
+
 
 
 
@@ -352,6 +381,9 @@
 </div>
 
 <div class="row custom_frame">
+
+
+
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><br />
         <label class="control-label" style="font-family: Tahoma;"><strong>Enter PLU or Search Item :</strong></label>
         <div id="custom-templates">
@@ -414,21 +446,21 @@
                     <tbody>
 
                     <tr>
-                        <td><strong>Discount :</strong></td>
+                        <td>Discount :</td>
                         <td align="right">0.00</td>
                     </tr>
 
                     <tr>
-                        <td><strong>Total before Tax :</strong></td>
+                        <td>Total before Tax :</td>
                         <td align="right">0.00</td>
                     </tr>
                     <tr>
-                        <td><strong>Tax :</strong></td>
+                        <td>Tax :</td>
                         <td align="right">0.00</td>
                     </tr>
                     <tr>
-                        <td><h4><strong>Total After Tax :</strong></h4></td>
-                        <td align="right"><h3><b>0.00</b></h3></td>
+                        <td><strong>Total After Tax :</strong></td>
+                        <td align="right"><b>0.00</b></td>
                     </tr>
 
 
@@ -503,6 +535,47 @@
 </div><!---modal-->
 
 
+
+
+<div id="modal_po_list" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
+    <div class="modal-dialog" style="width: 80%;">
+        <div class="modal-content"><!---content--->
+            <div class="modal-header">
+                <button type="button" class="close"   data-dismiss="modal" aria-hidden="true">X</button>
+                <h4 class="modal-title"><span id="modal_mode"> </span>Purchase Order</h4>
+
+            </div>
+
+            <div class="modal-body">
+                <table id="tbl_po_list" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>PO#</th>
+                        <th>Vendor</th>
+                        <th>Terms</th>
+                        <th>Deliver to</th>
+                        <th>Status</th>
+                        <th><center>Action</center></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn_accept" type="button" class="btn btn-primary" data-dismiss="modal" style="text-transform: none;font-family: Tahoma, Georgia, Serif;">Receive this Order</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: none;font-family: Tahoma, Georgia, Serif;">Cancel</button>
+            </div>
+        </div><!---content---->
+    </div>
+</div><!---modal-->
+
+
 <div id="modal_new_supplier" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
     <div class="modal-dialog modal-md">
         <div class="modal-content"><!---content--->
@@ -513,13 +586,13 @@
             </div>
 
             <div class="modal-body">
-                <form id="frm_user_group">
+                <form id="frm_supplier_new">
                     <div class="form-group">
                         <label>* Supplier :</label>
                         <div class="input-group">
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-users"></i>
-                                                </span>
+                            <span class="input-group-addon">
+                                <i class="fa fa-users"></i>
+                            </span>
                             <input type="text" name="supplier_name" class="form-control" placeholder="Supplier" data-error-msg="Supplier name is required." required>
                         </div>
                     </div>
@@ -527,9 +600,9 @@
                     <div class="form-group">
                         <label>* Email :</label>
                         <div class="input-group">
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-envelope-o"></i>
-                                                </span>
+                            <span class="input-group-addon">
+                                <i class="fa fa-envelope-o"></i>
+                            </span>
                             <input type="text" name="email_address" class="form-control" placeholder="Email" data-error-msg="Email address is required." required>
                         </div>
                     </div>
@@ -540,8 +613,8 @@
             </div>
 
             <div class="modal-footer">
-                <button id="btn_create_user_group" type="button" class="btn btn-primary"  style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span> Create</button>
-                <button id="btn_close_user_group" type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Cancel</button>
+                <button id="btn_create_user_suppliers" type="button" class="btn btn-primary"  style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span> Create</button>
+                <button id="btn_close_user_suppliers" type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Cancel</button>
             </div>
         </div><!---content---->
     </div>
@@ -619,7 +692,7 @@
 
 
 $(document).ready(function(){
-    var dt; var _txnMode; var _selectedID; var _selectRowObj; var _cboSuppliers; var _cboTaxType;
+    var dt; var dt_po; var _txnMode; var _selectedID; var _selectRowObj; var _cboSuppliers; var _cboTaxType;
 
     var oTableItems={
         qty : 'td:eq(0)',
@@ -644,6 +717,33 @@ $(document).ready(function(){
 
     var initializeControls=function(){
 
+        dt_po=$('#tbl_po_list').DataTable({
+            "bLengthChange":false,
+            "ajax" : "Purchases/transaction/open",
+            "columns": [
+                {
+                    "targets": [0],
+                    "class":          "details-control",
+                    "orderable":      false,
+                    "data":           null,
+                    "defaultContent": ""
+                },
+                { targets:[1],data: "po_no" },
+                { targets:[2],data: "supplier_name" },
+                { targets:[3],data: "term_description" },
+                { targets:[5],data: "deliver_to_address" },
+                { targets:[6],data: "order_status" },
+                {
+                    targets:[7],
+                    render: function (data, type, full, meta){
+                        var btn_accept='<button class="btn btn-default btn-sm" name="accept_po"  style="margin-left:-15px;text-transform: none;" data-toggle="tooltip" data-placement="top" title="Receive this PO"><i class="fa fa-check"></i> Accept PO</button>';
+                        return '<center>'+btn_accept+'</center>';
+                    }
+                }
+
+            ]
+        });
+
         dt=$('#tbl_delivery_invoice').DataTable({
             "dom": '<"toolbar">frtip',
             "bLengthChange":false,
@@ -657,12 +757,13 @@ $(document).ready(function(){
                     "defaultContent": ""
                 },
                 { targets:[1],data: "dr_invoice_no" },
-                { targets:[2],data: "external_ref_no" },
-                { targets:[3],data: "term_description" },
-                { targets:[4],data: "supplier_name" },
-                { targets:[5],data: "date_received" },
+                { targets:[2],data: "supplier_name" },
+                { targets:[3],data: "external_ref_no" },
+                { targets:[4],data: "po_no" },
+                { targets:[5],data: "term_description" },
+                { targets:[6],data: "date_delivered" },
                 {
-                    targets:[6],
+                    targets:[7],
                     render: function (data, type, full, meta){
                         var btn_edit='<button class="btn btn-default btn-sm" name="edit_info"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i> </button>';
                         var btn_trash='<button class="btn btn-default btn-sm" name="remove_info" style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>';
@@ -732,6 +833,7 @@ $(document).ready(function(){
             }
         }).on('keyup', this, function (event) {
             if (event.keyCode == 13) {
+
                 $('.tt-suggestion:first').click();
                 _objTypeHead.typeahead('close');
                 _objTypeHead.typeahead('val','');
@@ -747,7 +849,7 @@ $(document).ready(function(){
             var net_vat=0;
             var vat_input=0;
 
-            if(suggestion.is_tax_excempt=="0"){ //not tax excempt
+            if(suggestion.is_tax_exempt=="0"){ //not tax excempt
                 net_vat=total/(1+(getFloat(tax_rate)/100));
                 vat_input=total-net_vat;
             }else{
@@ -851,6 +953,47 @@ $(document).ready(function(){
 
 
 
+
+        $('#tbl_po_list tbody').on( 'click', 'tr td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = dt_po.row( tr );
+            var idx = $.inArray( tr.attr('id'), detailRows );
+
+            if ( row.child.isShown() ) {
+                tr.removeClass( 'details' );
+                row.child.hide();
+
+                // Remove from the 'open' array
+                detailRows.splice( idx, 1 );
+            }
+            else {
+                tr.addClass( 'details' );
+                //console.log(row.data());
+                _selectRowObj=$(this).closest('tr');
+                var d=dt_po.row(_selectRowObj).data();
+
+                $.ajax({
+                    "dataType":"html",
+                    "type":"POST",
+                    "url":"Templates/layout/po/"+ d.purchase_order_id+'/contentview',
+                    "beforeSend" : function(){
+                        row.child( '<center><br /><img src="assets/img/loader/ajax-loader-lg.gif" /><br /><br /></center>' ).show();
+                    }
+                }).done(function(response){
+                    row.child( response ).show();
+                    // Add to the 'open' array
+                    if ( idx === -1 ) {
+                        detailRows.push( tr.attr('id') );
+                    }
+                });
+
+
+
+            }
+        } );
+
+
+
         _cboSuppliers.on("select2:select", function (e) {
 
             var i=$(this).select2('val');
@@ -896,22 +1039,116 @@ $(document).ready(function(){
         });
 
 
+        $('#btn_receive_po').click(function(){
+            $('#tbl_po_list tbody').html('<tr><td colspan="7"><center><br /><img src="assets/img/loader/ajax-loader-lg.gif" /><br /><br /></center></td></tr>');
+            dt_po.ajax.reload( null, false );
+            $('#modal_po_list').modal('show');
+        });
+
+
         $('#btn_remove_photo').click(function(event){
             event.preventDefault();
             $('img[name="img_user"]').attr('src','assets/img/anonymous-icon.png');
         });
 
-        $('#btn_create_user_group').click(function(){
+
+
+        $('#tbl_po_list > tbody').on('click','button[name="accept_po"]',function(){
+            _selectRowObj=$(this).closest('tr');
+            var data=dt_po.row(_selectRowObj).data();
+
+            //alert(d.purchase_order_id);
+
+            $('input,textarea').each(function(){
+                var _elem=$(this);
+                $.each(data,function(name,value){
+                    if(_elem.attr('name')==name&&_elem.attr('type')!='password'){
+                        _elem.val(value);
+                    }
+
+                });
+
+                $('#cbo_suppliers').select2('val',data.supplier_id);
+
+            });
+
+
+            $('#modal_po_list').modal('hide');
+            resetSummary();
+
+            $.ajax({
+                url : 'Purchases/transaction/item-balance/'+data.purchase_order_id,
+                type : "GET",
+                cache : false,
+                dataType : 'json',
+                processData : false,
+                contentType : false,
+                beforeSend : function(){
+                    $('#tbl_items > tbody').html('<tr><td align="center" colspan="8"><br /><img src="assets/img/loader/ajax-loader-sm.gif" /><br /><br /></td></tr>');
+                },
+                success : function(response){
+                    var rows=response.data;
+                    $('#tbl_items > tbody').html('');
+
+                    var total_discount=0;
+                    var total_tax_amount=0;
+                    var total_non_tax_amount=0;
+                    var gross_amount=0;
+
+                    $.each(rows,function(i,value){
+
+                        $('#tbl_items > tbody').prepend(newRowItem({
+                            dr_qty : value.po_qty,
+                            product_code : value.product_code,
+                            unit_id : value.unit_id,
+                            unit_name : value.unit_name,
+                            product_id: value.product_id,
+                            product_desc : value.product_desc,
+                            dr_line_total_discount : value.po_line_total_discount,
+                            tax_exempt : false,
+                            dr_tax_rate : value.po_tax_rate,
+                            dr_price : value.po_price,
+                            dr_discount : value.po_discount,
+                            tax_type_id : null,
+                            dr_line_total_price : value.po_line_total,
+                            dr_non_tax_amount: value.non_tax_amount,
+                            dr_tax_amount:value.tax_amount
+                        }));
+
+                        //sum up all footer details
+                        total_discount+=getFloat(value.po_line_total_discount);
+                        total_tax_amount+=getFloat(value.tax_amount);
+                        total_non_tax_amount+=getFloat(value.non_tax_amount);
+                        gross_amount+=getFloat(value.po_line_total);
+
+                    });
+
+
+                    //write summary details
+                    var tbl_summary=$('#tbl_delivery_summary');
+                    tbl_summary.find(oTableDetails.discount).html(accounting.formatNumber(total_discount,2));
+                    tbl_summary.find(oTableDetails.before_tax).html(accounting.formatNumber(total_non_tax_amount,2));
+                    tbl_summary.find(oTableDetails.tax_amount).html(accounting.formatNumber(total_tax_amount,2));
+                    tbl_summary.find(oTableDetails.after_tax).html('<b>'+accounting.formatNumber(gross_amount,2)+'</b>');
+
+                }
+            });
+
+
+
+        });
+
+        $('#btn_create_user_suppliers').click(function(){
 
             var btn=$(this);
 
-            if(validateRequiredFields($('#frm_user_group'))){
-                var data=$('#frm_user_group').serializeArray();
+            if(validateRequiredFields($('#frm_supplier_new'))){
+                var data=$('#frm_supplier_new').serializeArray();
 
                 $.ajax({
                     "dataType":"json",
                     "type":"POST",
-                    "url":"User_groups/transaction/create",
+                    "url":"Suppliers/transaction/create",
                     "data":data,
                     "beforeSend" : function(){
                         showSpinningProgress(btn);
@@ -920,9 +1157,9 @@ $(document).ready(function(){
                     showNotification(response);
                     $('#modal_new_supplier').modal('hide');
 
-                    var _group=response.row_added[0];
-                    $('#cbo_user_groups').append('<option value="'+_group.user_group_id+'" selected>'+_group.user_group+'</option>');
-                    $('#cbo_user_groups').select2('val',_group.user_group_id);
+                    var _suppliers=response.row_added[0];
+                    $('#cbo_suppliers').append('<option value="'+_suppliers.supplier_id+'" selected>'+_suppliers.supplier_name+'</option>');
+                    $('#cbo_suppliers').select2('val',_suppliers.supplier_id);
 
                 }).always(function(){
                     showSpinningProgress(btn);
@@ -956,11 +1193,9 @@ $(document).ready(function(){
                 $('#cbo_suppliers').select2('val',data.supplier_id);
             });
 
-            var tbl_summary=$('#tbl_delivery_summary');
-            tbl_summary.find(oTableDetails.discount).html('<b>'+accounting.formatNumber(data.total_discount,2)+'</b>');
-            tbl_summary.find(oTableDetails.before_tax).html('<b>'+accounting.formatNumber(data.total_before_tax,2)+'</b>');
-            tbl_summary.find(oTableDetails.tax_amount).html('<b>'+accounting.formatNumber(data.total_tax_amount,2)+'</b>');
-            tbl_summary.find(oTableDetails.after_tax).html('<h3><b>'+accounting.formatNumber(data.total_after_tax,2)+'</b></h3>');
+            resetSummary();
+
+
 
 
             $.ajax({
@@ -977,8 +1212,13 @@ $(document).ready(function(){
                     var rows=response.data;
                     $('#tbl_items > tbody').html('');
 
-                    $.each(rows,function(i,value){
+                    //var total_discount=0;
+                    //var total_tax_amount=0;
+                    //var total_non_tax_amount=0;
+                    //var gross_amount=0;
 
+                    $.each(rows,function(i,value){
+                        //alert(value.non_tax_amount);
                         $('#tbl_items > tbody').prepend(newRowItem({
                             dr_qty : value.dr_qty,
                             product_code : value.product_code,
@@ -993,10 +1233,29 @@ $(document).ready(function(){
                             dr_discount : value.dr_discount,
                             tax_type_id : null,
                             dr_line_total_price : value.dr_line_total_price,
-                            dr_non_tax_amount: value.non_tax_amount,
-                            dr_tax_amount:value.tax_amount
+                            dr_non_tax_amount: value.dr_non_tax_amount,
+                            dr_tax_amount:value.dr_tax_amount
                         }));
+
+
+                        //sum up all footer details
+                        //total_discount+=getFloat(value.dr_line_total_discount);
+                        //total_tax_amount+=getFloat(value.tax_amount);
+                        //total_non_tax_amount+=getFloat(value.non_tax_amount);
+                        //gross_amount+=getFloat(value.dr_line_total_price);
+
+
                     });
+
+
+                    //write summary details
+                    //var tbl_summary=$('#tbl_delivery_summary');
+                    //tbl_summary.find(oTableDetails.discount).html(accounting.formatNumber(total_discount,2));
+                    //tbl_summary.find(oTableDetails.before_tax).html(accounting.formatNumber(total_non_tax_amount,2));
+                    //tbl_summary.find(oTableDetails.tax_amount).html(accounting.formatNumber(total_tax_amount,2));
+                    //tbl_summary.find(oTableDetails.after_tax).html('<b>'+accounting.formatNumber(gross_amount,2)+'</b>');
+                    reComputeTotal();
+
                 }
             });
 
@@ -1010,7 +1269,7 @@ $(document).ready(function(){
         $('#tbl_delivery_invoice tbody').on('click','button[name="remove_info"]',function(){
             _selectRowObj=$(this).closest('tr');
             var data=dt.row(_selectRowObj).data();
-            _selectedID=data.user_id;
+            _selectedID=data.dr_invoice_id;
 
             $('#modal_confirmation').modal('show');
         });
@@ -1053,7 +1312,7 @@ $(document).ready(function(){
 
 
         $('#btn_yes').click(function(){
-            removeCustomer().done(function(response){
+            removePurchaseInvoice().done(function(response){
                 showNotification(response);
                 dt.row(_selectRowObj).remove().draw();
             });
@@ -1209,12 +1468,12 @@ $(document).ready(function(){
         });
     };
 
-    var removeCustomer=function(){
+    var removePurchaseInvoice=function(){
         return $.ajax({
             "dataType":"json",
             "type":"POST",
-            "url":"Users/transaction/delete",
-            "data":{user_id : _selectedID}
+            "url":"Deliveries/transaction/delete",
+            "data":{dr_invoice_id : _selectedID}
         });
     };
 
@@ -1273,7 +1532,7 @@ $(document).ready(function(){
         '<td width="11%"><input name="dr_discount[]" type="text" class="numeric form-control" value="'+ accounting.formatNumber(d.dr_discount,2)+'" style="text-align:right;"></td>'+
         '<td style="display: none;" width="11%"><input name="dr_line_total_discount[]" type="text" class="numeric form-control" value="'+ accounting.formatNumber(d.dr_line_total_discount,2)+'" readonly></td>'+
         '<td width="11%"><input name="dr_tax_rate[]" type="text" class="numeric form-control" value="'+ accounting.formatNumber(d.dr_tax_rate,2)+'"></td>'+
-        '<td width="11%" align="right"><input name="dr_line_total_price[]" type="text" class="numeric form-control" value="'+ d.dr_line_total_price+'" readonly></td>'+
+        '<td width="11%" align="right"><input name="dr_line_total_price[]" type="text" class="numeric form-control" value="'+ accounting.formatNumber(d.dr_line_total_price,2)+'" readonly></td>'+
         '<td style="display: none;"><input name="dr_tax_amount[]" type="text" class="numeric form-control" value="'+ d.dr_tax_amount+'" readonly></td>'+
         '<td style="display: none;"><input name="dr_non_tax_amount[]" type="text" class="numeric form-control" value="'+ d.dr_non_tax_amount+'" readonly></td>'+
         '<td style="display: none;"><input name="product_id[]" type="text" class="numeric form-control" value="'+ d.product_id+'" readonly></td>'+
@@ -1292,15 +1551,14 @@ $(document).ready(function(){
         $.each(rows,function(){
             discounts+=parseFloat(accounting.unformat($(oTableItems.total_line_discount,$(this)).find('input.numeric').val()));
             before_tax+=parseFloat(accounting.unformat($(oTableItems.net_vat,$(this)).find('input.numeric').val()));
-            //alert(before_tax);
             tax_amount+=parseFloat(accounting.unformat($(oTableItems.vat_input,$(this)).find('input.numeric').val()));
             after_tax+=parseFloat(accounting.unformat($(oTableItems.total,$(this)).find('input.numeric').val()));
         });
 
-        tbl_summary.find(oTableDetails.discount).html('<b>'+accounting.formatNumber(discounts,2)+'</b>');
-        tbl_summary.find(oTableDetails.before_tax).html('<b>'+accounting.formatNumber(before_tax,2)+'</b>');
-        tbl_summary.find(oTableDetails.tax_amount).html('<b>'+accounting.formatNumber(tax_amount,2)+'</b>');
-        tbl_summary.find(oTableDetails.after_tax).html('<h3><b>'+accounting.formatNumber(after_tax,2)+'</b></h3>');
+        tbl_summary.find(oTableDetails.discount).html(accounting.formatNumber(discounts,2));
+        tbl_summary.find(oTableDetails.before_tax).html(accounting.formatNumber(before_tax,2));
+        tbl_summary.find(oTableDetails.tax_amount).html(accounting.formatNumber(tax_amount,2));
+        tbl_summary.find(oTableDetails.after_tax).html('<b>'+accounting.formatNumber(after_tax,2)+'</b>');
 
     };
 
@@ -1312,7 +1570,13 @@ $(document).ready(function(){
 
 
 
-
+    var resetSummary=function(){
+        var tbl_summary=$('#tbl_delivery_summary');
+        tbl_summary.find(oTableDetails.discount).html('0.00');
+        tbl_summary.find(oTableDetails.before_tax).html('0.00');
+        tbl_summary.find(oTableDetails.tax_amount).html('0.00');
+        tbl_summary.find(oTableDetails.after_tax).html('<b>0.00</b>');
+    };
 
 
 

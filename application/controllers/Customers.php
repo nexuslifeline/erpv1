@@ -24,12 +24,12 @@ class Customers extends CORE_Controller {
     }
 
 
-    function transaction($txn=null){
+    function transaction($txn=null,$filter_value=null){
         switch($txn){
             //****************************************************************************************************************
             case 'list':
                 $m_customers=$this->Customers_model;
-                $response['data']=$m_customers->get_customer_list();
+                $response['data']=$this->row_response($filter_value);
                 echo json_encode($response);
                 break;
 
@@ -54,7 +54,7 @@ class Customers extends CORE_Controller {
                 $response['title']='Success!';
                 $response['stat']='success';
                 $response['msg']='Customer information successfully created.';
-                $response['row_added']=$m_customers->get_customer_list($customer_id);
+                $response['row_added']=$this->row_response($customer_id);
                 echo json_encode($response);
 
                 break;
@@ -97,7 +97,7 @@ class Customers extends CORE_Controller {
                 $response['title']='Success!';
                 $response['stat']='success';
                 $response['msg']='Customer information successfully updated.';
-                $response['row_updated']=$m_customers->get_customer_list($customer_id);
+                $response['row_updated']=$this->row_response($customer_id);
                 echo json_encode($response);
 
                 break;
@@ -141,8 +141,21 @@ class Customers extends CORE_Controller {
     }
 
 
-    function uploadimage(){
+    function row_response($filter_value){
+        $m_customers=$this->Customers_model;
+        return $m_customers->get_list(
+            $filter_value,
 
+            array(
+                'customers.*',
+                'customer_photos.photo_path'
+            ),
+
+            array(
+                array('customer_photos','customer_photos.customer_id=customers.customer_id','left')
+            )
+
+        );
     }
 
 

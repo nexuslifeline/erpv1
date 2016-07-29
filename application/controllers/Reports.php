@@ -80,9 +80,10 @@ class Reports extends CORE_Controller {
 
                 $info=$m_delivery->get_list(
                     $filter_value,
-                    'delivery_invoice.*,CONCAT_WS(" ",delivery_invoice.terms,delivery_invoice.duration)as term_description,suppliers.supplier_name,suppliers.address,suppliers.email_address,suppliers.landline',
+                    'delivery_invoice.*,purchase_order.po_no,CONCAT_WS(" ",delivery_invoice.terms,delivery_invoice.duration)as term_description,suppliers.supplier_name,suppliers.address,suppliers.email_address,suppliers.landline',
                     array(
-                        array('suppliers','suppliers.supplier_id=delivery_invoice.supplier_id','left')
+                        array('suppliers','suppliers.supplier_id=delivery_invoice.supplier_id','left'),
+                        array('purchase_order','purchase_order.purchase_order_id=delivery_invoice.purchase_order_id','left')
                     )
                 );
 

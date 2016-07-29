@@ -149,7 +149,7 @@
                                                    </div>
 
                                                     <div class="form-group">
-                                                        <label class="col-md-2 control-label">Email Address :</label>
+                                                        <label class="col-md-2 control-label">* Email :</label>
                                                         <div class="col-md-9">
                                                             <div class="input-group">
                                                                 <span class="input-group-addon">
@@ -585,7 +585,7 @@
         };
 
         var clearFields=function(){
-            $('input[required],textarea','#frm_customer').val('');
+            $('input,textarea','#frm_customer').val('');
             $('form').find('input:first').focus();
         };
 
