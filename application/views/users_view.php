@@ -788,6 +788,13 @@
 
                   });
 
+
+                    if($('input[name="user_confirm_pword"]').val()!=$('input[name="user_pword"]').val()){
+                        showNotification({title:"Error!",stat:"error",msg:"Password did not match."});
+                        $('input[name="user_confirm_pword"]').focus();
+                        stat=false;
+                    }
+
                 return stat;
         };
 

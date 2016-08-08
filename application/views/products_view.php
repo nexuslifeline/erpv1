@@ -837,25 +837,25 @@ $(document).ready(function(){
         '<td>Ideal : </td><td>'+ d.product_ideal+'</td>' +
         '</tr>' +
         '<tr>' +
-        '<td>Purchase Cost : </td><td>'+ d.purchase_cost+'</td>' +
+        '<td>Purchase Cost : </td><td>'+ accounting.formatNumber(d.purchase_cost,2)+'</td>' +
         '</tr>' +
         '<tr>' +
         '<td>Markup Percent : </td><td>'+ d.markup_percent+'</td>' +
         '</tr>' +
         '<tr>' +
-        '<td>Sale Price : </td><td>'+ d.sale_price+'</td>' +
+        '<td>Sale Price : </td><td>'+ accounting.formatNumber(d.sale_price,2)+'</td>' +
         '</tr>' +
         '<tr>' +
-        '<td>Whole Sale Price : </td><td>'+ d.whole_sale+'</td>' +
+        '<td>Whole Sale Price : </td><td>'+ accounting.formatNumber(d.whole_sale,2)+'</td>' +
         '</tr>' +
         '<tr>' +
-        '<td>Retailer Price : </td><td>'+ d.retailer_price+'</td>' +
+        '<td>Retailer Price : </td><td>'+ accounting.formatNumber(d.retailer_price,2)+'</td>' +
         '</tr>' +
         '<tr>' +
-        '<td>Special Discount Price : </td><td>'+ d.special_disc+'</td>' +
+        '<td>Special Discount Price : </td><td>'+ accounting.formatNumber(d.special_disc,2)+'</td>' +
         '</tr>' +
         '<tr>' +
-        '<td>Valued Customer Price : </td><td>'+ d.valued_customer+'</td>' +
+        '<td>Valued Customer Price : </td><td>'+ accounting.formatNumber(d.valued_customer,2)+'</td>' +
         '</tr>' +
         '</tbody></table><br />';
     };

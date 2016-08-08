@@ -217,7 +217,6 @@ class Deliveries extends CORE_Controller
                 $purchase_order_id=(count($arr_po_info)>0?$arr_po_info[0]->purchase_order_id:0);
 
                 $m_delivery_invoice->begin();
-                $m_delivery_invoice->set('date_created','NOW()'); //treat NOW() as function and not string
 
                 $m_delivery_invoice->purchase_order_id=$purchase_order_id;
                 //$m_delivery_invoice->dr_invoice_no=$this->input->post('dr_invoice_no',TRUE);
@@ -296,6 +295,8 @@ class Deliveries extends CORE_Controller
                 $dr_invoice_id=$this->input->post('dr_invoice_id',TRUE);
 
                 //mark purchase invoice as deleted
+                $m_delivery_invoice->set('date_deleted','NOW()'); //treat NOW() as function and not string,set deletion date
+                $m_delivery_invoice->deleted_by_user=$this->session->user_id; //user that delete this record
                 $m_delivery_invoice->is_deleted=1;
                 $m_delivery_invoice->modify($dr_invoice_id);
 

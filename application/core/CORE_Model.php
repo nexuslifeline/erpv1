@@ -100,7 +100,8 @@ class CORE_model extends CI_Model
             }
         }
 
-
+        //group by
+        if($group_by!=null){ $this->db->group_by($group_by); }
 
         //order by
         $this->db->order_by($order_by==null?$this->table.'.'.$this->pk_id.' ASC':(is_array($order_by)?join(',',$order_by):$order_by));

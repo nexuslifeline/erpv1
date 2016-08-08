@@ -15,6 +15,52 @@
 
    <?php echo $_def_css_files; ?>
 
+    <link type="text/css" href="assets/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet">
+    <link type="text/css" href="assets/plugins/datatables/dataTables.themify.css" rel="stylesheet">
+
+
+    <style>
+    .toolbar{
+        float: left;
+    }
+
+    .btn-white {
+        background: white none repeat scroll 0 0;
+        border: 1px solid #e7eaec;
+        color: inherit;
+        text-transform: none;
+    }
+
+    td.details-control {
+        background: url('assets/img/Folder_Closed.png') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.details td.details-control {
+        background: url('assets/img/Folder_Opened.png') no-repeat center center;
+    }
+
+    .child_table{
+        padding: 5px;
+        border: 1px #ff0000 solid;
+    }
+
+    .glyphicon.spinning {
+        animation: spin 1s infinite linear;
+        -webkit-animation: spin2 1s infinite linear;
+    }
+
+    @keyframes spin {
+        from { transform: scale(1) rotate(0deg); }
+        to { transform: scale(1) rotate(360deg); }
+    }
+
+    @-webkit-keyframes spin2 {
+        from { -webkit-transform: rotate(0deg); }
+        to { -webkit-transform: rotate(360deg); }
+    }
+
+    </style>
+
 </head>
 
 <body class="animated-content" style="font-family: tahoma;">
@@ -41,6 +87,11 @@
                                     <div class="col-md-12">
 
                                         <div class="panel panel-default">
+
+                                            <div class="panel-heading">
+                                                <h2>Company Snapshot</h2>
+                                            </div>
+
                                             <div class="panel-body table-responsive">
 
                                                 <div class="row">
@@ -178,12 +229,45 @@
                         </div>
 
 
+                        <div class="container-fluid mt-n">
+                        <div data-widget-group="group1">
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h2>Purchase Order for Approval</h2>
+                                        </div>
+
+                                        <div class="panel-body table-responsive">
+
+                                            <table id="tbl_po_list" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                                <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th><i class="fa fa-code"></i> PO#</th>
+                                                    <th><i class="fa fa-users"></i> Vendor</th>
+                                                    <th><i class="fa fa-calendar"></i> Terms </th>
+                                                    <th><i class="fa fa-users"></i> Posted by </th>
+                                                    <th style="text-align: center;"> <i class="fa fa-paperclip"></i></th>
+                                                    <th><center>Action</center></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
 
 
 
+                                                </tbody>
+                                            </table>
 
 
+                                        </div>
 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     </div> <!-- #page-content -->
             </div>
@@ -211,25 +295,18 @@
 <?php echo $_switcher_settings; ?>
 <?php echo $_def_js_files; ?>
 
-<!-- Flot -->
-<script src="assets/plugins/flot/jquery.flot.js"></script>
-<script src="assets/plugins/flot/jquery.flot.tooltip.min.js"></script>
-<script src="assets/plugins/flot/jquery.flot.spline.js"></script>
-<script src="assets/plugins/flot/jquery.flot.resize.js"></script>
-<script src="assets/plugins/flot/jquery.flot.pie.js"></script>
-<script src="assets/plugins/flot/jquery.flot.symbol.js"></script>
-<script src="assets/plugins/flot/jquery.flot.time.js"></script>
+
 
 <!-- Sparkline -->
 <script src="assets/plugins/sparkline/jquery.sparkline.min.js"></script>
 
-
-
-<script src="assets/plugins/charts/amcharts.js" type="text/javascript"></script>
-<script src="assets/plugins/charts/serial.js" type="text/javascript"></script>
-
-
+<!-- CHART -->
 <script src="assets/plugins/chartJs/Chart.min.js"></script>
+
+<!-- DATATABLE -->
+<script type="text/javascript" src="assets/plugins/datatables/jquery.dataTables.js"></script>
+<script type="text/javascript" src="assets/plugins/datatables/dataTables.bootstrap.js"></script>
+
 
 
 <script>
@@ -409,100 +486,165 @@
     var myNewChart = new Chart(ctx).Bar(barData, barOptions);
 </script>
 
-<script type="text/javascript">
+<script>
 
-    var chart;
+    $(document).ready(function(){
+        var dt; var _selectedID; var _selectRowObj;
 
-    var chartData = [
-        {
-            "color": "rgba(26,179,148,1)",
-            "month": "January",
-            "netincome": 1200      },
-        {
-            "color": "rgba(26,179,148,1)",
-            "month": "February",
-            "netincome": 900               },
-        {
-            "color": "rgba(26,179,148,1)",
-            "month": "March",
-            "netincome":1890             },
-        {
-            "color": "rgba(26,179,148,1)",
-            "month": "April",
-            "netincome": 0             },
-        {
-            "color": "rgba(26,179,148,1)",
-            "month": "May",
-            "netincome": 0                 },
-        {
-            "color": "rgba(26,179,148,1)",
-            "month": "June",
-            "netincome": 0                },
-        {
-            "color": "rgba(26,179,148,1)",
-            "month": "July",
-            "netincome": 0             },
-        {
-            "color": "rgba(26,179,148,1)",
-            "month": "August",
-            "netincome": 0              },
-        {
-            "month": "September",
-            "netincome": 0           },
-        {
-            "month": "October",
-            "netincome": 0                },
-        {
-            "color": "rgba(26,179,148,1)",
-            "month": "November",
-            "netincome": 0              },
-        {
-            "color": "rgba(26,179,148,1)",
-            "month": "December",
-            "netincome": 0       }
-    ];
+        var initializeControls=(function(){
+            dt=$('#tbl_po_list').DataTable({
+                "dom": '<"toolbar">frtip',
+                "bLengthChange":false,
+                "ajax" : "Purchases/transaction/po-for-approved",
+                "columns": [
+                    {
+                        "targets": [0],
+                        "class":          "details-control",
+                        "orderable":      false,
+                        "data":           null,
+                        "defaultContent": ""
+                    },
+                    { targets:[1],data: "po_no" },
+                    { targets:[2],data: "supplier_name" },
+                    { targets:[3],data: "term_description" },
+                    { targets:[4],data: "posted_by" },
+                    {
+                        targets:[5],data: "attachment",
+                        render: function (data, type, full, meta){
+
+                            return '<center>'+data+' <i class="fa fa-paperclip"></i></center>';
+                        }
+
+                    },
+                    {
+                        targets:[6],
+                        render: function (data, type, full, meta){
+                            //alert(full.purchase_order_id);
+
+                            var btn_approved='<button class="btn btn-white btn-sm" name="approve_po"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Approved this PO"><i class="fa fa-check" style="color: green;"></i> <span class=""></span></button>';
+                            var btn_conversation='<a id="link_conversation" href="Po_messages?id='+full.purchase_order_id+'" target="_blank" class="btn btn-white btn-sm"  style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Open Conversation"><i class="fa fa-external-link"></i> </a>';
+
+                            return '<center>'+btn_approved+btn_conversation+'</center>';
+                        }
+                    }
+                ]
+            });
+        })();
 
 
-    AmCharts.ready(function () {
-        // SERIAL CHART
-        chart = new AmCharts.AmSerialChart();
-        chart.dataProvider = chartData;
-        chart.categoryField = "month";
-        chart.startDuration = 1;
+        var bindEventHandlers=(function(){
 
-        // AXES
-        // category
-        var categoryAxis = chart.categoryAxis;
-        categoryAxis.labelRotation = 90;
-        categoryAxis.gridPosition = "start";
 
-        // value
-        // in case you don't want to change default settings of value axis,
-        // you don't need to create it, as one value axis is created automatically.
+            var detailRows = [];
 
-        // GRAPH
-        var graph = new AmCharts.AmGraph();
-        graph.valueField = "netincome";
-        graph.colorField = "color";
-        graph.balloonText = "[[category]]: <b>[[value]]</b>";
-        graph.type = "column";
-        graph.lineAlpha = 0;
-        graph.fillAlphas = 0.8;
-        chart.addGraph(graph);
+            $('#tbl_po_list tbody').on( 'click', 'tr td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = dt.row( tr );
+                var idx = $.inArray( tr.attr('id'), detailRows );
 
-        // CURSOR
-        var chartCursor = new AmCharts.ChartCursor();
-        chartCursor.cursorAlpha = 0;
-        chartCursor.zoomable = false;
-        chartCursor.categoryBalloonEnabled = false;
-        chart.addChartCursor(chartCursor);
+                if ( row.child.isShown() ) {
+                    tr.removeClass( 'details' );
+                    row.child.hide();
 
-        //chart.creditsPosition = "top-left";
+                    // Remove from the 'open' array
+                    detailRows.splice( idx, 1 );
+                }
+                else {
+                    tr.addClass( 'details' );
+                    //console.log(row.data());
+                    var d=row.data();
 
-        chart.write("chartdiv");
-    });/*
-     end of chart
-     **/
+                    $.ajax({
+                        "dataType":"html",
+                        "type":"POST",
+                        "url":"Templates/layout/po/"+ d.purchase_order_id+'?type=approval',
+                        "beforeSend" : function(){
+                            row.child( '<center><br /><img src="assets/img/loader/ajax-loader-lg.gif" /><br /><br /></center>' ).show();
+                        }
+                    }).done(function(response){
+                        row.child( response ).show();
+                        // Add to the 'open' array
+                        if ( idx === -1 ) {
+                            detailRows.push( tr.attr('id') );
+                        }
+                    });
+
+
+
+
+                }
+            } );
+
+
+            //*****************************************************************************************
+            $('#tbl_po_list > tbody').on('click','button[name="approve_po"]',function(){
+                _selectRowObj=$(this).closest('tr'); //hold dom of tr which is selected
+
+                var data=dt.row(_selectRowObj).data();
+                _selectedID=data.purchase_order_id;
+
+                 approvePurchaseOrder().done(function(response){
+                    showNotification(response);
+                    if(response.stat=="success"){
+                        dt.row(_selectRowObj).remove().draw();
+                    }
+
+                });
+            });
+
+
+            //****************************************************************************************
+            $('#tbl_po_list > tbody').on('click','button[name="mark_as_approved"]',function(){
+                _selectRowObj=$(this).parents('tr').prev();
+                _selectRowObj.find('button[name="approve_po"]').click();
+                showSpinningProgress($(this));
+            });
+
+
+            //****************************************************************************************
+            $('#tbl_po_list > tbody').on('click','button[name="external_link_conversation"]',function(){
+                _selectRowObj=$(this).parents('tr').prev();
+                _selectRowObj.find('a[id="link_conversation"]').click();
+                //alert(_selectRowObj.find('a[id="link_conversation"]').length);
+            });
+
+
+
+
+        })();
+
+
+
+
+
+
+        //functions called on bindEventHandlers
+        var approvePurchaseOrder=function(){
+            return $.ajax({
+                "dataType":"json",
+                "type":"POST",
+                "url":"Purchases/transaction/mark-approved",
+                "data":{purchase_order_id : _selectedID}
+
+            });
+        };
+
+        var showNotification=function(obj){
+            PNotify.removeAll(); //remove all notifications
+            new PNotify({
+                title:  obj.title,
+                text:  obj.msg,
+                type:  obj.stat
+            });
+        };
+
+        var showSpinningProgress=function(e){
+            $(e).find('span').toggleClass('glyphicon glyphicon-refresh spinning');
+        };
+
+
+
+    });
 
 
 </script>

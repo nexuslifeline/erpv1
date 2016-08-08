@@ -81,6 +81,31 @@ class Purchases extends CORE_Controller
                     break;
 
 
+                case 'po-for-approved':  //is called on DASHBOARD, returns PO list for approval
+                    //approval id 2 are those pending
+                    $m_purchases=$this->Purchases_model;
+                    $response['data']=$m_purchases->get_list(
+                        //filter
+                        'purchase_order.is_active=TRUE AND purchase_order.is_deleted=FALSE AND purchase_order.approval_id=2',
+                        //fields
+                        'purchase_order.*,suppliers.supplier_name,COUNT(po_attachments.po_attachment_id) as attachment,
+                        CONCAT_WS(" ",purchase_order.terms,purchase_order.duration)As term_description,
+                        CONCAT_WS(" ",user_accounts.user_fname,user_accounts.user_lname)as posted_by',
+                        //joins
+                        array(
+                            array('suppliers','suppliers.supplier_id=purchase_order.supplier_id','left'),
+                            array('user_accounts','user_accounts.user_id=purchase_order.posted_by_user','left'),
+                            array('po_attachments','po_attachments.purchase_order_id=purchase_order.purchase_order_id','left')
+                        ),
+
+                        //order by
+                        'purchase_order.purchase_order_id',
+                        //group by
+                        'purchase_order.purchase_order_id'
+                    );
+                    echo json_encode($response);
+                    break;
+
                 case 'open':  //this returns PO that are already approved
                     $m_purchases=$this->Purchases_model;
                     //$where_filter=null,$select_list=null,$join_array=null,$order_by=null,$group_by=null,$auto_select_escape=TRUE,$custom_where_filter=null
@@ -107,7 +132,6 @@ class Purchases extends CORE_Controller
                     echo json_encode($response);
                     break;
 
-
                 case 'items': //items on the specific PO, loads when edit button is called
                     $m_items=$this->Purchase_items_model;
 
@@ -130,12 +154,14 @@ class Purchases extends CORE_Controller
 
                     echo json_encode($response);
                     break;
+
                 case 'item-balance':
                     $m_items=$this->Purchase_items_model;
                     $response['data']=$m_items->get_products_with_balance_qty($id_filter);
                     echo json_encode($response);
 
                     break;
+
                 case 'create':
                     $m_purchases=$this->Purchases_model;
 
@@ -226,7 +252,7 @@ class Purchases extends CORE_Controller
                     $po_id=$this->input->post('purchase_order_id',TRUE);
 
                     $m_purchases->begin();
-                    $m_purchases->set('date_created','NOW()'); //treat NOW() as function and not string
+
                     //$m_purchases->po_no=$this->input->post('po_no',TRUE);
                     $m_purchases->terms=$this->input->post('terms',TRUE);
                     $m_purchases->duration=$this->input->post('duration',TRUE);
@@ -290,6 +316,7 @@ class Purchases extends CORE_Controller
 
 
                     break;
+
                 case 'delete':
                     $m_purchases=$this->Purchases_model;
                     $purchase_order_id=$this->input->post('purchase_order_id',TRUE);
@@ -306,13 +333,29 @@ class Purchases extends CORE_Controller
 
 
 
-
-
+                    $m_purchases->set('date_deleted','NOW()'); //treat NOW() as function and not string, set date of deletion
+                    $m_purchases->deleted_by_user=$this->session->user_id; //deleted by user
                     $m_purchases->is_deleted=1;
                     if($m_purchases->modify($purchase_order_id)){
                         $response['title']='Success!';
                         $response['stat']='success';
                         $response['msg']='Purchase order successfully deleted.';
+                        echo json_encode($response);
+                    }
+                    break;
+
+
+                case 'mark-approved': //called on DASHBOARD when approved button is clicked
+                    $m_purchases=$this->Purchases_model;
+                    $purchase_order_id=$this->input->post('purchase_order_id',TRUE);
+
+                    $m_purchases->set('date_approved','NOW()'); //treat NOW() as function and not string, set date of approval
+                    $m_purchases->approved_by_user=$this->session->user_id; //deleted by user
+                    $m_purchases->approval_id=1; //1 means approved
+                    if($m_purchases->modify($purchase_order_id)){
+                        $response['title']='Success!';
+                        $response['stat']='success';
+                        $response['msg']='Purchase order successfully approved.';
                         echo json_encode($response);
                     }
                     break;

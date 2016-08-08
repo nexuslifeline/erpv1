@@ -20,13 +20,25 @@
                         <li class="nav-separator"><span>Explore</span></li>
 
                         <li><a href="Dashboard"><i class="ti ti-home"></i><span>Dashboard</span><span class="badge badge-teal">2</span></a></li>
+
+
+                        <li><a href="#"><i class="ti ti-wallet"></i><span>Journal</span></a>
+                            <ul class="acc-menu">
+                                <li><a href="#">General Journal</a></li>
+                                <li><a href="#">Cash Disbursement</a></li>
+                                <li><a href="#">Account Payables</a></li>
+                                <li><a href="#">Sales Journal</a></li>
+                                <li><a href="#">Cash Receipt</a></li>
+                            </ul>
+                        </li>
+
                         <li><a href="#"><i class="ti ti-package"></i><span>Purchasing</span></a>
                             <ul class="acc-menu">
                                 <li><a href="Purchases">Purchase Order</a></li>
                                 <li><a href="Deliveries">Purchase Invoice</a></li>
                                 <li><a href="#">Record Payment</a></li>
-                                <li><a href="#">Item Issuance</a></li>
-                                <li><a href="#">Item Adjustment</a></li>
+                                <li><a href="Issuances">Item Issuance</a></li>
+                                <li><a href="Adjustments">Item Adjustment</a></li>
                             </ul>
                         </li>
 
@@ -36,20 +48,20 @@
 
                                     <ul class="acc-menu">
                                         <li><a href="#">Sales Order</a></li>
-                                        <li><a href="#">Record Invoice</a></li>
+                                        <li><a href="Sales_invoice">Record Invoice</a></li>
                                         <li><a href="#">Received Payment</a></li>
                                     </ul>
 
                                 </li>
 
-
+                                <!--
                                 <li><a href="#">Special Store</a>
                                     <ul class="acc-menu">
                                         <li><a href="#">POS Convenient Store</a></li>
                                         <li><a href="#">POS Restaurant</a></li>
                                         <li><a href="tradings">POS Trading</a></li>
                                     </ul>
-                                </li>
+                                </li>-->
                             </ul>
                         </li>
 

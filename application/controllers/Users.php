@@ -73,7 +73,7 @@ class Users extends CORE_Controller
                 $m_users->user_telephone=$this->input->post('user_telephone',TRUE);
                 $m_users->user_bdate=date('Y-m-d',strtotime($this->input->post('user_bdate',TRUE)));
                 $m_users->user_group_id=$this->input->post('user_group_id',TRUE);
-                $m_users->photo_path=$this->input->post('photo_path',TRUE);
+                $m_users->photo_path=$this->input->post('photo_path');
                 $m_users->modify($user_account_id);
 
 

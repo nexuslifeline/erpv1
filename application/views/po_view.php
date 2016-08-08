@@ -15,10 +15,11 @@
 
     <?php echo $_def_css_files; ?>
 
-    <link rel="stylesheet" href="assets/plugins/spinner/dist/ladda-themeless.min.css">
 
     <link type="text/css" href="assets/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet">
     <link type="text/css" href="assets/plugins/datatables/dataTables.themify.css" rel="stylesheet">
+
+
     <link href="assets/plugins/datapicker/datepicker3.css" rel="stylesheet">
 
     <link href="assets/plugins/select2/select2.min.css" rel="stylesheet">
@@ -106,6 +107,8 @@
                 width: 100%;
             }
         }
+
+
 
 
 
@@ -526,8 +529,7 @@
 <?php echo $_switcher_settings; ?>
 <?php echo $_def_js_files; ?>
 
-<script src="assets/plugins/spinner/dist/spin.min.js"></script>
-<script src="assets/plugins/spinner/dist/ladda.min.js"></script>
+
 
 
 <script type="text/javascript" src="assets/plugins/datatables/jquery.dataTables.js"></script>
@@ -644,15 +646,6 @@ $(document).ready(function(){
 
 
 
-
-        $('#txt_bdate').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true
-
-        });
 
         _cboSuppliers=$("#cbo_suppliers").select2({
             placeholder: "Please select supplier.",
