@@ -4,7 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Templates extends CORE_Controller {
     function __construct() {
         parent::__construct('');
+
         $this->validate_session();
+
         $this->load->model('Purchases_model');
         $this->load->model('Purchase_items_model');
 
@@ -19,6 +21,10 @@ class Templates extends CORE_Controller {
 
         $this->load->model('Sales_invoice_model');
         $this->load->model('Sales_invoice_item_model');
+
+
+        $this->load->model('Sales_order_model');
+        $this->load->model('Sales_order_item_model');
 
         $this->load->model('Company_model');
         $this->load->library('M_pdf');
@@ -393,6 +399,75 @@ class Templates extends CORE_Controller {
                 }
 
                 break;
+
+
+            //****************************************************
+            case 'sales-order': //sales order
+                $m_sales_order=$this->Sales_order_model;
+                $m_sales_order_items=$this->Sales_order_item_model;
+                $type=$this->input->get('type',TRUE);
+
+                $info=$m_sales_order->get_list(
+                    $filter_value,
+                    'sales_order.*,departments.department_name,customers.customer_name',
+                    array(
+                        array('departments','departments.department_id=sales_order.department_id','left'),
+                        array('customers','customers.customer_id=sales_order.customer_id','left')
+                    )
+                );
+
+
+                $data['sales_order']=$info[0];
+                $data['sales_order_items']=$m_sales_order_items->get_list(
+                    array('sales_order_items.sales_order_id'=>$filter_value),
+                    'sales_order_items.*,products.product_desc,units.unit_name',
+                    array(
+                        array('products','products.product_id=sales_order_items.product_id','left'),
+                        array('units','units.unit_id=sales_order_items.unit_id','left')
+                    )
+                );
+
+
+
+                //show only inside grid with menu button
+                if($type=='fullview'||$type==null){
+                    echo $this->load->view('template/so_content',$data,TRUE);
+                    echo $this->load->view('template/so_content_menus',$data,TRUE);
+                }
+
+                //show only inside grid without menu button
+                if($type=='contentview'){
+                    echo $this->load->view('template/so_content',$data,TRUE);
+                }
+
+
+                //download pdf
+                if($type=='pdf'){
+                    $file_name=$info[0]->slip_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/so_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output($pdfFilePath,"D");
+
+                }
+
+                //preview on browser
+                if($type=='preview'){
+                    $file_name=$info[0]->slip_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/so_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output();
+                }
+
+                break;
+
         }
     }
 

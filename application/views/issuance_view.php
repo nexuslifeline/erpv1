@@ -417,6 +417,52 @@
 </div><!---modal-->
 
 
+<div id="modal_new_department" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
+    <div class="modal-dialog modal-md">
+        <div class="modal-content"><!---content--->
+            <div class="modal-header">
+                <button type="button" class="close"   data-dismiss="modal" aria-hidden="true">X</button>
+                <h4 class="modal-title"><span id="modal_mode"> </span>New Department</h4>
+
+            </div>
+
+            <div class="modal-body">
+                <form id="frm_department_new">
+
+                    <div class="form-group">
+                        <label>* Department :</label>
+                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-users"></i>
+                                                </span>
+                            <input type="text" name="department_name" class="form-control" placeholder="Department" data-error-msg="Department name is required." required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description :</label>
+                        <textarea name="department_desc" class="form-control"></textarea>
+                    </div>
+
+
+
+
+                </form>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn_create_department" type="button" class="btn btn-primary"  style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span> Create</button>
+                <button id="btn_close_close_department" type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Cancel</button>
+            </div>
+        </div><!---content---->
+    </div>
+</div><!---modal-->
+
+
+
+
 
 
 
@@ -701,6 +747,52 @@ $(document).ready(function(){
             }
         } );
 
+
+
+        //loads modal to create new department
+        _cboDepartments.on("select2:select", function (e) {
+
+            var i=$(this).select2('val');
+
+            if(i==0){ //new departmet
+                _cboDepartments.select2('val',null)
+                $('#modal_new_department').modal('show');
+                clearFields($('#modal_new_department').find('form'));
+            }
+
+        });
+
+
+        //create new department
+        $('#btn_create_department').click(function(){
+            var btn=$(this);
+
+            if(validateRequiredFields($('#frm_department_new'))){
+                var data=$('#frm_department_new').serializeArray();
+
+                $.ajax({
+                    "dataType":"json",
+                    "type":"POST",
+                    "url":"Departments/transaction/create",
+                    "data":data,
+                    "beforeSend" : function(){
+                        showSpinningProgress(btn);
+                    }
+                }).done(function(response){
+                    showNotification(response);
+                    $('#modal_new_department').modal('hide');
+
+                    var _department=response.row_added[0];
+                    $('#cbo_departments').append('<option value="'+_department.department_id+'" selected>'+_department.department_name+'</option>');
+                    $('#cbo_departments').select2('val',_department.department_id);
+
+                }).always(function(){
+                    showSpinningProgress(btn);
+                });
+            }
+
+
+        });
 
 
 

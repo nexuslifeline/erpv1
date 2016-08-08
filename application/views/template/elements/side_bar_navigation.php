@@ -47,21 +47,13 @@
                                 <li><a href="#">Standard Sales</a>
 
                                     <ul class="acc-menu">
-                                        <li><a href="#">Sales Order</a></li>
+                                        <li><a href="Sales_order">Sales Order</a></li>
                                         <li><a href="Sales_invoice">Record Invoice</a></li>
                                         <li><a href="#">Received Payment</a></li>
                                     </ul>
 
                                 </li>
 
-                                <!--
-                                <li><a href="#">Special Store</a>
-                                    <ul class="acc-menu">
-                                        <li><a href="#">POS Convenient Store</a></li>
-                                        <li><a href="#">POS Restaurant</a></li>
-                                        <li><a href="tradings">POS Trading</a></li>
-                                    </ul>
-                                </li>-->
                             </ul>
                         </li>
 

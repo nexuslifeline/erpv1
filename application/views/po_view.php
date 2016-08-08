@@ -804,21 +804,6 @@ $(document).ready(function(){
 
 
 
-        _cboSuppliers.on("select2:select", function (e) {
-
-            var i=$(this).select2('val');
-
-            if(i==0){ //new supplier
-                _cboSuppliers.select2('val',null)
-                $('#modal_new_supplier').modal('show');
-                clearFields($('#modal_new_supplier').find('form'));
-            }else{
-                var obj_supplier=$('#cbo_suppliers').find('option[value="'+i+'"]');
-                _cboTaxType.select2('val',obj_supplier.data('tax-type')); //set tax type base on selected Supplier
-            }
-
-
-        });
 
 
         $('#tbl_purchases tbody').on('click','#btn_email',function(){
@@ -1284,6 +1269,24 @@ $(document).ready(function(){
         tbl_summary.find(oTableDetails.after_tax).html('<b>'+accounting.formatNumber(after_tax,2)+'</b>');
 
     };
+
+
+    _cboSuppliers.on("select2:select", function (e) {
+
+        var i=$(this).select2('val');
+
+        if(i==0){ //new supplier
+            _cboSuppliers.select2('val',null)
+            $('#modal_new_supplier').modal('show');
+            clearFields($('#modal_new_supplier').find('form'));
+        }else{
+            var obj_supplier=$('#cbo_suppliers').find('option[value="'+i+'"]');
+            _cboTaxType.select2('val',obj_supplier.data('tax-type')); //set tax type base on selected Supplier
+        }
+
+
+    });
+
 
 
 
