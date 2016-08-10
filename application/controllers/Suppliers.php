@@ -51,6 +51,7 @@ class Suppliers extends CORE_Controller {
                 $m_suppliers->email_address=$this->input->post('email_address',TRUE);
                 $m_suppliers->landline=$this->input->post('landline',TRUE);
                 $m_suppliers->mobile_no=$this->input->post('mobile_no',TRUE);
+                $m_suppliers->tin_no=$this->input->post('tin_no',TRUE);
                 $m_suppliers->tax_type_id=$this->input->post('tax_type_id',TRUE);
                 $m_suppliers->save();
 
@@ -105,6 +106,7 @@ class Suppliers extends CORE_Controller {
                 $m_suppliers->email_address=$this->input->post('email_address',TRUE);
                 $m_suppliers->landline=$this->input->post('landline',TRUE);
                 $m_suppliers->mobile_no=$this->input->post('mobile_no',TRUE);
+                $m_suppliers->tin_no=$this->input->post('tin_no',TRUE);
                 $m_suppliers->tax_type_id=$this->input->post('tax_type_id',TRUE);
                 $m_suppliers->modify($supplier_id);
 

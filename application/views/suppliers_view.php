@@ -97,11 +97,10 @@
                                                     <thead>
                                                     <tr>
                                                         <th></th>
-                                                        <th>Supplier Name</th>
+                                                        <th>Supplier</th>
                                                         <th>Address</th>
                                                         <th>Landline</th>
                                                         <th>Mobile</th>
-                                                        <th>Tax Name</th>
                                                         <th><center>Action</center></th>
                                                     </tr>
                                                     </thead>
@@ -174,6 +173,19 @@
                                                                                 <i class="fa fa-send"></i>
                                                                             </span>
                                                                 <input type="text" name="mobile_no" class="form-control" placeholder="Mobile No">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 control-label">TIN # :</label>
+                                                        <div class="col-md-9">
+                                                            <div class="input-group">
+                                                                            <span class="input-group-addon">
+                                                                                <i class="fa fa-send"></i>
+                                                                            </span>
+                                                                <input type="text" name="tin_no" class="form-control" placeholder="TIN #">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -269,12 +281,12 @@
                         <div class="modal-body">
                             <form id="frm_tax_group">
                                 <div class="form-group">
-                                    <label>* Tax Group :</label>
+                                    <label>* Tax type :</label>
                                     <div class="input-group">
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-envelope-o"></i>
                                                 </span>
-                                        <input type="text" name="tax_type" class="form-control" placeholder="Tax group" data-error-msg="Tax name is required." required>
+                                        <input type="text" name="tax_type" class="form-control" data-error-msg="Tax type is required." required>
                                     </div>
                                 </div>
 
@@ -355,9 +367,8 @@
                     { targets:[2],data: "address" },
                     { targets:[3],data: "landline" },
                     { targets:[4],data: "mobile_no" },
-                    { targets:[5],data: "tax_type" },
                     {
-                        targets:[6],
+                        targets:[5],
                         render: function (data, type, full, meta){
                             var btn_edit='<button class="btn btn-default btn-sm" name="edit_info"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i> </button>';
                             var btn_trash='<button class="btn btn-default btn-sm" name="remove_info" style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>';
@@ -702,6 +713,12 @@
             '</tr>' +
             '<tr>' +
             '<td>Landline. : </td><td>'+ d.landline+'</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>TIN #. : </td><td>'+ d.tin_no+'</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>Tax. : </td><td>'+ d.tax_type+'</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Active : </td><td><i class="fa fa-check"></i></td>' +

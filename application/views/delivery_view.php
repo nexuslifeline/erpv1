@@ -576,6 +576,7 @@
 </div><!---modal-->
 
 
+
 <div id="modal_new_supplier" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
     <div class="modal-dialog modal-md">
         <div class="modal-content"><!---content--->
@@ -585,25 +586,63 @@
 
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body" style="overflow:hidden;">
                 <form id="frm_supplier_new">
                     <div class="form-group">
                         <label>* Supplier :</label>
                         <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-users"></i>
-                            </span>
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-users"></i>
+                                                </span>
                             <input type="text" name="supplier_name" class="form-control" placeholder="Supplier" data-error-msg="Supplier name is required." required>
                         </div>
                     </div>
 
                     <div class="form-group">
+                        <label>Address :</label>
+                        <textarea name="address" class="form-control"  placeholder="Address" data-error-msg="Address is required." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label> * Tax type :</label>
+                        <select name="tax_type_id" id="cbo_tax_group">
+                            <?php foreach($tax_types as $tax_type){ ?>
+                                <option value="<?php echo $tax_type->tax_type_id; ?>" data-tax-rate="<?php echo $tax_type->tax_rate; ?>"><?php echo $tax_type->tax_type; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
                         <label>* Email :</label>
                         <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-envelope-o"></i>
-                            </span>
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-envelope-o"></i>
+                                                </span>
                             <input type="text" name="email_address" class="form-control" placeholder="Email" data-error-msg="Email address is required." required>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Mobile Nos. :</label>
+                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-send"></i>
+                                                </span>
+                            <input type="text" name="mobile_no" class="form-control" placeholder="Mobile #">
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label>TIN # :</label>
+                        <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-file"></i>
+                                                </span>
+                            <input type="text" name="tin_no" class="form-control" placeholder="TIN #">
                         </div>
                     </div>
 
@@ -805,6 +844,12 @@ $(document).ready(function(){
         _cboTaxType=$('#cbo_tax_type').select2({
             placeholder: "Please select tax type.",
             allopwClear: true
+        });
+
+        var _cboTaxGroup=$('#cbo_tax_group').select2({
+            placeholder: "Please select tax type.",
+            allopwClear: true,
+            dropdownParent: "#modal_new_supplier"
         });
 
 
@@ -1158,8 +1203,9 @@ $(document).ready(function(){
                     $('#modal_new_supplier').modal('hide');
 
                     var _suppliers=response.row_added[0];
-                    $('#cbo_suppliers').append('<option value="'+_suppliers.supplier_id+'" selected>'+_suppliers.supplier_name+'</option>');
+                    $('#cbo_suppliers').append('<option value="'+_suppliers.supplier_id+'" data-tax-type="'+_suppliers.tax_type_id+'" selected>'+_suppliers.supplier_name+'</option>');
                     $('#cbo_suppliers').select2('val',_suppliers.supplier_id);
+                    $('#cbo_tax_type').select2('val',_suppliers.tax_type_id);
 
                 }).always(function(){
                     showSpinningProgress(btn);

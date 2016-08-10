@@ -522,7 +522,7 @@
                             //alert(full.purchase_order_id);
 
                             var btn_approved='<button class="btn btn-white btn-sm" name="approve_po"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Approved this PO"><i class="fa fa-check" style="color: green;"></i> <span class=""></span></button>';
-                            var btn_conversation='<a id="link_conversation" href="Po_messages?id='+full.purchase_order_id+'" target="_blank" class="btn btn-white btn-sm"  style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Open Conversation"><i class="fa fa-external-link"></i> </a>';
+                            var btn_conversation='<a id="link_conversation" href="Po_messages?id='+full.purchase_order_id+'" target="_blank" class="btn btn-white btn-sm"  style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Open Conversation"><i class="fa fa-envelope"></i> </a>';
 
                             return '<center>'+btn_approved+btn_conversation+'</center>';
                         }
@@ -604,7 +604,7 @@
             //****************************************************************************************
             $('#tbl_po_list > tbody').on('click','button[name="external_link_conversation"]',function(){
                 _selectRowObj=$(this).parents('tr').prev();
-                _selectRowObj.find('a[id="link_conversation"]').click();
+                _selectRowObj.find('#link_conversation').trigger("click");
                 //alert(_selectRowObj.find('a[id="link_conversation"]').length);
             });
 
