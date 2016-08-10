@@ -421,7 +421,7 @@
 
                                     <div class="file-box"  data-id="<?php echo $file->po_attachment_id; ?>">
                                         <div class="file">
-                                            <a href="<?php echo $file->server_file_directory; ?>" download>
+                                            <a href="<?php echo $file->server_file_directory; ?>"  download>
                                                 <span class="corner"></span>
 
                                                 <div class="icon">
@@ -846,7 +846,7 @@
             var createAttachmentStructure=function(row){
                 return '<div class="file-box"  data-id="'+row.po_attachment_id+'">'+
                 '<div class="file">'+
-                '<a href="'+row.server_file_directory+'" download>'+
+                '<a href="'+row.server_file_directory+'"  download>'+
                 '<span class="corner"></span>'+
                 '<div class="icon">'+
                 '<i class="fa fa-file"></i>'+
