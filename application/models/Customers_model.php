@@ -74,7 +74,8 @@ class Customers_model extends CORE_Model{
             SELECT 0 as total_receivable,SUM(rp.total_paid_amount) as total_payment FROM receivable_payments as rp
             WHERE rp.is_active=TRUE AND rp.is_deleted=FALSE AND rp.customer_id=$customer_id GROUP BY rp.customer_id)as m";
 
-        return (float)($this->db->query($sql)->result()[0]->net_receivable);
+        $result=$this->db->query($sql)->result();
+        return (float)($result[0]->net_receivable);
     }
 
 
