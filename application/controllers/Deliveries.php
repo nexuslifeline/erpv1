@@ -184,6 +184,10 @@ class Deliveries extends CORE_Controller
                 $m_po->order_status_id=$this->get_po_status($purchase_order_id);
                 $m_po->modify($purchase_order_id);
 
+                //update payable amount of supplier
+                $m_suppliers=$this->Suppliers_model;
+                $m_suppliers->recalculate_supplier_payable($this->input->post('supplier',TRUE));
+
 
                 $m_delivery_invoice->commit();
 
@@ -271,6 +275,12 @@ class Deliveries extends CORE_Controller
                 //update status of po
                 $m_po->order_status_id=$this->get_po_status($purchase_order_id);
                 $m_po->modify($purchase_order_id);
+
+
+                //update payable amount of supplier
+                $m_suppliers=$this->Suppliers_model;
+                $m_suppliers->recalculate_supplier_payable($this->input->post('supplier',TRUE));
+
 
                 $m_delivery_invoice->commit();
 

@@ -34,6 +34,7 @@ class Users extends CORE_Controller
                 break;
             case 'create':
                 $m_users=$this->Users_model;
+
                 $m_users->user_name=$this->input->post('user_name',TRUE);
                 $m_users->user_pword=sha1($this->input->post('user_pword',TRUE));
                 $m_users->user_lname=$this->input->post('user_lname',TRUE);
@@ -46,6 +47,10 @@ class Users extends CORE_Controller
                 $m_users->user_bdate=date('Y-m-d',strtotime($this->input->post('user_bdate',TRUE)));
                 $m_users->user_group_id=$this->input->post('user_group_id',TRUE);
                 $m_users->photo_path=$this->input->post('photo_path',TRUE);
+
+                $m_users->set('date_created','NOW()');
+                $m_users->posted_by_user=$this->session->user_id;
+
                 $m_users->save();
 
                 $user_account_id=$m_users->last_insert_id();
@@ -74,6 +79,10 @@ class Users extends CORE_Controller
                 $m_users->user_bdate=date('Y-m-d',strtotime($this->input->post('user_bdate',TRUE)));
                 $m_users->user_group_id=$this->input->post('user_group_id',TRUE);
                 $m_users->photo_path=$this->input->post('photo_path');
+
+                $m_users->set('date_modified','NOW()');
+                $m_users->modified_by_user=$this->session->user_id;
+
                 $m_users->modify($user_account_id);
 
 
@@ -89,6 +98,8 @@ class Users extends CORE_Controller
                 $m_users=$this->Users_model;
                 $user_account_id=$this->input->post('user_id',TRUE);
 
+                $m_users->set('date_deleted','NOW()');
+                $m_users->deleted_by_user=$this->session->user_id;
                 $m_users->is_deleted=1;
                 if($m_users->modify($user_account_id)){
                     $response['title']='Success!';

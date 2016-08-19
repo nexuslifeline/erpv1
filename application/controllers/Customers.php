@@ -43,6 +43,10 @@ class Customers extends CORE_Controller {
                 $m_customers->email_address=$this->input->post('email_address',TRUE);
                 $m_customers->landline=$this->input->post('landline',TRUE);
                 $m_customers->mobile_no=$this->input->post('mobile_no',TRUE);
+
+                $m_customers->set('date_created','NOW()');
+                $m_customers->posted_by_user=$this->session->user_id;
+
                 $m_customers->save();
 
                 $customer_id=$m_customers->last_insert_id();//get last insert id
@@ -64,6 +68,8 @@ class Customers extends CORE_Controller {
                 $m_photos=$this->Customer_photos_model;
                 $customer_id=$this->input->post('customer_id',TRUE);
 
+                $m_customers->set('date_deleted','NOW()');
+                $m_customers->deleted_by_user=$this->session->user_id;
                 $m_customers->is_deleted=1;
                 if($m_customers->modify($customer_id)){
                     $response['title']='Success!';
@@ -87,6 +93,10 @@ class Customers extends CORE_Controller {
                 $m_customers->email_address=$this->input->post('email_address',TRUE);
                 $m_customers->landline=$this->input->post('landline',TRUE);
                 $m_customers->mobile_no=$this->input->post('mobile_no',TRUE);
+
+                $m_customers->set('date_modified','NOW()');
+                $m_customers->modified_by_user=$this->session->user_id;
+
                 $m_customers->modify($customer_id);
 
                 $m_photos->delete_via_fk($customer_id);
@@ -137,6 +147,18 @@ class Customers extends CORE_Controller {
 
 
                 break;
+
+
+            case 'receivables':
+                $customer_id=$this->input->get('id',TRUE);
+                $m_customers=$this->Customers_model;
+
+                $data['receivables']=$m_customers->get_customer_receivable_list($customer_id);
+                $structured_content=$this->load->view('template/customer_receivable_list',$data,TRUE);
+                echo $structured_content;
+
+                break;
+
         }
     }
 

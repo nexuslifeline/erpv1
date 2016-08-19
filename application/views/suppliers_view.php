@@ -463,12 +463,26 @@
                 }
                 else {
                     tr.addClass( 'details' );
-                    //console.log(row.data());
-                    row.child( format( row.data() ) ).show();
-                    // Add to the 'open' array
-                    if ( idx === -1 ) {
-                        detailRows.push( tr.attr('id') );
-                    }
+
+                    var d=row.data();
+
+                    $.ajax({
+                        "dataType":"html",
+                        "type":"POST",
+                        "url":"Templates/layout/supplier/"+ d.supplier_id,
+                        "beforeSend" : function(){
+                            row.child( '<center><br /><img src="assets/img/loader/ajax-loader-lg.gif" /><br /><br /></center>' ).show();
+                        }
+                    }).done(function(response){
+                        row.child( response ).show();
+                        reInitializeDatatable($('#tbl_po_'+ d.supplier_id));
+                        if ( idx === -1 ) {
+                            detailRows.push( tr.attr('id') );
+                        }
+                    });
+
+
+
                 }
             } );
 
@@ -687,6 +701,15 @@
             $('input,textarea',f).val('');
             $(f).find('select').select2('val',null);
             $(f).find('input:first').focus();
+        };
+
+
+        var reInitializeDatatable=function(tbl){
+            tbl.DataTable({
+                "dom": '<"toolbar">frtip',
+                "bLengthChange":false
+
+            });
         };
 
         function format ( d ) {

@@ -11,6 +11,8 @@ class Sales_invoice extends CORE_Controller
 
         $this->load->model('Sales_invoice_model');
         $this->load->model('Sales_invoice_item_model');
+
+        $this->load->model('Sales_order_model');
         $this->load->model('Departments_model');
         $this->load->model('Customers_model');
         $this->load->model('Products_model');
@@ -122,6 +124,14 @@ class Sales_invoice extends CORE_Controller
                 }
 
 
+                //get sales order id base on SO number
+                $m_so=$this->Sales_order_model;
+                $arr_so_info=$m_so->get_list(
+                    array('sales_order.so_no'=>$this->input->post('so_no',TRUE)),
+                    'sales_order.sales_order_id'
+                );
+                $sales_order_id=(count($arr_so_info)>0?$arr_so_info[0]->sales_order_id:0);
+
 
                 $m_invoice->begin();
 
@@ -130,6 +140,7 @@ class Sales_invoice extends CORE_Controller
 
                 $m_invoice->department_id=$this->input->post('department',TRUE);
                 $m_invoice->customer_id=$this->input->post('customer',TRUE);
+                $m_invoice->sales_order_id=$sales_order_id;
                 $m_invoice->remarks=$this->input->post('remarks',TRUE);
                 $m_invoice->date_due=date('Y-m-d',strtotime($this->input->post('date_due',TRUE)));
                 $m_invoice->date_invoice=date('Y-m-d',strtotime($this->input->post('date_invoice',TRUE)));
@@ -176,6 +187,17 @@ class Sales_invoice extends CORE_Controller
                 $m_invoice->modify($sales_invoice_id);
 
 
+                //update status of so
+                $m_so->order_status_id=$this->get_so_status($sales_order_id);
+                $m_so->modify($sales_order_id);
+
+                //******************************************************************************************
+                // IMPORTANT!!!
+                //update receivable amount field of customer table
+                $m_customers=$this->Customers_model;
+                $m_customers->recalculate_customer_receivable($this->input->post('customer',TRUE));
+                //******************************************************************************************
+
 
                 $m_invoice->commit();
 
@@ -199,12 +221,20 @@ class Sales_invoice extends CORE_Controller
                 $m_invoice=$this->Sales_invoice_model;
                 $sales_invoice_id=$this->input->post('sales_invoice_id',TRUE);
 
+                //get sales order id base on SO number
+                $m_so=$this->Sales_order_model;
+                $arr_so_info=$m_so->get_list(
+                    array('sales_order.so_no'=>$this->input->post('so_no',TRUE)),
+                    'sales_order.sales_order_id'
+                );
+                $sales_order_id=(count($arr_so_info)>0?$arr_so_info[0]->sales_order_id:0);
 
                 $m_invoice->begin();
 
                 $m_invoice->department_id=$this->input->post('department',TRUE);
                 $m_invoice->remarks=$this->input->post('remarks',TRUE);
                 $m_invoice->customer_id=$this->input->post('customer',TRUE);
+                $m_invoice->sales_order_id=$sales_order_id;
                 $m_invoice->date_due=date('Y-m-d',strtotime($this->input->post('date_due',TRUE)));
                 $m_invoice->date_invoice=date('Y-m-d',strtotime($this->input->post('date_invoice',TRUE)));
                 $m_invoice->total_discount=$this->get_numeric_value($this->input->post('summary_discount',TRUE));
@@ -246,6 +276,19 @@ class Sales_invoice extends CORE_Controller
                     $m_invoice_items->save();
                 }
 
+
+
+                //update status of so
+                $m_so->order_status_id=$this->get_so_status($sales_order_id);
+                $m_so->modify($sales_order_id);
+
+
+                //******************************************************************************************
+                // IMPORTANT!!!
+                //update receivable amount field of customer table
+                $m_customers=$this->Customers_model;
+                $m_customers->recalculate_customer_receivable($this->input->post('customer',TRUE));
+                //******************************************************************************************
 
 
                 $m_invoice->commit();
@@ -313,6 +356,25 @@ class Sales_invoice extends CORE_Controller
                 array('customers','customers.customer_id=sales_invoice.customer_id','left')
             )
         );
+    }
+
+
+    function get_so_status($id){
+        //NOTE : 1 means open, 2 means Closed, 3 means partially invoice
+        $m_sales_invoice=$this->Sales_invoice_model;
+
+        if(count($m_sales_invoice->get_list(
+                array('sales_invoice.sales_order_id'=>$id,'sales_invoice.is_active'=>TRUE,'sales_invoice.is_deleted'=>FALSE),
+                'sales_invoice.sales_invoice_id'))==0 ){ //means no SO found on sales invoice that means this so is still open
+
+            return 1;
+
+        }else{
+            $m_so=$this->Sales_order_model;
+            $row=$m_so->get_so_balance_qty($id);
+            return ($row[0]->Balance>0?3:2);
+        }
+
     }
 
 

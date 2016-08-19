@@ -531,8 +531,8 @@
             </div>
 
             <div class="modal-footer">
-                <button id="btn_create_user_suppliers" type="button" class="btn btn-primary"  style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span> Create</button>
-                <button id="btn_close_user_suppliers" type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Cancel</button>
+                <button id="btn_create_new_supplier" type="button" class="btn btn-primary"  style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span> Create</button>
+                <button id="btn_close_new_supplier" type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Cancel</button>
             </div>
         </div><!---content---->
     </div>
@@ -592,6 +592,10 @@
 
 <!-- touchspin -->
 <script type="text/javascript" src="assets/plugins/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js"></script>
+
+
+<!-- Select2 -->
+<script src="assets/plugins/select2/select2.full.min.js"></script>
 
 <!-- numeric formatter -->
 <script src="assets/plugins/formatter/autoNumeric.js" type="text/javascript"></script>
@@ -665,8 +669,9 @@ $(document).ready(function(){
                     render: function (data, type, full, meta){
                         var btn_edit='<button class="btn btn-default btn-sm" name="edit_info"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i> </button>';
                         var btn_trash='<button class="btn btn-default btn-sm" name="remove_info" style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>';
+                        var btn_message='<a href="Po_messages?id='+full.purchase_order_id+'" target="_blank" class="btn btn-default btn-sm" name="message_po" style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-envelope-o"></i> </a>';
 
-                        return '<center>'+btn_edit+btn_trash+'</center>';
+                        return '<center>'+btn_edit+btn_trash+btn_message+'</center>';
                     }
                 }
             ]
@@ -681,14 +686,13 @@ $(document).ready(function(){
 
 
 
-
-
-        _cboSuppliers=$("#cbo_suppliers").select2({
+        _cboSuppliers=$('#cbo_suppliers').select2({
             placeholder: "Please select supplier.",
-            allowClear: true
+            allopwClear: true
         });
 
         _cboSuppliers.select2('val',null);
+
 
         _cboTaxType=$('#cbo_tax_type').select2({
             placeholder: "Please select tax type.",
@@ -879,18 +883,9 @@ $(document).ready(function(){
             showList(false);
         });
 
-        $('#btn_browse').click(function(event){
-            event.preventDefault();
-            $('input[name="file_upload[]"]').click();
-        });
 
 
-        $('#btn_remove_photo').click(function(event){
-            event.preventDefault();
-            $('img[name="img_user"]').attr('src','assets/img/anonymous-icon.png');
-        });
-
-        $('#btn_create_user_suppliers').click(function(){
+        $('#btn_create_new_supplier').click(function(){
 
             var btn=$(this);
 
@@ -1071,43 +1066,6 @@ $(document).ready(function(){
         });
 
 
-
-
-
-        $('input[name="file_upload[]"]').change(function(event){
-            var _files=event.target.files;
-
-            $('#div_img_user').hide();
-            $('#div_img_loader').show();
-
-
-            var data=new FormData();
-            $.each(_files,function(key,value){
-                data.append(key,value);
-            });
-
-            //console.log(_files);
-
-            $.ajax({
-                url : 'Users/transaction/upload',
-                type : "POST",
-                data : data,
-                cache : false,
-                dataType : 'json',
-                processData : false,
-                contentType : false,
-                success : function(response){
-                    //console.log(response);
-                    //alert(response.path);
-                    $('#div_img_loader').hide();
-                    $('#div_img_user').show();
-                    $('img[name="img_user"]').attr('src',response.path);
-
-                }
-            });
-
-        });
-
         $('#btn_cancel').click(function(){
             showList(true);
         });
@@ -1122,6 +1080,7 @@ $(document).ready(function(){
                         showNotification(response);
                         dt.row.add(response.row_added[0]).draw();
                         clearFields($('#frm_purchases'));
+                        showList(true);
                     }).always(function(){
                         showSpinningProgress($('#btn_save'));
                     });

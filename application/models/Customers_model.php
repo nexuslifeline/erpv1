@@ -31,6 +31,60 @@ class Customers_model extends CORE_Model{
 
 
 
+    //returns list of sales invoice of customer that are unpaid
+    function get_customer_receivable_list($customer_id) {
+        $sql="SELECT unp.*,IFNULL(pay.sales_payment_amount,0) as sales_payment_amount,
+                (IFNULL(unp.total_sales_amount,0)-IFNULL(pay.sales_payment_amount,0))as net_receivable
+                FROM
+                (SELECT si.sales_invoice_id,si.sales_inv_no,date_due,si.remarks,si.customer_id,s.customer_name,
+                (si.total_after_tax)As total_sales_amount
+                FROM (sales_invoice as si
+                LEFT JOIN customers as s ON si.customer_id=s.customer_id)
+                WHERE si.is_active=TRUE AND si.is_deleted=FALSE AND si.is_paid=FALSE
+                AND si.customer_id=$customer_id
+                )as unp
+
+                LEFT JOIN
+
+                (SELECT rpl.payment_id,rpl.sales_invoice_id,
+                SUM(rpl.payment_amount)as sales_payment_amount
+                FROM (receivable_payments_list as rpl
+                INNER JOIN sales_invoice as si ON rpl.sales_invoice_id=si.sales_invoice_id)
+                INNER JOIN receivable_payments as rp ON rpl.payment_id=rp.payment_id
+                WHERE rp.is_active=TRUE AND rp.is_deleted=FALSE AND si.is_paid=FALSE
+                AND rp.customer_id=$customer_id
+                GROUP BY rpl.sales_invoice_id
+                )As pay
+
+                ON unp.sales_invoice_id=pay.sales_invoice_id";
+        return $this->db->query($sql)->result();
+    }
+
+
+    function get_current_receivable_amount($customer_id){
+        $sql="SELECT IFNULL((SUM(m.total_receivable)-SUM(m.total_payment)),0) as net_receivable
+            FROM
+            (SELECT SUM(si.total_after_tax) as total_receivable,0 as total_payment FROM sales_invoice as si
+            WHERE si.is_active=TRUE AND si.is_deleted=FALSE AND si.customer_id=$customer_id GROUP BY si.customer_id
+
+
+            UNION
+
+
+            SELECT 0 as total_receivable,SUM(rp.total_paid_amount) as total_payment FROM receivable_payments as rp
+            WHERE rp.is_active=TRUE AND rp.is_deleted=FALSE AND rp.customer_id=$customer_id GROUP BY rp.customer_id)as m";
+
+        return (float)($this->db->query($sql)->result()[0]->net_receivable);
+    }
+
+
+    function recalculate_customer_receivable($customer_id){
+        $sql="UPDATE customers SET total_receivable_amount=".$this->get_current_receivable_amount($customer_id)." WHERE customer_id=$customer_id";
+        return $this->db->query($sql);
+    }
+
+
+
 
 }
 

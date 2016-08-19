@@ -367,12 +367,23 @@
                 }
                 else {
                     tr.addClass( 'details' );
-                    //console.log(row.data());
-                    row.child( format( row.data() ) ).show();
-                    // Add to the 'open' array
-                    if ( idx === -1 ) {
-                        detailRows.push( tr.attr('id') );
-                    }
+
+                    var d=row.data();
+
+                    $.ajax({
+                        "dataType":"html",
+                        "type":"POST",
+                        "url":"Templates/layout/customer/"+ d.customer_id,
+                        "beforeSend" : function(){
+                            row.child( '<center><br /><img src="assets/img/loader/ajax-loader-lg.gif" /><br /><br /></center>' ).show();
+                        }
+                    }).done(function(response){
+                        row.child( response ).show();
+                        reInitializeDatatable($('#tbl_so_'+ d.customer_id));
+                        if ( idx === -1 ) {
+                            detailRows.push( tr.attr('id') );
+                        }
+                    });
 
 
 
@@ -481,6 +492,7 @@
                                 showNotification(response);
                                 dt.row.add(response.row_added[0]).draw();
                                 clearFields();
+                                showList(true);
 
                             }).always(function(){
                                 showSpinningProgress($('#btn_save'));
@@ -646,7 +658,13 @@
 
 
 
+        var reInitializeDatatable=function(tbl){
+            tbl.DataTable({
+                "dom": '<"toolbar">frtip',
+                "bLengthChange":false
 
+            });
+        };
 
 
 

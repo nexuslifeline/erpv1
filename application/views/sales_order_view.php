@@ -157,8 +157,8 @@
                     <th>SO #</th>
                     <th>Order Date</th>
                     <th>Customer</th>
-                    <th>Department</th>
                     <th>Remarks</th>
+                    <th>Status</th>
                     <th><center>Action</center></th>
                 </tr>
                 </thead>
@@ -643,8 +643,8 @@ $(document).ready(function(){
                 { targets:[1],data: "so_no" },
                 { targets:[2],data: "date_order" },
                 { targets:[3],data: "customer_name" },
-                { targets:[4],data: "department_name" },
-                { targets:[5],data: "remarks" },
+                { targets:[4],data: "remarks" },
+                { targets:[5],data: "order_status" },
                 {
                     targets:[6],
                     render: function (data, type, full, meta){
@@ -1094,15 +1094,16 @@ $(document).ready(function(){
 
             if(validateRequiredFields($('#frm_sales_order'))){
                 if(_txnMode=="new"){
-                    createIssuance().done(function(response){
+                    createSalesOrder().done(function(response){
                         showNotification(response);
                         dt.row.add(response.row_added[0]).draw();
                         clearFields($('#frm_sales_order'));
+                        showList(true);
                     }).always(function(){
                         showSpinningProgress($('#btn_save'));
                     });
                 }else{
-                    updateIssuances().done(function(response){
+                    updateSalesOrder().done(function(response){
                         showNotification(response);
                         dt.row(_selectRowObj).data(response.row_updated[0]).draw();
                         clearFields($('#frm_sales_order'));
@@ -1159,7 +1160,7 @@ $(document).ready(function(){
     };
 
 
-    var createIssuance=function(){
+    var createSalesOrder=function(){
         var _data=$('#frm_sales_order,#frm_items').serializeArray();
 
         var tbl_summary=$('#tbl_sales_order_summary');
@@ -1179,7 +1180,7 @@ $(document).ready(function(){
         });
     };
 
-    var updateIssuances=function(){
+    var updateSalesOrder=function(){
         var _data=$('#frm_sales_order,#frm_items').serializeArray();
 
         var tbl_summary=$('#tbl_sales_order_summary');

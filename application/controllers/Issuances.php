@@ -120,7 +120,7 @@ class Issuances extends CORE_Controller
                 $m_issuance->begin();
 
                 $m_issuance->set('date_created','NOW()'); //treat NOW() as function and not string
-                $m_issuance->department_id=$this->input->post('department',TRUE);
+                $m_issuance->issued_department_id=$this->input->post('department',TRUE);
                 $m_issuance->issued_to_person=$this->input->post('issued_to_person',TRUE);
                 $m_issuance->remarks=$this->input->post('remarks',TRUE);
                 $m_issuance->date_issued=date('Y-m-d',strtotime($this->input->post('date_issued',TRUE)));
@@ -193,7 +193,7 @@ class Issuances extends CORE_Controller
 
                 $m_issuance->begin();
 
-                $m_issuance->department_id=$this->input->post('department',TRUE);
+                $m_issuance->issued_department_id=$this->input->post('department',TRUE);
                 $m_issuance->issued_to_person=$this->input->post('issued_to_person',TRUE);
                 $m_issuance->remarks=$this->input->post('remarks',TRUE);
                 $m_issuance->date_issued=date('Y-m-d',strtotime($this->input->post('date_issued',TRUE)));
@@ -297,7 +297,7 @@ class Issuances extends CORE_Controller
                 'departments.department_name'
             ),
             array(
-                array('departments','departments.department_id=issuance_info.department_id','left')
+                array('departments','departments.department_id=issuance_info.issued_department_id','left')
             )
         );
     }

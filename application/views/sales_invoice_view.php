@@ -133,8 +133,8 @@
 <div class="page-content"><!-- #page-content -->
 
 <ol class="breadcrumb"  style="margin-bottom: 10px;">
-    <li><a href="Dashboard">Dashboard</a> > </li>
-    <li><a href="Issuances">Issuance</a></li>
+    <li><a href="Dashboard">Dashboard</a></li>
+    <li><a href="Sales_invoice">Sales Invoice</a></li>
 </ol>
 
 
@@ -143,7 +143,7 @@
 <div class="row">
 <div class="col-md-12">
 
-<div id="div_user_list">
+<div id="div_sales_invoice_list">
 
 
 
@@ -181,10 +181,12 @@
 </div>
 
 
-<div id="div_user_fields" style="display: none;">
+<div id="div_sales_invoice_fields" style="display: none;">
 <div class="panel panel-default">
     <div class="panel-heading">
         <h2>Sales Invoice</h2>
+
+        <div class="pull-right"><strong>[ <a id="btn_receive_so" href="#" style="text-decoration: underline;">Create from Sales Order</a> ]</strong></div>
         <div class="panel-ctrls" data-actions-container=""></div>
     </div>
 
@@ -207,6 +209,17 @@
                 </div>
 
 
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
+                    <label class="col-md-3  control-label"> SO # :</label>
+                    <div class="col-md-9">
+                        <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-code"></i>
+                                                    </span>
+                            <input type="text" name="so_no" class="form-control" placeholder="Click 'Create from Sales Order'">
+                        </div>
+                    </div>
+                </div>
 
 
                 <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 form-group">
@@ -436,6 +449,50 @@
 
 
 
+
+<div id="modal_so_list" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
+    <div class="modal-dialog" style="width: 80%;">
+        <div class="modal-content"><!---content--->
+            <div class="modal-header">
+                <button type="button" class="close"   data-dismiss="modal" aria-hidden="true">X</button>
+                <h4 class="modal-title"><span id="modal_mode"> </span>Sales Order</h4>
+
+            </div>
+
+            <div class="modal-body">
+                <table id="tbl_so_list" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>SO#</th>
+                        <th>Customer</th>
+                        <th>Remarks</th>
+                        <th>Order</th>
+                        <th>Status</th>
+                        <th><center>Action</center></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn_accept" type="button" class="btn btn-primary" data-dismiss="modal" style="text-transform: none;font-family: Tahoma, Georgia, Serif;">Receive this Order</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: none;font-family: Tahoma, Georgia, Serif;">Cancel</button>
+            </div>
+        </div><!---content---->
+    </div>
+</div><!---modal-->
+
+
+
+
+
+
 <div id="modal_new_customer" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
     <div class="modal-dialog modal-md">
         <div class="modal-content"><!---content--->
@@ -612,7 +669,7 @@
 
 
 $(document).ready(function(){
-    var dt; var _txnMode; var _selectedID; var _selectRowObj; var _cboDepartments; var _cboCustomers;
+    var dt; var _txnMode; var _selectedID; var _selectRowObj; var _cboDepartments; var _cboCustomers; var dt_so;
 
     var oTableItems={
         qty : 'td:eq(0)',
@@ -666,6 +723,35 @@ $(document).ready(function(){
                 }
             ]
 
+        });
+
+
+
+        dt_so=$('#tbl_so_list').DataTable({
+            "bLengthChange":false,
+            "ajax" : "Sales_order/transaction/open",
+            "columns": [
+                {
+                    "targets": [0],
+                    "class":          "details-control",
+                    "orderable":      false,
+                    "data":           null,
+                    "defaultContent": ""
+                },
+                { targets:[1],data: "so_no" },
+                { targets:[2],data: "customer_name" },
+                { targets:[3],data: "remarks" },
+                { targets:[4],data: "date_order" },
+                { targets:[5],data: "order_status" },
+                {
+                    targets:[6],
+                    render: function (data, type, full, meta){
+                        var btn_accept='<button class="btn btn-default btn-sm" name="accept_so"  style="margin-left:-15px;text-transform: none;" data-toggle="tooltip" data-placement="top" title="Create Sales Invoice on SO"><i class="fa fa-check"></i> Accept SO</button>';
+                        return '<center>'+btn_accept+'</center>';
+                    }
+                }
+
+            ]
         });
 
 
@@ -725,6 +811,7 @@ $(document).ready(function(){
             }
         }).on('keyup', this, function (event) {
             if (event.keyCode == 13) {
+
                 $('.tt-suggestion:first').click();
                 _objTypeHead.typeahead('close');
                 _objTypeHead.typeahead('val','');
@@ -747,8 +834,6 @@ $(document).ready(function(){
                 tax_rate=0;
                 net_vat=total;
                 vat_input=0;
-
-
 
             }
 
@@ -841,6 +926,49 @@ $(document).ready(function(){
         } );
 
 
+
+
+
+        $('#tbl_so_list tbody').on( 'click', 'tr td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = dt_so.row( tr );
+            var idx = $.inArray( tr.attr('id'), detailRows );
+
+            if ( row.child.isShown() ) {
+                tr.removeClass( 'details' );
+                row.child.hide();
+
+                // Remove from the 'open' array
+                detailRows.splice( idx, 1 );
+            }
+            else {
+                tr.addClass( 'details' );
+                //console.log(row.data());
+                _selectRowObj=$(this).closest('tr');
+                var d=dt_so.row(_selectRowObj).data();
+
+                $.ajax({
+                    "dataType":"html",
+                    "type":"POST",
+                    "url":"Templates/layout/sales-order/"+ d.sales_order_id+'/contentview',
+                    "beforeSend" : function(){
+                        row.child( '<center><br /><img src="assets/img/loader/ajax-loader-lg.gif" /><br /><br /></center>' ).show();
+                    }
+                }).done(function(response){
+                    row.child( response ).show();
+                    // Add to the 'open' array
+                    if ( idx === -1 ) {
+                        detailRows.push( tr.attr('id') );
+                    }
+                });
+
+
+
+            }
+        } );
+
+
+
         //loads modal to create new department
         _cboDepartments.on("select2:select", function (e) {
 
@@ -897,6 +1025,13 @@ $(document).ready(function(){
         });
 
 
+        $('#btn_receive_so').click(function(){
+            $('#tbl_so_list tbody').html('<tr><td colspan="7"><center><br /><img src="assets/img/loader/ajax-loader-lg.gif" /><br /><br /></center></td></tr>');
+            dt_so.ajax.reload( null, false );
+            $('#modal_so_list').modal('show');
+        });
+
+
         //create new customer
         $('#btn_create_customer').click(function(){
             var btn=$(this);
@@ -929,30 +1064,6 @@ $(document).ready(function(){
 
 
 
-
-
-
-        $('#tbl_sales_invoice tbody').on('click','#btn_email',function(){
-            _selectRowObj=$(this).parents('tr').prev();
-            var d=dt.row(_selectRowObj).data();
-            var btn=$(this);
-
-            $.ajax({
-                "dataType":"json",
-                "type":"POST",
-                "url":"Email/send/po/"+ d.sales_invoice_id,
-                "data": {email:$(this).data('supplier-email')},
-                "beforeSend" : function(){
-                    showSpinningProgress(btn);
-                }
-            }).done(function(response){
-                showNotification(response);
-                dt.row(_selectRowObj).data(response.row_updated[0]).draw();
-            }).always(function(){
-                showSpinningProgress(btn);
-            });
-        });
-
         $('#btn_new').click(function(){
             _txnMode="new";
             //$('.toggle-fullscreen').click();
@@ -970,6 +1081,86 @@ $(document).ready(function(){
             event.preventDefault();
             $('img[name="img_user"]').attr('src','assets/img/anonymous-icon.png');
         });
+
+
+
+        $('#tbl_so_list > tbody').on('click','button[name="accept_so"]',function(){
+            _selectRowObj=$(this).closest('tr');
+            var data=dt_so.row(_selectRowObj).data();
+
+            //alert(d.sales_order_id);
+
+            $('input,textarea').each(function(){
+                var _elem=$(this);
+                $.each(data,function(name,value){
+                    if(_elem.attr('name')==name&&_elem.attr('type')!='password'){
+                        _elem.val(value);
+                    }
+
+                });
+
+                $('#cbo_customers').select2('val',data.customer_id);
+                $('#cbo_departments').select2('val',data.department_id);
+
+            });
+
+
+            $('#modal_so_list').modal('hide');
+            resetSummary();
+
+            $.ajax({
+                url : 'Sales_order/transaction/item-balance/'+data.sales_order_id,
+                type : "GET",
+                cache : false,
+                dataType : 'json',
+                processData : false,
+                contentType : false,
+                beforeSend : function(){
+                    $('#tbl_items > tbody').html('<tr><td align="center" colspan="8"><br /><img src="assets/img/loader/ajax-loader-sm.gif" /><br /><br /></td></tr>');
+                },
+                success : function(response){
+                    var rows=response.data;
+                    $('#tbl_items > tbody').html('');
+
+
+
+                    $.each(rows,function(i,value){
+
+
+
+                        $('#tbl_items > tbody').prepend(newRowItem({
+                            inv_qty : value.so_qty,
+                            product_code : value.product_code,
+                            unit_id : value.unit_id,
+                            unit_name : value.unit_name,
+                            product_id: value.product_id,
+                            product_desc : value.product_desc,
+                            inv_line_total_discount : value.so_line_total_discount,
+                            tax_exempt : false,
+                            inv_tax_rate : value.so_tax_rate,
+                            inv_price : value.so_price,
+                            inv_discount : value.so_discount,
+                            tax_type_id : null,
+                            inv_line_total_price : value.so_line_total,
+                            inv_non_tax_amount: value.non_tax_amount,
+                            inv_tax_amount:value.tax_amount
+                        }));
+
+
+
+                    });
+
+
+                  reComputeTotal();
+
+                }
+            });
+
+
+
+        });
+
+
 
 
 
@@ -1157,15 +1348,16 @@ $(document).ready(function(){
 
             if(validateRequiredFields($('#frm_sales_invoice'))){
                 if(_txnMode=="new"){
-                    createIssuance().done(function(response){
+                    createSalesInvoice().done(function(response){
                         showNotification(response);
                         dt.row.add(response.row_added[0]).draw();
                         clearFields($('#frm_sales_invoice'));
+                        showList(true);
                     }).always(function(){
                         showSpinningProgress($('#btn_save'));
                     });
                 }else{
-                    updateIssuances().done(function(response){
+                    updateSalesInvoice().done(function(response){
                         showNotification(response);
                         dt.row(_selectRowObj).data(response.row_updated[0]).draw();
                         clearFields($('#frm_sales_invoice'));
@@ -1222,7 +1414,7 @@ $(document).ready(function(){
     };
 
 
-    var createIssuance=function(){
+    var createSalesInvoice=function(){
         var _data=$('#frm_sales_invoice,#frm_items').serializeArray();
 
         var tbl_summary=$('#tbl_sales_invoice_summary');
@@ -1242,7 +1434,7 @@ $(document).ready(function(){
         });
     };
 
-    var updateIssuances=function(){
+    var updateSalesInvoice=function(){
         var _data=$('#frm_sales_invoice,#frm_items').serializeArray();
 
         var tbl_summary=$('#tbl_sales_invoice_summary');
@@ -1272,11 +1464,11 @@ $(document).ready(function(){
 
     var showList=function(b){
         if(b){
-            $('#div_user_list').show();
-            $('#div_user_fields').hide();
+            $('#div_sales_invoice_list').show();
+            $('#div_sales_invoice_fields').hide();
         }else{
-            $('#div_user_list').hide();
-            $('#div_user_fields').show();
+            $('#div_sales_invoice_list').hide();
+            $('#div_sales_invoice_fields').show();
         }
     };
 
@@ -1356,6 +1548,16 @@ $(document).ready(function(){
         tbl_summary.find(oTableDetails.after_tax).html('<b>'+accounting.formatNumber(after_tax,2)+'</b>');
 
     };
+
+
+    var resetSummary=function(){
+        var tbl_summary=$('#tbl_sales_invoice_summary');
+        tbl_summary.find(oTableDetails.discount).html('0.00');
+        tbl_summary.find(oTableDetails.before_tax).html('0.00');
+        tbl_summary.find(oTableDetails.inv_tax_amount).html('0.00');
+        tbl_summary.find(oTableDetails.after_tax).html('<b>0.00</b>');
+    };
+
 
 
 

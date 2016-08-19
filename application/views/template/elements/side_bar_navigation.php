@@ -36,7 +36,7 @@
                             <ul class="acc-menu">
                                 <li><a href="Purchases">Purchase Order</a></li>
                                 <li><a href="Deliveries">Purchase Invoice</a></li>
-                                <li><a href="#">Record Payment</a></li>
+                                <li><a href="Payable_payments">Record Payment</a></li>
                                 <li><a href="Issuances">Item Issuance</a></li>
                                 <li><a href="Adjustments">Item Adjustment</a></li>
                             </ul>
@@ -44,16 +44,9 @@
 
                         <li><a href="#"><i class="ti ti-shopping-cart"></i><span>Sales</span></a>
                             <ul class="acc-menu">
-                                <li><a href="#">Standard Sales</a>
-
-                                    <ul class="acc-menu">
-                                        <li><a href="Sales_order">Sales Order</a></li>
-                                        <li><a href="Sales_invoice">Record Invoice</a></li>
-                                        <li><a href="#">Received Payment</a></li>
-                                    </ul>
-
-                                </li>
-
+                                <li><a href="Sales_order">Sales Order</a></li>
+                                <li><a href="Sales_invoice">Sales Invoice</a></li>
+                                <li><a href="Receivable_payments">Received Payment</a></li>
                             </ul>
                         </li>
 
@@ -62,12 +55,12 @@
                                 <li><a href="categories">Category Management</a></li>
                                 <li><a href="departments">Department Management</a></li>
                                 <li><a href="units">Unit Management</a></li>
-                                <li><a href="brands">Brand Management</a></li>
+                                <!--<li><a href="brands">Brand Management</a></li>
                                 <li><a href="discounts">Discount Management</a></li>
                                 <li><a href="cards">Card Management</a></li>
                                 <li><a href="generics">Generic Management</a></li>
                                 <li><a href="giftcards">Gift Card Management</a></li>
-                                <li><a href="locations">Location Management</a></li>
+                                <li><a href="locations">Location Management</a></li>-->
                             </ul>
                         </li>
 
@@ -81,7 +74,8 @@
 
                         <li><a href="#"><i class="ti ti-settings"></i><span>Settings</span></a>
                             <ul class="acc-menu">
-                                <li><a href="tax">Tax Management</a></li>
+                                <li><a href="tax">Setup Tax</a></li>
+                                <li><a href="Account_titles">Setup Chart of Accounts</a></li>
                                 <li><a href="#">Setup User Group</a></li>
                                 <li><a href="users">Create User Account</a></li>
                                 <li><a href="company">Setup Company Info</a></li>

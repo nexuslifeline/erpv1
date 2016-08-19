@@ -121,6 +121,7 @@ class Adjustments extends CORE_Controller
                 $m_adjustment->set('date_adjusted','NOW()'); //treat NOW() as function and not string
                 $m_adjustment->set('date_created','NOW()'); //treat NOW() as function and not string
 
+
                 $m_adjustment->department_id=$this->input->post('department',TRUE);
                 $m_adjustment->adjustment_type=$this->input->post('adjustment_type',TRUE);
                 $m_adjustment->remarks=$this->input->post('remarks',TRUE);
@@ -233,6 +234,9 @@ class Adjustments extends CORE_Controller
 
                     $m_adjustment_items->set('unit_id','(SELECT unit_id FROM products WHERE product_id='.(int)$prod_id[$i].')');
                     $m_adjustment_items->save();
+
+
+
                 }
 
 

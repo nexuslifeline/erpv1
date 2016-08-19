@@ -46,6 +46,7 @@ class Suppliers extends CORE_Controller {
                 $m_suppliers=$this->Suppliers_model;
                 $m_photos=$this->Supplier_photos_model;
 
+                $m_suppliers->set('date_created','NOW()');
                 $m_suppliers->supplier_name=$this->input->post('supplier_name',TRUE);
                 $m_suppliers->address=$this->input->post('address',TRUE);
                 $m_suppliers->email_address=$this->input->post('email_address',TRUE);
@@ -53,6 +54,7 @@ class Suppliers extends CORE_Controller {
                 $m_suppliers->mobile_no=$this->input->post('mobile_no',TRUE);
                 $m_suppliers->tin_no=$this->input->post('tin_no',TRUE);
                 $m_suppliers->tax_type_id=$this->input->post('tax_type_id',TRUE);
+                $m_suppliers->posted_by_user=$this->session->user_id;
                 $m_suppliers->save();
 
                 $supplier_id=$m_suppliers->last_insert_id();
@@ -159,6 +161,15 @@ class Suppliers extends CORE_Controller {
                         echo json_encode($response);
                     }
                 }
+                break;
+            case 'payables':
+                $supplier_id=$this->input->get('id',TRUE);
+                $m_suppliers=$this->Suppliers_model;
+
+                $data['payables']=$m_suppliers->get_supplier_payable_list($supplier_id);
+                $structured_content=$this->load->view('template/supplier_payables_list',$data,TRUE);
+                echo $structured_content;
+
                 break;
         }
     }

@@ -155,7 +155,7 @@
 <div class="row">
 <div class="col-md-12">
 
-<div id="div_user_list">
+<div id="div_delivery_list">
 
 
 
@@ -193,7 +193,7 @@
 </div>
 
 
-<div id="div_user_fields" style="display: none;">
+<div id="div_delivery_fields" style="display: none;">
 <div class="panel panel-default">
 <div class="panel-heading">
     <h2>Purchase Invoice</h2>
@@ -1183,6 +1183,10 @@ $(document).ready(function(){
 
         });
 
+
+
+
+
         $('#btn_create_user_suppliers').click(function(){
 
             var btn=$(this);
@@ -1416,6 +1420,7 @@ $(document).ready(function(){
                         showNotification(response);
                         dt.row.add(response.row_added[0]).draw();
                         clearFields($('#frm_deliveries'));
+                        showList(true);
                     }).always(function(){
                         showSpinningProgress($('#btn_save'));
                     });
@@ -1525,11 +1530,11 @@ $(document).ready(function(){
 
     var showList=function(b){
         if(b){
-            $('#div_user_list').show();
-            $('#div_user_fields').hide();
+            $('#div_delivery_list').show();
+            $('#div_delivery_fields').hide();
         }else{
-            $('#div_user_list').hide();
-            $('#div_user_fields').show();
+            $('#div_delivery_list').hide();
+            $('#div_delivery_fields').show();
         }
     };
 

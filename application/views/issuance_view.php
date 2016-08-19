@@ -1025,6 +1025,7 @@ $(document).ready(function(){
                         showNotification(response);
                         dt.row.add(response.row_added[0]).draw();
                         clearFields($('#frm_issuances'));
+                        showList(true);
                     }).always(function(){
                         showSpinningProgress($('#btn_save'));
                     });

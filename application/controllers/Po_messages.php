@@ -29,7 +29,7 @@ class Po_messages extends CORE_Controller
             $purchase_order_id,
 
             'purchase_order.*,CONCAT_WS(" ",purchase_order.terms,
-            purchase_order.duration)as term_description,DATE_FORMAT(purchase_order.date_created,"%M %d %Y %T")as date_created,
+            purchase_order.duration)as term_description,DATE_FORMAT(purchase_order.date_created,"%M %d %Y %r")as date_created,
             CONCAT_WS(" ",user_accounts.user_fname,user_accounts.user_lname)as posted_by,suppliers.supplier_name',
 
             array(
@@ -156,7 +156,7 @@ class Po_messages extends CORE_Controller
                 'po_attachments.purchase_order_id',
                 'po_attachments.orig_file_name',
                 'po_attachments.server_file_directory',
-                'DATE_FORMAT(po_attachments.date_added,"%M/%d/%Y %T") as date_added',
+                'DATE_FORMAT(po_attachments.date_added,"%M/%d/%Y %r") as date_added',
                 'CONCAT_WS(" ",ua.user_fname,ua.user_lname) as added_by'
             ),
             array(

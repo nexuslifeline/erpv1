@@ -11,7 +11,8 @@ class Login extends CORE_Controller {
         $this->load->model('Tax_types_model');
         $this->load->model('Approval_status_model');
         $this->load->model('Order_status_model');
-
+        $this->load->model('Account_type_model');
+        $this->load->model('Departments_model');
     }
 
 
@@ -48,6 +49,13 @@ class Login extends CORE_Controller {
         //create default order status
         $m_approval=$this->Order_status_model;
         $m_approval->create_default_order_status();
+
+        //create default account types
+        $m_account_types=$this->Account_type_model;
+        $m_account_types->create_default_account_types();
+
+        $m_department=$this->Departments_model;
+        $m_department->create_default_department();
     }
 
 
@@ -76,6 +84,7 @@ class Login extends CORE_Controller {
                             )
                         );
 
+                        $response['title']='Success';
                         $response['stat']='success';
                         $response['msg']='User successfully authenticated.';
 

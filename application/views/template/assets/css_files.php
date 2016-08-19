@@ -11,3 +11,5 @@
 
 
 <link href="assets/plugins/notify/pnotify.core.css" rel="stylesheet"> <!-- notification -->
+
+<link rel="stylesheet" href="assets/plugins/pace/themes/blue/pace-theme-loading-bar.css" /><!-- progress bar -->

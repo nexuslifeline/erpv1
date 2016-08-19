@@ -26,7 +26,7 @@ class Po_message_model extends CORE_Model {
 
             (SELECT pom.*,
 
-                CONCAT(DAYNAME(pom.date_posted),', ',DATE_FORMAT(pom.date_posted,'%M %d, %Y %T'))as full_date_description,
+                CONCAT(DAYNAME(pom.date_posted),', ',DATE_FORMAT(pom.date_posted,'%M %d, %Y %r'))as full_date_description,
                 TIME_FORMAT(pom.date_posted,'%r') as TimePosted,
                 DATEDIFF(NOW(),pom.date_posted)as DaysPosted,
                 HOUR(TIMEDIFF(pom.date_posted,NOW()))as HoursPosted,

@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="assets/plugins/spinner/dist/ladda-themeless.min.css">
 
 
+
     <style>
 
     </style>
@@ -28,7 +29,7 @@
         
         
 <div class="container" id="login-form">
-	<a href="index.html" class="login-logo"></a>
+	<a href="Login" class="login-logo"></a>
 		<div class="row">
 			<div class="col-md-4 col-md-offset-4">
 				<div class="panel panel-default">
@@ -81,13 +82,13 @@
 						</div>
 					</div>
 				</div>
-
+<!--
 				<div class="text-center">
 					<a href="#" class="btn btn-label btn-social btn-facebook mb-md"><i class="ti ti-facebook"></i>Connect with Facebook</a>
 					<a href="#" class="btn btn-label btn-social btn-twitter mb-md"><i class="ti ti-twitter"></i>Connect with Twitter</a>
 				</div>
 
-
+-->
 			</div>
 		</div>
 </div>
@@ -156,7 +157,7 @@
             var showNotification=function(obj){
                 PNotify.removeAll(); //remove all notifications
                 new PNotify({
-                    title:  "Notification",
+                    title:  obj.title,
                     text:  obj.msg,
                     type:  obj.stat
                 });

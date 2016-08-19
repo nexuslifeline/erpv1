@@ -85,6 +85,39 @@ class Sales_order extends CORE_Controller
                 echo json_encode($response);
                 break;
 
+            //***********************************************************************************************************
+            case 'open':  //this returns PO that are already approved
+                $m_sales_order=$this->Sales_order_model;
+                //$where_filter=null,$select_list=null,$join_array=null,$order_by=null,$group_by=null,$auto_select_escape=TRUE,$custom_where_filter=null
+                $response['data']= $m_sales_order->get_list(
+
+                    'sales_order.is_deleted=FALSE AND sales_order.is_active=TRUE AND (sales_order.order_status_id=1 OR sales_order.order_status_id=3)',
+
+                    array(
+                        'sales_order.*',
+                        'DATE_FORMAT(sales_order.date_order,"%m/%d/%Y") as date_order',
+                        'customers.customer_name',
+                        'order_status.order_status',
+                        'departments.department_name'
+                    ),
+                    array(
+                        array('customers','customers.customer_id=sales_order.customer_id','left'),
+                        array('departments','departments.department_id=sales_order.department_id','left'),
+                        array('order_status','order_status.order_status_id=sales_order.order_status_id','left')
+                    )
+
+                );
+                echo json_encode($response);
+                break;
+
+            ////****************************************items/products of selected Items***********************************************
+            case 'item-balance':
+                $m_items=$this->Sales_order_item_model;
+                $response['data']=$m_items->get_products_with_balance_qty($id_filter);
+                echo json_encode($response);
+
+                break;
+
             ////****************************************items/products of selected Items***********************************************
             case 'items': //items on the specific PO, loads when edit button is called
                 $m_items=$this->Sales_order_item_model;
@@ -124,7 +157,9 @@ class Sales_order extends CORE_Controller
 
 
 
+
                 $m_sales_order->begin();
+
 
                 //treat NOW() as function and not string
                 $m_sales_order->set('date_created','NOW()'); //treat NOW() as function and not string
@@ -133,7 +168,6 @@ class Sales_order extends CORE_Controller
                 $m_sales_order->customer_id=$this->input->post('customer',TRUE);
                 $m_sales_order->remarks=$this->input->post('remarks',TRUE);
                 $m_sales_order->date_order=date('Y-m-d',strtotime($this->input->post('date_order',TRUE)));
-
                 $m_sales_order->total_discount=$this->get_numeric_value($this->input->post('summary_discount',TRUE));
                 $m_sales_order->total_before_tax=$this->get_numeric_value($this->input->post('summary_before_discount',TRUE));
                 $m_sales_order->total_tax_amount=$this->get_numeric_value($this->input->post('summary_tax_amount',TRUE));
@@ -175,6 +209,9 @@ class Sales_order extends CORE_Controller
                 //update so number base on formatted last insert id
                 $m_sales_order->so_no='SO-'.date('Ymd').'-'.$sales_order_id;
                 $m_sales_order->modify($sales_order_id);
+
+
+
                 $m_sales_order->commit();
 
 
@@ -196,6 +233,16 @@ class Sales_order extends CORE_Controller
             case 'update':
                 $m_sales_order=$this->Sales_order_model;
                 $sales_order_id=$this->input->post('sales_order_id',TRUE);
+
+
+                //get sales order id base on SO number
+                $m_so=$this->Sales_order_model;
+                $arr_so_info=$m_so->get_list(
+                    array('sales_order.so_no'=>$this->input->post('so_no',TRUE)),
+                    'sales_order.sales_order_id'
+                );
+                $sales_order_id=(count($arr_so_info)>0?$arr_so_info[0]->sales_order_id:0);
+
 
 
                 $m_sales_order->begin();
@@ -305,18 +352,23 @@ class Sales_order extends CORE_Controller
                 'DATE_FORMAT(sales_order.date_order,"%m/%d/%Y") as date_order',
                 'departments.department_id',
                 'departments.department_name',
-                'customers.customer_name'
+                'customers.customer_name',
+                'order_status.order_status'
             ),
 
             array(
                 array('departments','departments.department_id=sales_order.department_id','left'),
-                array('customers','customers.customer_id=sales_order.customer_id','left')
+                array('customers','customers.customer_id=sales_order.customer_id','left'),
+                array('order_status','order_status.order_status_id=sales_order.order_status_id','left')
             )
 
 
         );
 
     }
+
+
+
 
 
 //***************************************************************************************

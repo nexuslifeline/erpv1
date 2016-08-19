@@ -19,5 +19,20 @@ class Departments_model extends CORE_Model {
             ";
         return $this->db->query($sql)->result();
     }
+
+
+    function create_default_department(){
+
+        //return;
+        $sql="INSERT IGNORE INTO departments
+                  (department_id,department_name,department_desc,date_created)
+              VALUES
+                  (1,'Main Department','',NOW())
+        ";
+        $this->db->query($sql);
+
+    }
+
+
 }
 ?>
