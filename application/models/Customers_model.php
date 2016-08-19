@@ -67,15 +67,15 @@ class Customers_model extends CORE_Model{
             (SELECT SUM(si.total_after_tax) as total_receivable,0 as total_payment FROM sales_invoice as si
             WHERE si.is_active=TRUE AND si.is_deleted=FALSE AND si.customer_id=$customer_id GROUP BY si.customer_id
 
-
             UNION
-
 
             SELECT 0 as total_receivable,SUM(rp.total_paid_amount) as total_payment FROM receivable_payments as rp
             WHERE rp.is_active=TRUE AND rp.is_deleted=FALSE AND rp.customer_id=$customer_id GROUP BY rp.customer_id)as m";
 
+
         $result=$this->db->query($sql)->result();
         return (float)($result[0]->net_receivable);
+
     }
 
 
