@@ -69,7 +69,9 @@ class Suppliers_model extends CORE_Model {
             SELECT 0 as total_payable,SUM(pp.total_paid_amount) as total_payment FROM payable_payments as pp
             WHERE pp.is_active=TRUE AND pp.is_deleted=FALSE AND pp.supplier_id=$supplier_id GROUP BY pp.supplier_id)as m";
 
-        return (float)($this->db->query($sql)->result()[0]->net_payable);
+        $result=$this->db->query($sql)->result();
+
+        return (float)($result[0]->net_payable);
     }
 
 
