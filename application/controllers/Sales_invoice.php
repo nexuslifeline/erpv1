@@ -329,6 +329,35 @@ class Sales_invoice extends CORE_Controller
                 break;
 
             //***************************************************************************************
+            case 'sales-for-review':
+                $m_sales_invoice=$this->Sales_invoice_model;
+                $response['data']=$m_sales_invoice->get_list(
+
+                    array(
+                        'sales_invoice.is_active'=>TRUE,
+                        'sales_invoice.is_deleted'=>FALSE,
+                        'sales_invoice.is_journal_posted'=>FALSE
+                    ),
+
+                    array(
+                        'sales_invoice.sales_invoice_id',
+                        'sales_invoice.sales_inv_no',
+                        'sales_invoice.remarks',
+                        'DATE_FORMAT(sales_invoice.date_invoice,"%m/%d/%Y") as date_invoice',
+                        'customers.customer_name'
+                    ),
+
+                    array(
+                        array('customers','customers.customer_id=sales_invoice.customer_id','left')
+                    )
+
+
+
+                );
+                echo json_encode($response);
+                break;
+
+
         }
 
     }

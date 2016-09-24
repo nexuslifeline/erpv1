@@ -40,7 +40,7 @@
             <a href="#" class="toggle-fullscreen"><span class="icon-bg"><i class="ti ti-fullscreen"></i></span></i></a>
         </li>
 
-        <li class="dropdown toolbar-icon-bg hidden-xs">
+        <!--<li class="dropdown toolbar-icon-bg hidden-xs">
             <a href="#" class="hasnotifications dropdown-toggle" data-toggle='dropdown'><span class="icon-bg"><i class="ti ti-email"></i></span><span
                     class="badge badge-deeporange">2</span></a>
             <div class="dropdown-menu notifications arrow">
@@ -66,9 +66,9 @@
                     <a href="#">See all messages</a>
                 </div>
             </div>
-        </li>
+        </li>-->
 
-        <li class="dropdown toolbar-icon-bg">
+        <!--<li class="dropdown toolbar-icon-bg">
             <a href="#" class="hasnotifications dropdown-toggle" data-toggle='dropdown'><span class="icon-bg"><i class="ti ti-bell"></i></span><span class="badge badge-deeporange">2</span></a>
             <div class="dropdown-menu notifications arrow">
                 <div class="topnav-dropdown-header">
@@ -94,14 +94,14 @@
                     <a href="#">See all notifications</a>
                 </div>
             </div>
-        </li>
+        </li>-->
 
         <li class="dropdown toolbar-icon-bg">
             <a href="#" class="dropdown-toggle username" data-toggle="dropdown">
                 <img class="img-circle" src="<?php echo $this->session->user_photo; ?>" alt="" />
             </a>
             <ul class="dropdown-menu userinfo arrow">
-                <li><a href="#"><i class="ti ti-user"></i><span>Profile</span></a></li>
+                <li><a href="Profile"><i class="ti ti-user"></i><span>Profile</span></a></li>
                 <li><a href="login/transaction/logout"><i class="ti ti-shift-right"></i><span>Sign Out</span></a></li>
             </ul>
         </li>

@@ -13,6 +13,13 @@ class Login extends CORE_Controller {
         $this->load->model('Order_status_model');
         $this->load->model('Account_type_model');
         $this->load->model('Departments_model');
+        $this->load->model('Item_type_model');
+        $this->load->model('Payment_method_model');
+        $this->load->model('Account_class_model');
+        $this->load->model('Account_title_model');
+        $this->load->model('Rights_link_model');
+        $this->load->model('User_group_right_model');
+
     }
 
 
@@ -56,6 +63,24 @@ class Login extends CORE_Controller {
 
         $m_department=$this->Departments_model;
         $m_department->create_default_department();
+
+        $m_item_type=$this->Item_type_model;
+        $m_item_type->create_default_item_types();
+
+
+        $m_payment_method=$this->Payment_method_model;
+        $m_payment_method->create_default_payment_method();
+
+        $m_account_class=$this->Account_class_model;
+        $m_account_class->create_default_account_classes();
+
+        $m_account_title=$this->Account_title_model;
+        $m_account_title->create_default_account_title();
+
+
+        $m_links=$this->Rights_link_model;
+        $m_links->create_default_link_list();
+
     }
 
 
@@ -72,15 +97,33 @@ class Login extends CORE_Controller {
                     $result=$users->authenticate_user($uname,$pword);
 
                     if($result->num_rows()>0){//valid username and pword
-                        //set session data here and response data
+                        $m_rights=$this->User_group_right_model;
+                        $rights=$m_rights->get_list(
+                            array(
+                                'user_group_rights.user_group_id'=>$result->row()->user_group_id
+                            ),
+                            'user_group_rights.link_code'
+                        );
 
+                        $user_rights=array();
+                        $parent_links=array();
+                        foreach($rights as $right){
+                            $main=explode('-',$right->link_code);
+                            $user_rights[]=$right->link_code;
+                            $parent_links[]=$main[0];
+                        }
+
+
+                        //set session data here and response data
                         $this->session->set_userdata(
                             array(
                                 'user_id'=>$result->row()->user_id,
                                 'user_group_id'=>$result->row()->user_group_id,
                                 'user_fullname'=>$result->row()->user_fullname,
                                 'user_email'=>$result->row()->user_email,
-                                'user_photo'=>$result->row()->photo_path
+                                'user_photo'=>$result->row()->photo_path,
+                                'user_rights'=>$user_rights,
+                                'parent_rights'=>$parent_links
                             )
                         );
 

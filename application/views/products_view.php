@@ -86,7 +86,7 @@
             <div class="static-content"  >
                 <div class="page-content"><!-- #page-content -->
 
-                    <ol class="breadcrumb">
+                    <ol class="breadcrumb" style="margin:0%;">
                         <li><a href="dashboard">Dashboard</a></li>
                         <li><a href="products">Products</a></li>
                     </ol>
@@ -163,7 +163,7 @@
                                                             <select name="category_id" id="product_category" data-error-msg="Category is required." required>
                                                                 <option value="0">[ Create Category ]</option>
                                                                 <?php
-                                                                foreach($product_cat as $row)
+                                                                foreach($categories as $row)
                                                                 {
                                                                     echo '<option value="'.$row->category_id  .'">'.$row->category_name.'</option>';
                                                                 }
@@ -178,13 +178,13 @@
 
 
                                                     <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">Unit :</label>
+                                                        <label class="col-md-2 col-md-offset-1 control-label">* Unit :</label>
 
                                                         <div class="col-md-7">
                                                             <select name="unit_id" id="product_unit" data-error-msg="Unit is required." required>
                                                                 <option value="0">[ Create Unit ]</option>
                                                                 <?php
-                                                                foreach($product_unit as $row)
+                                                                foreach($units as $row)
                                                                 {
                                                                     echo '<option value="'.$row->unit_id.'">'.$row->unit_name.'</option>';
                                                                 }
@@ -196,43 +196,64 @@
                                                     </div>
 
                                                     <div class="form-group">
+                                                        <label class="col-md-2 col-md-offset-1 control-label">* Type :</label>
+                                                        <div class="col-md-7">
+                                                            <select name="item_type_id" id="cbo_item_type" data-error-msg="Item type is required." required>
+                                                                <?php foreach($item_types as $item_type){ ?>
+                                                                    <option value="<?php echo $item_type->item_type_id ?>"><?php echo $item_type->item_type; ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 col-md-offset-1 control-label">Link to Account (Income):</label>
+                                                        <div class="col-md-7">
+                                                            <select name="income_account_id" id="cbo_accounts">
+                                                                <option value="0">none</option>
+                                                                <?php foreach($accounts as $account){ ?>
+                                                                    <option value="<?php echo $account->account_id; ?>"><?php echo $account->account_title; ?></option>
+                                                                <?php } ?>
+                                                            </select>
+
+                                                            <span class="help-block m-b-none">Please select none if this will not be recorded on Journal.</span>
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 col-md-offset-1 control-label">Link to Account (Expense):</label>
+                                                        <div class="col-md-7">
+                                                            <select name="expense_account_id" id="cbo_accounts_expense">
+                                                                <option value="0">none</option>
+                                                                <?php foreach($accounts as $account){ ?>
+                                                                    <option value="<?php echo $account->account_id; ?>"><?php echo $account->account_title; ?></option>
+                                                                <?php } ?>
+                                                            </select>
+
+                                                            <span class="help-block m-b-none">Please select none if this will not be recorded on Journal.</span>
+                                                        </div>
+
+                                                    </div>
+
+
+
+
+                                                    <div class="form-group">
                                                         <div class="col-md-7 col-md-offset-3">
 
-                                                            <label><input type="checkbox" name="tax_exempt" value="1"  checked>Tax Exempt</label>
+                                                            <label><input type="checkbox" name="is_tax_exempt" value="1"  checked> Tax Exempt</label>
                                                         </div>
 
 
                                                     </div>
 
-                                                    <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">Equivalent Points :</label>
-                                                        <div class="col-md-7">
-                                                            <input type="text" name="equivalent_points" class="form-control numeric">
-                                                        </div>
-                                                    </div>
 
 
 
-                                                    <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">Warn Qty :</label>
-                                                        <div class="col-md-7">
-                                                            <input type="text" name="product_warn" class="form-control numeric">
-                                                        </div>
-                                                    </div>
 
-                                                    <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">Ideal Qty :</label>
-                                                        <div class="col-md-7">
-                                                            <input type="text" name="product_ideal" class="form-control numeric">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <div class="col-md-9 col-md-offset-3">
-                                                            <label><input type="radio" name="inventory" value="1" checked>Inventory Item</label>
-                                                            <label><input type="radio" name="inventory" value="0">Non-inventory Item</label>
-                                                        </div>
-                                                    </div>
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 col-md-offset-1 control-label">Purchase Cost :</label>
@@ -255,33 +276,29 @@
                                                         </div>
                                                     </div>
 
+
+
+
                                                     <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">Whole Sale Price :</label>
+                                                        <label class="col-md-2 col-md-offset-1 control-label">Warn Qty :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="whole_sale" class="form-control  numeric">
+                                                            <input type="text" name="product_warn" class="form-control numeric">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">Retailer Price :</label>
+                                                        <label class="col-md-2 col-md-offset-1 control-label">Ideal Qty :</label>
                                                         <div class="col-md-7">
-                                                            <input type="text" name="retailer_price" class="form-control  numeric">
+                                                            <input type="text" name="product_ideal" class="form-control numeric">
                                                         </div>
                                                     </div>
 
-                                                    <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">Special Discount Price :</label>
-                                                        <div class="col-md-7">
-                                                            <input type="text" name="special_disc" class="form-control  numeric">
-                                                        </div>
-                                                    </div>
 
-                                                    <div class="form-group">
-                                                        <label class="col-md-2 col-md-offset-1 control-label">Valued Customer Price :</label>
-                                                        <div class="col-md-7">
-                                                            <input type="text" name="valued_customer" class="form-control  numeric">
-                                                        </div>
-                                                    </div>
+
+
+
+
+
                                                     <br /><br />
                                                 </form>
                                             </div>
@@ -439,9 +456,11 @@
 <script>
 
 $(document).ready(function(){
-    var dt; var _txnMode; var _selectedID; var _selectRowObj;
+    var dt; var _txnMode; var _selectedID; var _selectRowObj; var _cboItemTypes;
 
     var initializeControls=function(){
+
+
         dt=$('#tbl_products').DataTable({
             "dom": '<"toolbar">frtip',
             "bLengthChange":false,
@@ -461,7 +480,13 @@ $(document).ready(function(){
                 {
                     targets:[5],data: "on_hand",
                     render: function (data, type, full, meta) {
-                        return accounting.formatNumber(data,2);
+                        if(data=="na"){
+
+                            return data;
+                        }else{
+                            return accounting.formatNumber(data,2);
+                        }
+
                     }
                 },
                 {
@@ -505,8 +530,25 @@ $(document).ready(function(){
             placeholder: "Please select Unit",
             allowClear: true
         });
-
         _product_unit.select2('val', null);
+
+        _cboItemTypes=$("#cbo_item_type").select2({
+            placeholder: "Please select item type.",
+            allowClear: false
+        });
+
+
+        _cboAccounts=$("#cbo_accounts").select2({
+            placeholder: "Please select link account.",
+            allowClear: false
+        });
+        _cboAccounts.select2('val', 0);
+
+        var _cboAccountExpenses=$("#cbo_accounts_expense").select2({
+            placeholder: "Please select link account.",
+            allowClear: false
+        });
+        _cboAccountExpenses.select2('val', 0);
 
         _product_unit.on("select2:select", function (e) {
 
@@ -627,24 +669,36 @@ $(document).ready(function(){
             var data=dt.row(_selectRowObj).data();
             _selectedID=data.product_id;
 
-            $('#product_category').select2('val',data.category_id);
-            $('#product_unit').select2('val',data.unit_id);
 
            // alert($('input[name="tax_exempt"]').length);
             //$('input[name="tax_exempt"]').val(0);
             //$('input[name="inventory"]').val(data.is_inventory);
 
-            $('input,textarea').each(function(){
+            $('input,textarea,select').each(function(){
+
                 var _elem=$(this);
                 $.each(data,function(name,value){
-                    if(_elem.attr('name')==name){
-                        _elem.val(value);
+                    if(_elem.is('select')){
+
+                        if(_elem.attr('name')==name){
+                            _elem.select2('val',value);
+                        }
+                    }else{
+                        if(_elem.attr('name')==name){
+                            _elem.val(value);
+                        }
                     }
+
                 });
             });
 
             showList(false);
 
+        });
+
+
+        $('input[name="purchase_cost"],input[name="markup_percent"],input[name="sale_price"]').keyup(function(){
+            reComputeSRP();
         });
 
         $('#tbl_products tbody').on('click','button[name="remove_info"]',function(){
@@ -701,7 +755,7 @@ $(document).ready(function(){
                         showNotification(response);
                         dt.row.add(response.row_added[0]).draw();
                         clearFields($('#frm_product'))
-
+                        showList(true);
                     }).always(function(){
                         showSpinningProgress($('#btn_save'));
                     });
@@ -858,6 +912,24 @@ $(document).ready(function(){
         '<td>Valued Customer Price : </td><td>'+ accounting.formatNumber(d.valued_customer,2)+'</td>' +
         '</tr>' +
         '</tbody></table><br />';
+    };
+
+
+    var reComputeSRP=function(){
+        var markupPercent=getFloat($('input[name="markup_percent"]').val());
+        var purchaseAmount=getFloat($('input[name="purchase_cost"]').val());
+
+        if(markupPercent>0){
+            var markupDecimal=markupPercent/100;
+            var newAmount=purchaseAmount*markupDecimal;
+            var srpAmount=purchaseAmount+newAmount;
+            $('input[name="sale_price"]').val(accounting.formatNumber(srpAmount,2));
+        }
+
+    };
+
+    var getFloat=function(f){
+        return parseFloat(accounting.unformat(f));
     };
 
 

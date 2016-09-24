@@ -34,6 +34,14 @@ class Templates extends CORE_Controller {
 
         $this->load->model('Receivable_payment_model');
 
+        $this->load->model('Journal_info_model');
+
+        $this->load->model('Journal_account_model');
+
+        $this->load->model('Account_title_model');
+
+        $this->load->model('User_group_right_model');
+
         $this->load->model('Company_model');
         $this->load->library('M_pdf');
     }
@@ -610,6 +618,719 @@ class Templates extends CORE_Controller {
                 break;
 
 
+            case 'journal-ap':
+                $m_journal_info=$this->Journal_info_model;
+                $journal_id=$this->input->get('id',TRUE);
+                $type=$this->input->get('type',TRUE);
+
+                $journal_info=$m_journal_info->get_list(
+                    $journal_id,
+
+                    array(
+                        'journal_info.*',
+                        'suppliers.supplier_name',
+                        'suppliers.address',
+                        'suppliers.email_address',
+                        'suppliers.landline',
+                        'suppliers.contact_person'
+                    ),
+
+                    array(
+                        array('suppliers','suppliers.supplier_id=journal_info.supplier_id','left')
+                    )
+
+                );
+
+                $data['journal_info']=$journal_info[0];
+
+                $m_journal_accounts=$this->Journal_account_model;
+                $data['journal_accounts']=$m_journal_accounts->get_list(
+
+                    array(
+                        'journal_accounts.journal_id'=>$journal_id
+                    ),
+
+                    array(
+                        'journal_accounts.*',
+                        'account_titles.account_no',
+                        'account_titles.account_title'
+                    ),
+
+                    array(
+                        array('account_titles','account_titles.account_id=journal_accounts.account_id','left')
+                    )
+
+                );
+
+
+                //show only inside grid with menu button
+                if($type=='fullview'||$type==null){
+                    echo $this->load->view('template/journal_entries_content',$data,TRUE);
+                    echo $this->load->view('template/journal_entries_content_menus',$data,TRUE);
+                }
+
+                //download pdf
+                if($type=='pdf'){
+                    $file_name=$journal_info[0]->txn_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/journal_entries_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output($pdfFilePath,"D");
+
+                }
+
+                //preview on browser
+                if($type=='preview'){
+                    $file_name=$journal_info[0]->txn_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/journal_entries_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output();
+                }
+
+                break;
+
+
+            case 'journal-cdj':
+                $m_journal_info=$this->Journal_info_model;
+                $journal_id=$this->input->get('id',TRUE);
+                $type=$this->input->get('type',TRUE);
+
+                $journal_info=$m_journal_info->get_list(
+                    $journal_id,
+
+                    array(
+                        'journal_info.*',
+                        'suppliers.supplier_name',
+                        'suppliers.address',
+                        'suppliers.email_address',
+                        'suppliers.landline',
+                        'suppliers.contact_person'
+                    ),
+
+                    array(
+                        array('suppliers','suppliers.supplier_id=journal_info.supplier_id','left')
+                    )
+
+                );
+
+                $data['journal_info']=$journal_info[0];
+
+                $m_journal_accounts=$this->Journal_account_model;
+                $data['journal_accounts']=$m_journal_accounts->get_list(
+
+                    array(
+                        'journal_accounts.journal_id'=>$journal_id
+                    ),
+
+                    array(
+                        'journal_accounts.*',
+                        'account_titles.account_no',
+                        'account_titles.account_title'
+                    ),
+
+                    array(
+                        array('account_titles','account_titles.account_id=journal_accounts.account_id','left')
+                    )
+
+                );
+
+
+                //show only inside grid with menu button
+                if($type=='fullview'||$type==null){
+                    echo $this->load->view('template/cdj_journal_entries_content',$data,TRUE);
+                    echo $this->load->view('template/cdj_journal_entries_content_menus',$data,TRUE);
+                }
+
+                //download pdf
+                if($type=='pdf'){
+                    $file_name=$journal_info[0]->txn_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/cdj_journal_entries_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output($pdfFilePath,"D");
+
+                }
+
+                //preview on browser
+                if($type=='preview'){
+                    $file_name=$journal_info[0]->txn_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/cdj_journal_entries_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output();
+                }
+
+                break;
+
+
+            case 'journal-ar':
+                $m_journal_info=$this->Journal_info_model;
+                $journal_id=$this->input->get('id',TRUE);
+                $type=$this->input->get('type',TRUE);
+
+                $journal_info=$m_journal_info->get_list(
+                    $journal_id,
+
+                    array(
+                        'journal_info.*',
+                        'customers.customer_name',
+                        'customers.address',
+                        'customers.email_address',
+                        'customers.landline',
+                        'customers.mobile_no'
+                    ),
+
+                    array(
+                        array('customers','customers.customer_id=journal_info.customer_id','left')
+                    )
+
+                );
+
+                $data['journal_info']=$journal_info[0];
+
+                $m_journal_accounts=$this->Journal_account_model;
+                $data['journal_accounts']=$m_journal_accounts->get_list(
+
+                    array(
+                        'journal_accounts.journal_id'=>$journal_id
+                    ),
+
+                    array(
+                        'journal_accounts.*',
+                        'account_titles.account_no',
+                        'account_titles.account_title'
+                    ),
+
+                    array(
+                        array('account_titles','account_titles.account_id=journal_accounts.account_id','left')
+                    )
+
+                );
+
+
+                //show only inside grid with menu button
+                if($type=='fullview'||$type==null){
+                    echo $this->load->view('template/sales_journal_entries_content',$data,TRUE);
+                    echo $this->load->view('template/sales_journal_entries_content_menus',$data,TRUE);
+                }
+
+                //download pdf
+                if($type=='pdf'){
+                    $file_name=$journal_info[0]->txn_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/sales_journal_entries_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output($pdfFilePath,"D");
+
+                }
+
+                //preview on browser
+                if($type=='preview'){
+                    $file_name=$journal_info[0]->txn_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/sales_journal_entries_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output();
+                }
+
+                break;
+
+
+            case 'journal-crj':
+                $m_journal_info=$this->Journal_info_model;
+                $journal_id=$this->input->get('id',TRUE);
+                $type=$this->input->get('type',TRUE);
+
+                $journal_info=$m_journal_info->get_list(
+                    $journal_id,
+
+                    array(
+                        'journal_info.*',
+                        'customers.customer_name',
+                        'customers.address',
+                        'customers.email_address',
+                        'customers.landline',
+                        'customers.mobile_no'
+                    ),
+
+                    array(
+                        array('customers','customers.customer_id=journal_info.customer_id','left')
+                    )
+
+                );
+
+                $data['journal_info']=$journal_info[0];
+
+                $m_journal_accounts=$this->Journal_account_model;
+                $data['journal_accounts']=$m_journal_accounts->get_list(
+
+                    array(
+                        'journal_accounts.journal_id'=>$journal_id
+                    ),
+
+                    array(
+                        'journal_accounts.*',
+                        'account_titles.account_no',
+                        'account_titles.account_title'
+                    ),
+
+                    array(
+                        array('account_titles','account_titles.account_id=journal_accounts.account_id','left')
+                    )
+
+                );
+
+
+                //show only inside grid with menu button
+                if($type=='fullview'||$type==null){
+                    echo $this->load->view('template/crj_journal_entries_content',$data,TRUE);
+                    echo $this->load->view('template/crj_journal_entries_content_menus',$data,TRUE);
+                }
+
+                //download pdf
+                if($type=='pdf'){
+                    $file_name=$journal_info[0]->txn_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/crj_journal_entries_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output($pdfFilePath,"D");
+
+                }
+
+                //preview on browser
+                if($type=='preview'){
+                    $file_name=$journal_info[0]->txn_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/crj_journal_entries_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output();
+                }
+
+                break;
+
+
+            case 'journal-gje':
+                $m_journal_info=$this->Journal_info_model;
+                $journal_id=$this->input->get('id',TRUE);
+                $type=$this->input->get('type',TRUE);
+
+                $journal_info=$m_journal_info->get_list(
+
+                    "journal_info.is_active=TRUE AND journal_info.is_deleted=FALSE AND journal_info.book_type='GJE' AND journal_info.journal_id=$journal_id",
+
+                    array(
+                        'journal_info.journal_id',
+                        'journal_info.txn_no',
+                        'DATE_FORMAT(journal_info.date_txn,"%m/%d/%Y")as date_txn',
+                        'journal_info.is_active',
+                        'journal_info.remarks',
+                        'CONCAT_WS(" ",IFNULL(customers.customer_name,""),IFNULL(suppliers.supplier_name,"")) as particular',
+                        'CONCAT_WS(" ",user_accounts.user_fname,user_accounts.user_lname)as posted_by'
+                    ),
+
+                    array(
+                        array('customers','customers.customer_id=journal_info.customer_id','left'),
+                        array('suppliers','suppliers.supplier_id=journal_info.supplier_id','left'),
+                        array('user_accounts','user_accounts.user_id=journal_info.created_by_user','left')
+                    )
+
+                );
+
+                $data['journal_info']=$journal_info[0];
+
+                $m_journal_accounts=$this->Journal_account_model;
+                $data['journal_accounts']=$m_journal_accounts->get_list(
+
+                    array(
+                        'journal_accounts.journal_id'=>$journal_id
+                    ),
+
+                    array(
+                        'journal_accounts.*',
+                        'account_titles.account_no',
+                        'account_titles.account_title'
+                    ),
+
+                    array(
+                        array('account_titles','account_titles.account_id=journal_accounts.account_id','left')
+                    )
+
+                );
+
+
+                //show only inside grid with menu button
+                if($type=='fullview'||$type==null){
+                    echo $this->load->view('template/gje_journal_entries_content',$data,TRUE);
+                    echo $this->load->view('template/gje_journal_entries_content_menus',$data,TRUE);
+                }
+
+                //download pdf
+                if($type=='pdf'){
+                    $file_name=$journal_info[0]->txn_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/gje_journal_entries_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output($pdfFilePath,"D");
+                }
+
+                //preview on browser
+                if($type=='preview'){
+                    $file_name=$journal_info[0]->txn_no;
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/gje_journal_entries_content',$data,TRUE); //load the template
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output();
+                }
+
+                break;
+
+
+            case 'ap-journal-for-review':
+                $purchase_invoice_id=$this->input->get('id',TRUE);
+
+                $m_suppliers=$this->Suppliers_model;
+                $m_accounts=$this->Account_title_model;
+                $m_purchases_items=$this->Delivery_invoice_item_model;
+                $m_purchases_info=$this->Delivery_invoice_model;
+
+                $purchase_info=$m_purchases_info->get_list(
+                    array(
+                        'delivery_invoice.is_active'=>TRUE,
+                        'delivery_invoice.is_deleted'=>FALSE,
+                        'delivery_invoice.dr_invoice_id'=>$purchase_invoice_id
+                    ),
+
+                    array(
+                        'delivery_invoice.dr_invoice_id',
+                        'delivery_invoice.dr_invoice_no',
+                        'delivery_invoice.supplier_id',
+                        'delivery_invoice.external_ref_no',
+                        'delivery_invoice.remarks',
+                        'CONCAT_WS(" ",delivery_invoice.terms,delivery_invoice.duration)as term_description',
+                        'DATE_FORMAT(delivery_invoice.date_delivered,"%m/%d/%Y")as date_delivered',
+                        'DATE_FORMAT(delivery_invoice.date_created,"%m/%d/%Y %r")as date_created',
+                        'suppliers.supplier_name',
+                        'suppliers.address',
+                        'suppliers.email_address',
+                        'suppliers.landline',
+                        'purchase_order.po_no',
+                        'CONCAT_WS(" ",user_accounts.user_fname,user_accounts.user_lname)as posted_by'
+                    ),
+
+                    array(
+                        array('suppliers','suppliers.supplier_id=delivery_invoice.supplier_id','left'),
+                        array('purchase_order','purchase_order.purchase_order_id=delivery_invoice.purchase_order_id','left'),
+                        array('user_accounts','user_accounts.user_id=delivery_invoice.posted_by_user','left')
+                    )
+
+                );
+                $data['purchase_info']=$purchase_info[0];
+                $data['suppliers']=$m_suppliers->get_list(
+                    array(
+                        'suppliers.is_active'=>TRUE,
+                        'suppliers.is_deleted'=>FALSE
+                    ),
+
+                    array(
+                        'suppliers.supplier_id',
+                        'suppliers.supplier_name'
+                    )
+                );
+                $data['entries']=$m_purchases_info->get_journal_entries($purchase_invoice_id);
+                $data['accounts']=$m_accounts->get_list(
+                    array(
+                        'account_titles.is_active'=>TRUE,
+                        'account_titles.is_deleted'=>FALSE
+                    )
+                );
+                $data['items']=$m_purchases_items->get_list(
+                    array(
+                        'delivery_invoice_items.dr_invoice_id'=>$purchase_invoice_id
+                    ),
+
+                    array(
+                        'delivery_invoice_items.*',
+                        'products.product_desc'
+                    ),
+
+                    array(
+                        array('products','products.product_id=delivery_invoice_items.product_id','left')
+                    )
+
+                );
+
+
+                echo $this->load->view('template/ap_journal_for_review',$data,TRUE); //details of the journal
+
+
+                break;
+
+
+            case 'ar-journal-for-review':
+                $sales_invoice_id=$this->input->get('id',TRUE);
+
+                $m_customers=$this->Customers_model;
+                $m_accounts=$this->Account_title_model;
+                $m_sales_items=$this->Sales_invoice_item_model;
+                $m_sales_invoice=$this->Sales_invoice_model;
+
+                $sales_info=$m_sales_invoice->get_list(
+                    array(
+                        'sales_invoice.is_active'=>TRUE,
+                        'sales_invoice.is_deleted'=>FALSE,
+                        'sales_invoice.sales_invoice_id'=>$sales_invoice_id
+                    ),
+
+                    array(
+                        'sales_invoice.sales_invoice_id',
+                        'sales_invoice.sales_inv_no',
+                        'sales_invoice.customer_id',
+                        'sales_invoice.remarks',
+                        'DATE_FORMAT(sales_invoice.date_invoice,"%m/%d/%Y")as date_invoice',
+                        'DATE_FORMAT(sales_invoice.date_created,"%m/%d/%Y %r")as date_created',
+                        'customers.customer_name',
+                        'customers.address',
+                        'customers.email_address',
+                        'customers.landline',
+                        'sales_order.so_no',
+                        'CONCAT_WS(" ",user_accounts.user_fname,user_accounts.user_lname)as posted_by'
+                    ),
+
+                    array(
+                        array('customers','customers.customer_id=sales_invoice.customer_id','left'),
+                        array('sales_order','sales_order.sales_order_id=sales_invoice.sales_order_id','left'),
+                        array('user_accounts','user_accounts.user_id=sales_invoice.posted_by_user','left')
+                    )
+
+                );
+                $data['sales_info']=$sales_info[0];
+                $data['customers']=$m_customers->get_list(
+                    array(
+                        'customers.is_active'=>TRUE,
+                        'customers.is_deleted'=>FALSE
+                    ),
+
+                    array(
+                        'customers.customer_id',
+                        'customers.customer_name'
+                    )
+                );
+                $data['entries']=$m_sales_invoice->get_journal_entries($sales_invoice_id);
+                $data['accounts']=$m_accounts->get_list(
+                    array(
+                        'account_titles.is_active'=>TRUE,
+                        'account_titles.is_deleted'=>FALSE
+                    )
+                );
+                $data['items']=$m_sales_items->get_list(
+                    array(
+                        'sales_invoice_items.sales_invoice_id'=>$sales_invoice_id
+                    ),
+
+                    array(
+                        'sales_invoice_items.*',
+                        'products.product_desc'
+                    ),
+
+                    array(
+                        array('products','products.product_id=sales_invoice_items.product_id','left')
+                    )
+
+                );
+
+
+                echo $this->load->view('template/ar_journal_for_review',$data,TRUE); //details of the journal
+
+
+                break;
+
+
+            case 'user-rights':
+                $m_rights=$this->User_group_right_model;
+
+                $id=$this->input->get('id',TRUE);
+
+                $data['rights']=$m_rights->get_user_group_rights($id);
+                $data['user_group_id']=$id;
+
+                $this->load->view('template/user_group_rights',$data);
+                break;
+
+
+            case 'balance-sheet':
+                $type=$this->input->get('type',TRUE);
+                //asset account
+                $data['asset_classes']=$this->Journal_account_model->get_list(
+                    array(
+                        'account_classes.account_type_id'=>1 //1 is asset
+                    ),
+                    'journal_accounts.account_id,account_classes.account_class_id,account_classes.account_class,account_classes.account_type_id',
+                    array(
+                        array('account_titles','account_titles.account_id=journal_accounts.account_id','inner'),
+                        array('account_classes','account_classes.account_class_id=account_titles.account_class_id','inner')
+                    ),
+                    null,
+                    'account_classes.account_class_id'
+                );
+                $data['asset_accounts']=$this->Journal_info_model->get_account_balance(1);
+
+
+
+                //liabilities account
+                $data['liability_classes']=$this->Journal_account_model->get_list(
+                    array(
+                        'account_classes.account_type_id'=>2 //1 is asset
+                    ),
+                    'journal_accounts.account_id,account_classes.account_class_id,account_classes.account_class,account_classes.account_type_id',
+                    array(
+                        array('account_titles','account_titles.account_id=journal_accounts.account_id','inner'),
+                        array('account_classes','account_classes.account_class_id=account_titles.account_class_id','inner')
+                    ),
+                    null,
+                    'account_classes.account_class_id'
+                );
+                $data['liability_accounts']=$this->Journal_info_model->get_account_balance(2);
+
+
+
+                //capital account
+                $data['capital_classes']=$this->Journal_account_model->get_list(
+                    array(
+                        'account_classes.account_type_id'=>3 //1 is asset
+                    ),
+                    'journal_accounts.account_id,account_classes.account_class_id,account_classes.account_class,account_classes.account_type_id',
+                    array(
+                        array('account_titles','account_titles.account_id=journal_accounts.account_id','inner'),
+                        array('account_classes','account_classes.account_class_id=account_titles.account_class_id','inner')
+                    ),
+                    null,
+                    'account_classes.account_class_id'
+                );
+                $data['capital_accounts']=$this->Journal_info_model->get_account_balance(3);
+
+
+                $current_year_income=$this->Journal_account_model->get_list(
+                    array(
+                        'account_classes.account_type_id'=>4 //1 is asset
+                    ),
+                    '(SUM(journal_accounts.cr_amount)-SUM(journal_accounts.dr_amount))as current_year_earning',
+                    array(
+                        array('account_titles','account_titles.account_id=journal_accounts.account_id','inner'),
+                        array('account_classes','account_classes.account_class_id=account_titles.account_class_id','inner')
+                    )
+                );
+
+
+                $current_year_expense=$this->Journal_account_model->get_list(
+                    array(
+                        'account_classes.account_type_id'=>5 //1 is asset
+                    ),
+                    '(SUM(journal_accounts.dr_amount)-SUM(journal_accounts.cr_amount))as current_year_expense',
+                    array(
+                        array('account_titles','account_titles.account_id=journal_accounts.account_id','inner'),
+                        array('account_classes','account_classes.account_class_id=account_titles.account_class_id','inner')
+                    )
+                );
+
+
+                $data['current_year_earnings']=$current_year_income[0]->current_year_earning-$current_year_expense[0]->current_year_expense;
+
+
+                //download pdf
+                if($type=='pdf'){
+                    $file_name=date('Y-m-d');
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/balance_sheet_report',$data,TRUE);
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output($pdfFilePath,"D");
+                }
+
+                //preview on browser
+                if($type=='preview'){
+                    $file_name=date('Y-m-d');
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/balance_sheet_report',$data,TRUE);
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output();
+                }
+
+
+
+                break;
+
+
+
+            case 'income-statement':
+                $type=$this->input->get('type',TRUE);
+
+                $data['income_accounts']=$this->Journal_info_model->get_account_balance(4);
+                $data['expense_accounts']=$this->Journal_info_model->get_account_balance(5);
+
+
+                //download pdf
+                if($type=='pdf'){
+                    $file_name=date('Y-m-d');
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/income_statement_report',$data,TRUE);
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output($pdfFilePath,"D");
+                }
+
+                //preview on browser
+                if($type=='preview'){
+                    $file_name=date('Y-m-d');
+                    $pdfFilePath = $file_name.".pdf"; //generate filename base on id
+                    $pdf = $this->m_pdf->load(); //pass the instance of the mpdf class
+                    $content=$this->load->view('template/income_statement_report',$data,TRUE);
+                    $pdf->setFooter('{PAGENO}');
+                    $pdf->WriteHTML($content);
+                    //download it.
+                    $pdf->Output();
+                }
+
+
+
+                break;
         }
     }
 

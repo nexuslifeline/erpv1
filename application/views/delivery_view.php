@@ -705,12 +705,6 @@
 <script src="assets/plugins/select2/select2.full.min.js"></script>
 
 
-<!-- Date range use moment.js same as full calendar plugin -->
-<script src="assets/js/plugins/fullcalendar/moment.min.js"></script>
-<!-- Data picker -->
-<script src="assets/js/plugins/datapicker/bootstrap-datepicker.js"></script>
-
-
 
 <!-- twitter typehead -->
 <script src="assets/plugins/twittertypehead/handlebars.js"></script>

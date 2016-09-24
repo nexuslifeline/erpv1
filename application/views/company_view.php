@@ -107,7 +107,7 @@
             <div class="static-content"  >
                 <div class="page-content"><!-- #page-content -->
 
-                    <ol class="breadcrumb">
+                    <ol class="breadcrumb" style="margin-bottom: 0px;">
                         <li><a href="dashboard">Dashboard</a></li>
                         <li><a href="users">Company Information  <?php //print_r($user_groups); ?></a></li>
                     </ol>
@@ -118,38 +118,8 @@
                             <div class="row">
                                 <div class="col-md-12">
 
-                                    <div id="div_user_list">
-                                        <div class="panel panel-default">
-                                            <div class="panel-body table-responsive">
-                                                <table id="tbl_user_list" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                                                    <thead>
-                                                    <tr>
-                                                        <th></th>
-                                                        <th>Company name</th>
-                                                        <th>Company Address</th>
-                                                        <th>Email Address</th>
-                                                        <th>Mobile #</th>
-                                                        <th>Landline</th>
-                                                        <th>Tin #</th>
-                                                        <th>Tax Type</th>
-                                                        <th>Registered to</th>
-                                                        <th><center>Action</center></th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
 
-
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="panel-footer"></div>
-                                        </div>
-
-                                    </div>
-
-
-                                    <div id="div_user_fields" style="display: none;">
+                                    <div id="div_company_fields">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <h2>Company Information</h2>
@@ -169,7 +139,7 @@
                                                                 <span class="input-group-addon">
                                                                     <i class="fa fa-users"></i>
                                                                 </span>
-                                                               <input type="text" name="company_name" class="form-control" placeholder="Company Name" data-error-msg="Company Name is required!" required>
+                                                               <input type="text" name="company_name" class="form-control" value="<?php echo $company->company_name; ?>" placeholder="Company Name" data-error-msg="Company Name is required!" required>
                                                            </div>
                                                        </div>
                                                    </div>
@@ -180,9 +150,9 @@
                                                        <div class="col-md-7">
                                                            <div class="input-group">
                                                                 <span class="input-group-addon">
-                                                                    <i class="fa fa-lock"></i>
+                                                                    <i class="fa fa-file"></i>
                                                                 </span>
-                                                               <input type="text" name="company_address" class="form-control" placeholder="Company Address" data-error-msg="Company address is required!" required>
+                                                               <input type="text" name="company_address" class="form-control" value="<?php echo $company->company_address; ?>" placeholder="Company Address" data-error-msg="Company address is required!" required>
                                                            </div>
                                                        </div>
                                                    </div>
@@ -192,9 +162,9 @@
                                                        <div class="col-md-7">
                                                            <div class="input-group">
                                                                 <span class="input-group-addon">
-                                                                    <i class="fa fa-lock"></i>
+                                                                    <i class="fa fa-send"></i>
                                                                 </span>
-                                                               <input type="text" name="email_address" class="form-control" placeholder="Email Address" data-error-msg="Email address is required!" required>
+                                                               <input type="text" name="email_address" class="form-control" value="<?php echo $company->email_address; ?>" placeholder="Email Address" data-error-msg="Email address is required!" required>
                                                            </div>
 
                                                        </div>
@@ -206,9 +176,9 @@
                                                        <div class="col-md-7">
                                                            <div class="input-group">
                                                                 <span class="input-group-addon">
-                                                                    <i class="fa fa-users"></i>
+                                                                    <i class="fa fa-send"></i>
                                                                 </span>
-                                                               <input type="text" name="mobile_no" class="form-control" placeholder="Mobile #" data-error-msg="Mobile # is required!">
+                                                               <input type="text" name="mobile_no" class="form-control" value="<?php echo $company->mobile_no; ?>" placeholder="Mobile #" data-error-msg="Mobile # is required!">
                                                            </div>
                                                        </div>
                                                    </div>
@@ -219,9 +189,9 @@
                                                        <div class="col-md-7">
                                                            <div class="input-group">
                                                                 <span class="input-group-addon">
-                                                                    <i class="fa fa-users"></i>
+                                                                    <i class="fa fa-send"></i>
                                                                 </span>
-                                                               <input type="text" name="landline" class="form-control" placeholder="Landline">
+                                                               <input type="text" name="landline" class="form-control" value="<?php echo $company->landline; ?>" placeholder="Landline">
                                                            </div>
                                                        </div>
                                                    </div>
@@ -232,9 +202,9 @@
                                                        <div class="col-md-7">
                                                            <div class="input-group">
                                                                 <span class="input-group-addon">
-                                                                    <i class="fa fa-users"></i>
+                                                                    <i class="fa fa-code"></i>
                                                                 </span>
-                                                               <input type="text" name="tin_no" class="form-control" placeholder="Lastname" data-error-msg="Tin No. is required!">
+                                                               <input type="text" name="tin_no" class="form-control" value="<?php echo $company->tin_no; ?>" placeholder="TIN No" data-error-msg="Tin No. is required!">
                                                            </div>
                                                        </div>
                                                    </div>
@@ -246,7 +216,7 @@
                                                                 <span class="input-group-addon">
                                                                     <i class="fa fa-users"></i>
                                                                 </span>
-                                                               <input type="text" name="registered_to" class="form-control" placeholder="Registered to" data-error-msg="Registered to is required!">
+                                                               <input type="text" name="registered_to" class="form-control" value="<?php echo $company->registered_to; ?>" placeholder="Registered to" data-error-msg="Registered to is required!">
                                                            </div>
                                                        </div>
                                                    </div>
@@ -258,7 +228,7 @@
                                                                <div class="" style="border:1px solid black;height: 230px;width: 210px;vertical-align: middle;">
 
                                                                    <div id="div_img_company" style="position:relative;">
-                                                                       <img name="img_company" src="assets/img/anonymous-icon.png" style="object-fit: fill; !important; height: 100%;width: 100%;" />
+                                                                       <img name="img_company" src="<?php echo $company->logo_path; ?>" style="object-fit: fill; !important; height: 100%;width: 100%;" />
                                                                        <input type="file" name="file_upload[]" class="hidden">
                                                                    </div>
 
@@ -279,7 +249,7 @@
                                                            <select name="" id="tax_group" data-error-msg="Tax Type is required." required>
                                                                <option value="0">[ Create Tax Type Group ]</option>
                                                                <?php foreach($tax_type as $group){ ?>
-                                                                   <option value="<?php echo $group->tax_type_id; ?>"><?php echo $group->tax_type; ?></option>
+                                                                   <option value="<?php echo $group->tax_type_id; ?>" <?php echo ($group->tax_type_id===$company->tax_type_id?'selected':''); ?> ><?php echo $group->tax_type; ?></option>
                                                                <?php } ?>
                                                            </select>
                                                        </div>
@@ -452,54 +422,7 @@
 
         var initializeControls=function(){
 
-            dt=$('#tbl_user_list').DataTable({
-                "dom": '<"toolbar">frtip',
-                "bLengthChange":false,
-                "ajax" : "Company/transaction/list",
-                "columns": [
-                    {
-                        "targets": [0],
-                        "class":          "details-control",
-                        "orderable":      false,
-                        "data":           null,
-                        "defaultContent": ""
-                    },
-                    { targets:[1],data: "company_name" },
-                    { targets:[2],data: "company_address" },
-                    { targets:[3],data: "email_address" },
-                    { targets:[4],data: "mobile_no" },
-                    { targets:[5],data: "landline" },
-                    { targets:[6],data: "tin_no" },
-                    { targets:[7],data: "tax_type" },
-                    { targets:[8],data: "registered_to" },
-                    {
-                        targets:[9],
-                        render: function (data, type, full, meta){
-                        var btn_edit='<button class="btn btn-default btn-sm" name="edit_info"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i> </button>';
-                        var btn_trash='<button class="btn btn-default btn-sm" name="remove_info" style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>';
 
-                        return '<center>'+btn_edit+btn_trash+'</center>';
-                    }
-                    }
-                ]
-            });
-
-
-            var createToolBarButton=function(){
-                var _btnNew='<button class="btn btn-primary"  id="btn_new" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;" data-toggle="modal" data-target="" data-placement="left" title="Register User Account" >'+
-                    '<i class="fa fa-users"></i> Create Company Info</button>';
-                $("div.toolbar").html(_btnNew);
-            }();
-
-
-            $('#txt_bdate').datepicker({
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                calendarWeeks: true,
-                autoclose: true
-
-            });
 
 
             _company_info=$("#tax_group").select2({
@@ -507,7 +430,7 @@
                 allowClear: true
             });
 
-            _company_info.select2('val', null)
+           // _company_info.select2('val', null)
 
 
 
@@ -521,7 +444,7 @@
         var bindEventHandlers=(function(){
             var detailRows = [];
 
-            $('#tbl_user_list tbody').on( 'click', 'tr td.details-control', function () {
+            $('#tbl_company_info tbody').on( 'click', 'tr td.details-control', function () {
                 var tr = $(this).closest('tr');
                 var row = dt.row( tr );
                 var idx = $.inArray( tr.attr('id'), detailRows );
@@ -548,11 +471,6 @@
             } );
 
 
-            $('#btn_new').click(function(){
-                    _txnMode="new";
-                    showList(false);
-                clearFields($('#frm_company'))
-            });
 
              $('#btn_browse').click(function(event){
                     event.preventDefault();
@@ -600,38 +518,6 @@
             });
 
 
-
-            $('#tbl_user_list tbody').on('click','button[name="edit_info"]',function(){
-                    ///alert("ddd");
-                    _txnMode="edit";
-                    _selectRowObj=$(this).closest('tr');
-                    var data=dt.row(_selectRowObj).data();
-                    _selectedID=data.company_id;
-
-                    $('input,textarea').each(function(){
-                        var _elem=$(this);
-                        $.each(data,function(name,value){
-                            if(_elem.attr('name')==name&&_elem.attr('type')!='password'){
-                                _elem.val(value);
-                            }
-
-                        });
-
-                        $('#tax_group').select2('val',data.tax_type_id);
-                    });
-
-                    $('img[name="img_company"]').attr('src',data.photo_path);
-                    showList(false);
-
-            });
-
-            $('#tbl_user_list tbody').on('click','button[name="remove_info"]',function(){
-                _selectRowObj=$(this).closest('tr');
-                var data=dt.row(_selectRowObj).data();
-                _selectedID=data.company_id;
-
-                $('#modal_confirmation').modal('show');
-            });
 
             $('#btn_yes').click(function(){
                 removeCompanyInfo().done(function(response){
@@ -697,24 +583,13 @@
                 $('#btn_save').click(function(){
 
                     if(validateRequiredFields($('#frm_company'))){
-                        if(_txnMode=="new"){
+
                             createCompanyInfo().done(function(response){
                                 showNotification(response);
-                                dt.row.add(response.row_added[0]).draw();
-                                clearFields($('#frm_company'))
                             }).always(function(){
                                 showSpinningProgress($('#btn_save'));
                             });
-                        }else{
-                            updateCompanyInfo().done(function(response){
-                                showNotification(response);
-                                dt.row(_selectRowObj).data(response.row_updated[0]).draw();
-                                clearFields($('#frm_company'))
-                                showList(true);
-                            }).always(function(){
-                                showSpinningProgress($('#btn_save'));
-                            });
-                        }
+
 
                     }
 
@@ -770,39 +645,7 @@
             });
         };
 
-        var updateCompanyInfo=function(){
-            var _data=$('#frm_company').serializeArray();
-            _data.push({name : "photo_path" ,value : $('img[name="img_company"]').attr('src')});
-            _data.push({name : "tax_type_id" ,value : $('#tax_group').select2('val')});
-            _data.push({name : "company_id" ,value : _selectedID});
 
-            return $.ajax({
-                "dataType":"json",
-                "type":"POST",
-                "url":"Company/transaction/update",
-                "data":_data,
-                "beforeSend": showSpinningProgress($('#btn_save'))
-            });
-        };
-
-        var removeCompanyInfo=function(){
-            return $.ajax({
-                "dataType":"json",
-                "type":"POST",
-                "url":"Users/transaction/delete",
-                "data":{company_id : _selectedID}
-            });
-        };
-
-        var showList=function(b){
-            if(b){
-                $('#div_user_list').show();
-                $('#div_user_fields').hide();
-            }else{
-                $('#div_user_list').hide();
-                $('#div_user_fields').show();
-            }
-        };
 
         var showNotification=function(obj){
             PNotify.removeAll(); //remove all notifications

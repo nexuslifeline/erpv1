@@ -88,7 +88,7 @@ class Users extends CORE_Controller
 
                 $response['title']='Success!';
                 $response['stat']='success';
-                $response['msg']='User account information successfully created.';
+                $response['msg']='User account information successfully updated.';
                 $response['row_updated']=$m_users->get_user_list($user_account_id);
                 echo json_encode($response);
 
@@ -138,6 +138,41 @@ class Users extends CORE_Controller
                     }
                 }
                 break;
+            case 'update-profile' :
+                $m_users=$this->Users_model;
+
+                $user_account_id=$this->session->user_id;
+
+                $m_users->user_name=$this->input->post('user_name',TRUE);
+
+                if($this->input->post('user_pword',TRUE)!=null){
+                    $m_users->user_pword=sha1($this->input->post('user_pword',TRUE));
+                }
+
+                $m_users->user_lname=$this->input->post('user_lname',TRUE);
+                $m_users->user_fname=$this->input->post('user_fname',TRUE);
+                $m_users->user_mname=$this->input->post('user_mname',TRUE);
+                $m_users->user_address=$this->input->post('user_address',TRUE);
+                $m_users->user_email=$this->input->post('user_email',TRUE);
+                $m_users->user_mobile=$this->input->post('user_mobile',TRUE);
+                $m_users->user_telephone=$this->input->post('user_telephone',TRUE);
+                $m_users->user_bdate=date('Y-m-d',strtotime($this->input->post('user_bdate',TRUE)));
+                //$m_users->user_group_id=$this->input->post('user_group_id',TRUE);
+                $m_users->photo_path=$this->input->post('photo_path');
+
+                $m_users->set('date_modified','NOW()');
+                $m_users->modified_by_user=$this->session->user_id;
+                $m_users->modify($user_account_id);
+
+
+                $response['title']='Success!';
+                $response['stat']='success';
+                $response['msg']='Profile successfully updated.';
+
+                echo json_encode($response);
+
+                break;
+
 
         }
 

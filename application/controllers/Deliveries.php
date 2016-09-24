@@ -70,7 +70,7 @@ class Deliveries extends CORE_Controller
     function transaction($txn = null,$id_filter=null) {
         switch ($txn){
             case 'list':  //this returns JSON of Purchase Order to be rendered on Datatable
-                $m_delivery_invoice=$this->Delivery_invoice_model;
+
                 $response['data']=$this->response_rows(
                     'delivery_invoice.is_active=TRUE AND delivery_invoice.is_deleted=FALSE'.($id_filter==null?'':' AND delivery_invoice.dr_invoice_id='.$id_filter)
                 );
@@ -328,8 +328,38 @@ class Deliveries extends CORE_Controller
                 echo json_encode($response);
 
                 break;
-            //***************************************************************************************
 
+
+            //****************************************list of purchase invoice that are not yet posted as journal***********************************************
+            case 'purchases-for-review':
+                $m_delivery_invoice=$this->Delivery_invoice_model;
+                $response['data']=$m_delivery_invoice->get_list(
+
+                    array(
+                        'delivery_invoice.is_active'=>TRUE,
+                        'delivery_invoice.is_deleted'=>FALSE,
+                        'delivery_invoice.is_journal_posted'=>FALSE
+                    ),
+
+                    array(
+                        'delivery_invoice.dr_invoice_id',
+                        'delivery_invoice.dr_invoice_no',
+                        'CONCAT_WS(" ",delivery_invoice.terms,delivery_invoice.duration)as term_description',
+                        'delivery_invoice.remarks',
+                        'DATE_FORMAT(delivery_invoice.date_delivered,"%m/%d/%Y") as date_delivered',
+                        'suppliers.supplier_name'
+                    ),
+
+                    array(
+                        array('suppliers','suppliers.supplier_id=delivery_invoice.supplier_id','left')
+                    )
+
+
+
+                );
+                echo json_encode($response);
+                break;
+            //***************************************************************************************
             case 'test':
                 $m_po=$this->Purchases_model;
                 $row=$m_po->get_po_balance_qty($id_filter);

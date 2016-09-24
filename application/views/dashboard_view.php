@@ -103,22 +103,22 @@
                                                             Income (Current Month)
                                                         </small>
                                                         <h2 class="m-b-xs">
-                                                            26,900
+                                                            <?php echo number_format($income_current_month,2); ?>
                                                         </h2>
                                                         <div id="sparkline1" class="m-b-sm"></div>
                                                         <div class="row">
                                                             <div class="col-xs-4">
                                                                 <small class="stats-label">This Day</small>
-                                                                <h4>236 321.80</h4>
+                                                                <h4><?php echo number_format($income_this_day,2); ?></h4>
                                                             </div>
 
                                                             <div class="col-xs-4">
                                                                 <small class="stats-label">Yesterday</small>
-                                                                <h4>46.11%</h4>
+                                                                <h4><?php echo number_format($income_yesterday,2); ?></h4>
                                                             </div>
                                                             <div class="col-xs-4">
                                                                 <small class="stats-label">Last week</small>
-                                                                <h4>432.021</h4>
+                                                                <h4><?php echo number_format($income_last_week,2); ?></h4>
                                                             </div>
                                                         </div>
 
@@ -127,25 +127,27 @@
                                                         <br />
                                                         <small>
                                                             Income (last month)
+
                                                         </small>
                                                         <h2 class="m-b-xs">
-                                                            98,100
+                                                            <?php echo number_format($income_last_month,2); ?>
                                                         </h2>
 
                                                         <div id="sparkline2" class="m-b-sm"></div>
                                                         <div class="row">
                                                             <div class="col-xs-4">
                                                                 <small class="stats-label">This Day</small>
-                                                                <h4>166 781.80</h4>
+                                                                <h4><?php echo number_format($this_day_percentage,0); ?>%</h4>
                                                             </div>
 
                                                             <div class="col-xs-4">
                                                                 <small class="stats-label">Yesterday</small>
-                                                                <h4>22.45%</h4>
+                                                                <h4><?php echo number_format($yesterday_percentage,0); ?>%
+                                                                </h4>
                                                             </div>
                                                             <div class="col-xs-4">
                                                                 <small class="stats-label">Last week</small>
-                                                                <h4>862.044</h4>
+                                                                <h4><?php echo number_format($last_week_percentage,0); ?>%</h4>
                                                             </div>
                                                         </div>
 
@@ -156,13 +158,13 @@
                                                         <div class="row m-t-xs">
                                                             <div class="col-xs-6">
                                                                 <small>Income (last year)</small>
-                                                                <h2 class="no-margins">160,000</h2>
-                                                                <div class="font-bold text-navy">98% <i class="fa fa-bolt"></i></div>
+                                                                <h2 class="no-margins"><?php echo number_format($income_last_year,2); ?></h2>
+                                                                <div class="font-bold text-navy"><?php echo $last_year_income_percentage; ?>% <i class="fa fa-bolt"></i></div>
                                                             </div>
                                                             <div class="col-xs-6">
                                                                 <small>Income (current year)</small>
-                                                                <h2 class="no-margins">42,120</h2>
-                                                                <div class="font-bold text-navy">98% <i class="fa fa-bolt"></i></div>
+                                                                <h2 class="no-margins"><?php echo number_format($income_this_year,2); ?></h2>
+                                                                <div class="font-bold text-navy"><?php echo $this_year_income_percentage; ?>% <i class="fa fa-bolt"></i></div>
                                                             </div>
                                                         </div>
 
@@ -171,11 +173,11 @@
                                                             <tbody>
                                                             <tr>
                                                                 <td>
-                                                                    <strong>142</strong> Clients
+                                                                    <strong><?php echo number_format($total_last_year_client,0); ?></strong> Clients
 
                                                                 </td>
                                                                 <td>
-                                                                    <strong>150</strong> Clients
+                                                                    <strong><?php echo number_format($total_current_year_client,0); ?></strong> Clients
                                                                 </td>
 
                                                             </tr>
@@ -234,7 +236,7 @@
                             <div class="row">
                                 <div class="col-md-12">
 
-                                    <div class="panel panel-default">
+                                    <div class="panel panel-default <?php echo (in_array('7-1',$this->session->user_rights)?'':'hidden'); ?>">
                                         <div class="panel-heading">
                                             <h2>Purchase Order for Approval</h2>
                                         </div>
@@ -406,7 +408,7 @@
                     pointStrokeColor: "#fff",
                     pointHighlightFill: "#fff",
                     pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: [248, 148, 160, 39, 56, 37, 30,65, 59, 40, 51, 36, 25, 40]
+                    data: <?php echo json_encode($previous_year_income_monthly); ?>
                 },
                 {
                     label: "Example dataset",
@@ -416,7 +418,7 @@
                     pointStrokeColor: "#fff",
                     pointHighlightFill: "#fff",
                     pointHighlightStroke: "rgba(26,179,148,1)",
-                    data: [165, 59, 40, 51, 36, 25, 40,65, 59, 40, 51, 36, 25, 40]
+                    data: <?php echo json_encode($current_year_income_monthly); ?>
                 }
             ]
         };
@@ -456,7 +458,7 @@
                 strokeColor: "rgba(220,220,220,0.8)",
                 highlightFill: "rgba(220,220,220,0.75)",
                 highlightStroke: "rgba(220,220,220,1)",
-                data: [65, 59, 80, 81, 56, 55, 40]
+                data: <?php echo json_encode($expense_monthly); ?>
             },
             {
                 label: "My Second dataset",
@@ -464,7 +466,7 @@
                 strokeColor: "rgba(26,179,148,0.8)",
                 highlightFill: "rgba(26,179,148,0.75)",
                 highlightStroke: "rgba(26,179,148,1)",
-                data: [28, 48, 40, 19, 86, 27, 90]
+                data: <?php echo json_encode($current_year_income_monthly); ?>
             }
         ]
     };

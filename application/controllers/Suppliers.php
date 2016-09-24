@@ -18,7 +18,9 @@ class Suppliers extends CORE_Controller {
         $data['_side_bar_navigation']=$this->load->view('template/elements/side_bar_navigation','',TRUE);
         $data['_top_navigation']=$this->load->view('template/elements/top_navigation','',TRUE);
         $data['title']='Supplier Management';
-        $data['tax_type']=$this->Tax_model->get_list();
+
+
+        $data['tax_types']=$this->Tax_model->get_list();
         $this->load->view('suppliers_view',$data);
     }
 

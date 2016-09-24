@@ -30,6 +30,10 @@
                 float: left;
             }
 
+            .select2-container{
+                min-width: 100%;
+            }
+
             td.details-control {
                 background: url('assets/img/Folder_Closed.png') no-repeat center center;
                 cursor: pointer;
@@ -48,9 +52,6 @@
                 -webkit-animation: spin2 1s infinite linear;
             }
 
-            .select2-container{
-                width: 100% !important;
-            }
 
             @keyframes spin {
                 from { transform: scale(1) rotate(0deg); }
@@ -80,7 +81,7 @@
             <div class="static-content"  >
                 <div class="page-content"><!-- #page-content -->
 
-                    <ol class="breadcrumb">
+                    <ol class="breadcrumb" style="margin:0%;">
                         <li><a href="dashboard">Dashboard</a></li>
                         <li><a href="suppliers">Suppliers</a></li>
                     </ol>
@@ -97,10 +98,11 @@
                                                     <thead>
                                                     <tr>
                                                         <th></th>
-                                                        <th>Supplier</th>
+                                                        <th>Supplier Name</th>
                                                         <th>Address</th>
                                                         <th>Landline</th>
                                                         <th>Mobile</th>
+                                                        <th>Tax</th>
                                                         <th><center>Action</center></th>
                                                     </tr>
                                                     </thead>
@@ -137,18 +139,18 @@
                                                     <div class="form-group">
                                                         <label class="col-md-2 control-label">* Address :</label>
                                                         <div class="col-md-9">
-                                                            <textarea name="address" class="form-control" data-error-msg="Supplier address is required!" required placeholder="Address"></textarea>
+                                                            <textarea name="address" class="form-control" data-error-msg="Supplier address is required!" placeholder="Address" required ></textarea>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
-                                                        <label class="col-md-2 control-label">* Email :</label>
+                                                        <label class="col-md-2 control-label">Email Address :</label>
                                                         <div class="col-md-9">
                                                             <div class="input-group">
                                                                             <span class="input-group-addon">
                                                                                 <i class="fa fa-envelope-o"></i>
                                                                             </span>
-                                                                <input type="text" name="email_address" class="form-control" placeholder="Email Address" data-error-msg="Supplier Email Address is required!" required>
+                                                                <input type="text" name="email_address" class="form-control" placeholder="Email Address">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -183,22 +185,22 @@
                                                         <div class="col-md-9">
                                                             <div class="input-group">
                                                                             <span class="input-group-addon">
-                                                                                <i class="fa fa-send"></i>
+                                                                                <i class="fa fa-code"></i>
                                                                             </span>
                                                                 <input type="text" name="tin_no" class="form-control" placeholder="TIN #">
                                                             </div>
                                                         </div>
                                                     </div>
 
+
                                                     <div class="form-group">
-                                                        <label class="col-md-2 control-label"> *Tax Type :</label>
+                                                        <label class="col-md-2 control-label">* Tax :</label>
                                                         <div class="col-md-9">
-                                                                <select name="" id="tax_group" data-error-msg="Tax Type is required." required>
-                                                                    <option value="0">[ Create Tax Type ]</option>
-                                                                    <?php foreach($tax_type as $group){ ?>
-                                                                        <option value="<?php echo $group->tax_type_id; ?>"><?php echo $group->tax_type; ?></option>
-                                                                    <?php } ?>
-                                                                </select>
+                                                            <select name="tax_type_id" id="cbo_tax_type" data-error-msg="Tax type is required!" required="">
+                                                                <?php foreach($tax_types as $tax_type){ ?>
+                                                                    <option value="<?php echo $tax_type->tax_type_id; ?>" data-tax-rate="<?php echo $tax_type->tax_rate; ?>"><?php echo $tax_type->tax_type; ?></option>
+                                                                <?php } ?>
+                                                            </select>
                                                         </div>
                                                     </div>
 
@@ -210,7 +212,7 @@
                                                                 <div class="" style="border:1px solid black;height: 230px;width: 210px;vertical-align: middle;">
 
                                                                     <div id="div_img_supplier" style="position:relative;">
-                                                                        <img name="img_supplier"  src="assets/img/anonymous-icon.png" style="object-fit: fill; !important; height: 100%;width: 100%;" />
+                                                                        <img name="img_supplier" src="assets/img/anonymous-icon.png" style="object-fit: fill; !important; height: 100%;width: 100%;" />
                                                                         <input type="file" name="file_upload[]" class="hidden">
                                                                     </div>
 
@@ -269,57 +271,6 @@
                 </div>
             </div><!---modal-->
 
-            <div id="modal_tax_group" class="modal fade" tabindex="-1" role="dialog"><!--modal-->
-                <div class="modal-dialog modal-md">
-                    <div class="modal-content"><!---content--->
-                        <div class="modal-header">
-                            <button type="button" class="close"   data-dismiss="modal" aria-hidden="true">X</button>
-                            <h4 class="modal-title"><span id="modal_mode"> </span>New Tax Group</h4>
-
-                        </div>
-
-                        <div class="modal-body">
-                            <form id="frm_tax_group">
-                                <div class="form-group">
-                                    <label>* Tax type :</label>
-                                    <div class="input-group">
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-envelope-o"></i>
-                                                </span>
-                                        <input type="text" name="tax_type" class="form-control" data-error-msg="Tax type is required." required>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>* Tax Rate :</label>
-                                    <div class="input-group">
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-envelope-o"></i>
-                                                </span>
-                                        <input type="number" name="tax_rate" class="form-control" placeholder="Tax group" data-error-msg="Tax name is required." required>
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group">
-                                    <label>Description :</label>
-                                    <div class="input-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                        <textarea name="tax_group_desc" class="form-control"></textarea>
-                                    </div>
-                                </div>
-                            </form>
-
-
-                        </div>
-
-                        <div class="modal-footer">
-                            <button id="btn_create_tax_group" type="button" class="btn btn-primary"  style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;"><span class=""></span> Create</button>
-                            <button id="btn_close_user_group" type="button" class="btn btn-default" data-dismiss="modal" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;">Cancel</button>
-                        </div>
-                    </div><!---content---->
-                </div>
-            </div><!---modal-->
-
             <footer role="contentinfo">
                 <div class="clearfix">
                     <ul class="list-unstyled list-inline pull-left">
@@ -340,15 +291,17 @@
     <script src="assets/plugins/spinner/dist/spin.min.js"></script>
     <script src="assets/plugins/spinner/dist/ladda.min.js"></script>
 
+
+    <!-- Select2 -->
+    <script src="assets/plugins/select2/select2.full.min.js"></script>
+
     <script type="text/javascript" src="assets/plugins/datatables/jquery.dataTables.js"></script>
     <script type="text/javascript" src="assets/plugins/datatables/dataTables.bootstrap.js"></script>
-
-    <script src="assets/plugins/select2/select2.full.min.js"></script>
 
     <script>
 
     $(document).ready(function() {
-        var dt; var _txnMode; var _selectedID; var _selectRowObj; var _taxTypeGroup;
+        var dt; var _txnMode; var _selectedID; var _selectRowObj; var _cboTaxType;
 
         var initializeControls=function() {
             dt=$('#tbl_suppliers').DataTable({
@@ -367,8 +320,9 @@
                     { targets:[2],data: "address" },
                     { targets:[3],data: "landline" },
                     { targets:[4],data: "mobile_no" },
+                    { targets:[5],data: "tax_type" },
                     {
-                        targets:[5],
+                        targets:[6],
                         render: function (data, type, full, meta){
                             var btn_edit='<button class="btn btn-default btn-sm" name="edit_info"  style="margin-left:-15px;" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i> </button>';
                             var btn_trash='<button class="btn btn-default btn-sm" name="remove_info" style="margin-right:0px;" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> </button>';
@@ -379,72 +333,22 @@
                 ]
             });
 
-
-            _taxTypeGroup=$("#tax_group").select2({
-                placeholder: "Please select type of tax",
-                allowClear: true
-            });
-
-            _taxTypeGroup.select2('val', null)
-
-
-
-
-
             var createToolBarButton=function() {
                 var _btnNew='<button class="btn btn-primary"  id="btn_new" style="text-transform: capitalize;font-family: Tahoma, Georgia, Serif;" data-toggle="modal" data-target="" data-placement="left" title="New supplier" >'+
-                    '<i class="fa fa-users"></i> New Supplier</button>';
+                    '<i class="fa fa-users"></i>Create New Supplier</button>';
                 $("div.toolbar").html(_btnNew);
             }();
+
+
+            _cboTaxType=$('#cbo_tax_type').select2({
+                placeholder: "Please select tax type.",
+                allopwClear: true
+            });
+
+            _cboTaxType.select2('val',null);
+
+
         }();
-
-        _taxTypeGroup.on("select2:select", function (e) {
-
-            var i=$(this).select2('val');
-            if(i==0){
-                $(this).select2('val',null)
-                $('#modal_tax_group').modal('show');
-                clearFields($('#modal_tax_group').find('form'));
-            }
-
-
-        });
-
-        $('#btn_create_tax_group').click(function(){
-
-            var btn=$(this);
-
-            if(validateRequiredFields($('#frm_tax_group'))){
-                var data=$('#frm_tax_group').serializeArray();
-
-                $.ajax({
-                    "dataType":"json",
-                    "type":"POST",
-                    "url":"Tax/transaction/create",
-                    "data":data,
-                    "beforeSend" : function(){
-                        showSpinningProgress(btn);
-                    }
-                }).done(function(response){
-                    showNotification(response);
-                    $('#modal_tax_group').modal('hide');
-
-                    var _group=response.row_added[0];
-                    $('#tax_group').append('<option value="'+_group.tax_type_id+'" selected>'+_group.tax_type+'</option>');
-                    $('#tax_group').select2('val',_group.tax_type_id);
-
-                }).always(function(){
-                    showSpinningProgress(btn);
-                });
-            }
-
-
-
-
-
-        });
-
-
 
         var bindEventHandlers=(function(){
             var detailRows = [];
@@ -463,7 +367,6 @@
                 }
                 else {
                     tr.addClass( 'details' );
-
                     var d=row.data();
 
                     $.ajax({
@@ -480,15 +383,11 @@
                             detailRows.push( tr.attr('id') );
                         }
                     });
-
-
-
                 }
             } );
 
             $('#btn_new').click(function(){
                 _txnMode="new";
-                clearFields($('#frm_supplier'))
                 showList(false);
             });
 
@@ -517,8 +416,9 @@
                             _elem.val(value);
                         }
                     });
-                    $('#tax_group').select2('val',data.tax_type_id);
                 });
+
+                $('#cbo_tax_type').select2('val',data.tax_type_id);
 
                 $('img[name="img_supplier"]').attr('src',data.photo_path);
                 showList(false);
@@ -539,8 +439,6 @@
                     dt.row(_selectRowObj).remove().draw();
                 });
             });
-
-
 
             $('input[name="file_upload[]"]').change(function(event){
                 var _files=event.target.files;
@@ -578,13 +476,13 @@
             });
 
             $('#btn_save').click(function() {
-                if(validateRequiredFields($('#frm_supplier'))) {
+                if(validateRequiredFields()) {
                     if(_txnMode=="new"){
                         createSupplier().done(function(response){
                             showNotification(response);
                             dt.row.add(response.row_added[0]).draw();
-                            clearFields($('#frm_supplier'))
-
+                            clearFields();
+                            showList(true);
                         }).always(function(){
                             showSpinningProgress($('#btn_save'));
                         });
@@ -592,7 +490,7 @@
                         updateSupplier().done(function(response){
                             showNotification(response);
                             dt.row(_selectRowObj).data(response.row_updated[0]).draw();
-                            clearFields($('#frm_supplier'))
+                            clearFields();
                             showList(true);
                         }).always(function(){
                             showSpinningProgress($('#btn_save'));
@@ -602,44 +500,25 @@
             });
         })();
 
-
-        var validateRequiredFields=function(f){
+        var validateRequiredFields=function() {
             var stat=true;
 
             $('div.form-group').removeClass('has-error');
-            $('input[required],textarea[required],select[required]',f).each(function(){
+            $('input[required],textarea','#frm_supplier').each(function(){
 
-                if($(this).is('select')){
-                    if($(this).select2('val')==0||$(this).select2('val')==null){
-                        showNotification({title:"Error!",stat:"error",msg:$(this).data('error-msg')});
-                        $(this).closest('div.form-group').addClass('has-error');
-                        $(this).focus();
-                        stat=false;
-                        return false;
-                    }
-                }else{
-                    if($(this).val()==""){
-                        showNotification({title:"Error!",stat:"error",msg:$(this).data('error-msg')});
-                        $(this).closest('div.form-group').addClass('has-error');
-                        $(this).focus();
-                        stat=false;
-                        return false;
-                    }
+                if($(this).val()==""){
+                    showNotification({title:"Error!",stat:"error",msg:$(this).data('error-msg')});
+                    $(this).closest('div.form-group').addClass('has-error');
+                    stat=false;
+                    return false;
                 }
-
-
-
             });
-
             return stat;
         };
-
-
 
         var createSupplier=function() {
             var _data=$('#frm_supplier').serializeArray();
             _data.push({name : "photo_path" ,value : $('img[name="img_supplier"]').attr('src')});
-            _data.push({name : "tax_type_id" ,value : $('#tax_group').select2('val')});
 
             return $.ajax({
                 "dataType":"json",
@@ -653,7 +532,6 @@
         var updateSupplier=function() {
             var _data=$('#frm_supplier').serializeArray();
             _data.push({name : "photo_path" ,value : $('img[name="img_supplier"]').attr('src')});
-            _data.push({name : "tax_type_id" ,value : $('#tax_group').select2('val')});
             _data.push({name : "supplier_id" ,value : _selectedID});
 
             return $.ajax({
@@ -697,10 +575,9 @@
             $(e).find('span').toggleClass('glyphicon glyphicon-refresh spinning');
         };
 
-        var clearFields=function(f){
-            $('input,textarea',f).val('');
-            $(f).find('select').select2('val',null);
-            $(f).find('input:first').focus();
+        var clearFields=function(){
+            $('input[required],textarea','#frm_supplier').val('');
+            $('form').find('input:first').focus();
         };
 
 
@@ -711,6 +588,7 @@
 
             });
         };
+
 
         function format ( d ) {
             // `d` is the original data object for the row
@@ -736,12 +614,6 @@
             '</tr>' +
             '<tr>' +
             '<td>Landline. : </td><td>'+ d.landline+'</td>' +
-            '</tr>' +
-            '<tr>' +
-            '<td>TIN #. : </td><td>'+ d.tin_no+'</td>' +
-            '</tr>' +
-            '<tr>' +
-            '<td>Tax. : </td><td>'+ d.tax_type+'</td>' +
             '</tr>' +
             '<tr>' +
             '<td>Active : </td><td><i class="fa fa-check"></i></td>' +

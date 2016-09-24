@@ -60,12 +60,16 @@ class Account_titles extends CORE_Controller
                 //update grandparent id
                 $account_id=$m_accounts->last_insert_id();
                 if($parent_account_id>0){ //if there is selected parent, get the grand parent id
-                    $grand_parent_id=$m_accounts->get_list($account_id,'account_titles.account_id');
-                    $m_accounts->set('grand_parent_id',$grand_parent_id[0]->account_id);
+
+                    $grand_parent_id=$m_accounts->get_list($parent_account_id,'account_titles.grand_parent_id,account_titles.account_class_id');
+                    $m_accounts->grand_parent_id=$grand_parent_id[0]->grand_parent_id;
+                    $m_accounts->account_class_id=$grand_parent_id[0]->account_class_id; //to make sure account class of parent and its child are the same
+
                 }else{ //parent id has post 0 value, it means this account has no parent, set by default it self as its grand parent id
-                    $m_accounts->set('grand_parent_id',$account_id);
+                    $m_accounts->grand_parent_id=$account_id;
                 }
                 $m_accounts->modify($account_id);
+
 
                 $m_accounts->commit();
 
@@ -73,6 +77,7 @@ class Account_titles extends CORE_Controller
                 $response['stat']='success';
                 $response['msg']='Account successfully created.';
                 $response['row_added']=$this->response_rows($account_id);
+                $response['parents']=$m_accounts->get_list(null,array('account_titles.account_id','account_titles.account_title'),null,'account_titles.account_title');
                 $response['row_hierarchy']=$this->get_account_hierarchy();
 
                 echo json_encode($response);
@@ -82,6 +87,7 @@ class Account_titles extends CORE_Controller
                 $parent_account_id=(float)$this->input->post('parent_account',TRUE);
                 $account_no=$this->input->post('account_no',TRUE);
                 $account_id=$this->input->post('account_id',TRUE);
+                $account_class_id=$this->input->post('account_class',TRUE);
 
                 //******************************************************************************************************
                 //make sure, you cannot update parent account to its own child account
@@ -94,25 +100,40 @@ class Account_titles extends CORE_Controller
 
                 $m_accounts->account_no=$account_no;
                 $m_accounts->account_title=$this->input->post('account_title',TRUE);
-                $m_accounts->account_class_id=$this->input->post('account_class',TRUE);
+                $m_accounts->account_class_id=$account_class_id;
                 $m_accounts->parent_account_id=$parent_account_id;
                 $m_accounts->modify($account_id);
 
 
                 //update grandparent id
+                $account_id=$m_accounts->last_insert_id();
                 if($parent_account_id>0){ //if there is selected parent, get the grand parent id
-                    $grand_parent_id=$m_accounts->get_list($account_id,'account_titles.account_id');
-                    $m_accounts->set('grand_parent_id',$grand_parent_id[0]->account_id);
+
+                    $grand_parent=$m_accounts->get_list($parent_account_id,'account_titles.grand_parent_id,account_titles.account_class_id');
+                    $grand_parent_id=$grand_parent[0]->grand_parent_id;
+                    $m_accounts->grand_parent_id=$grand_parent_id;
+
+
                 }else{ //parent id has post 0 value, it means this account has no parent, set by default it self as its grand parent id
-                    $m_accounts->set('grand_parent_id',$account_id);
+                    $grand_parent_id=$account_id;
+                    $m_accounts->grand_parent_id=$grand_parent_id;
                 }
                 $m_accounts->modify($account_id);
+
+
+                //FOR UPDATE ONLY!!!!!!!!
+                //$account_class=$m_accounts->get_list($grand_parent_id,'account_titles.account_class_id');
+                //$m_accounts->account_class_id=$account_class[0]->account_class_id;
+                //$m_accounts->modify($account_id);
+
+
 
                 $m_accounts->commit();
 
                 $response['title']='Success!';
                 $response['stat']='success';
                 $response['msg']='Account successfully update.';
+                $response['parents']=$m_accounts->get_list(null,array('account_titles.account_id','account_titles.account_title'),null,'account_titles.account_title');
                 $response['row_updated']=$this->response_rows($account_id);
                 $response['row_hierarchy']=$this->get_account_hierarchy();
 

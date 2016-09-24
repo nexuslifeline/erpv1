@@ -381,6 +381,14 @@ $(document).ready(function(){
         $.fn.zTree.init($("#treeDemo"), setting, zNodes);
     };
 
+    var reInitializeParentAccount=function(){
+        _cboParentAccounts=$("#cbo_parent_account").select2({
+            placeholder: "Please select parent account.",
+            allowClear: true
+        });
+        _cboParentAccounts.select2('val',0);
+    };
+
 
     var initializeControls=function(){
 
@@ -468,12 +476,8 @@ $(document).ready(function(){
         _cboTypes.select2('val',1);
 
 
+        reInitializeParentAccount();
 
-        _cboParentAccounts=$("#cbo_parent_account").select2({
-            placeholder: "Please select parent account.",
-            allowClear: true
-        });
-        _cboParentAccounts.select2('val',0);
 
     }();
 
@@ -570,14 +574,21 @@ $(document).ready(function(){
             var data=dt.row(_selectRowObj).data();
             _selectedID=data.account_id;
 
-            $('input,textarea').each(function(){
+            $('input,textarea,select').each(function(){
                 var _elem=$(this);
                 $.each(data,function(name,value){
-                    if(_elem.attr('name')==name){
-                        _elem.val(value);
-                    }
+
+                        if(_elem.attr('name')==name){
+                            _elem.val(value);
+                        }
+
+
+
                 });
             });
+
+            $('#cbo_account_class').select2('val',data.account_class_id);
+            $('#cbo_parent_account').select2('val',data.parent_account_id);
 
 
             showList(false);
@@ -634,6 +645,13 @@ $(document).ready(function(){
 
                         zNodes=response.row_hierarchy;
                         reInitializeTreeView();
+
+                        var parentList='<option value="0">No parent account</option>'; var parents=response.parents;
+                        $.each(parents,function(i,value){
+                            parentList+=createAccountParentList(value);
+                        });
+
+                        $('#cbo_parent_account').html(parentList); reInitializeParentAccount();
 
                         clearFields($('#frm_accounts'));
                         showList(true);
@@ -773,6 +791,11 @@ $(document).ready(function(){
             "bLengthChange":false
 
         });
+    };
+
+
+    var createAccountParentList=function(row){
+        return '<option value="'+row.account_id+'">'+row.account_title+'</option>'
     };
 
 

@@ -369,7 +369,7 @@
                                 <div class="col-lg-12">
 
                                     <div class="pull-right">
-                                        <a href="#" id="btn_mark_approved_po" data-id="<?php echo $po_info[0]->purchase_order_id; ?>" class="btn btn-primary btn-sm btn_mark_approved" style="text-transform: none;" data-toggle="tooltip" data-placement="top" title="Mark as Approved"><i class="fa fa-check-circle"></i> <span class=""></span> Approved this Purchase Order</a>
+                                        <a href="#" id="btn_mark_approved_po" data-id="<?php echo $po_info[0]->purchase_order_id; ?>" class="btn btn-primary btn-sm btn_mark_approved <?php echo (in_array('7-1',$this->session->user_rights)?'':'disabled'); ?>" style="text-transform: none;" data-toggle="tooltip" data-placement="top" title="Mark as Approved"><i class="fa fa-check-circle"></i> <span class=""></span> Approved this Purchase Order</a>
                                     </div>
 
 

@@ -23,7 +23,13 @@ class CORE_model extends CI_Model
     }
 
     function modify($id){
-        $this->db->where($this->pk_id,$id);
+
+        if(is_numeric($id)){
+            $this->db->where($this->table.'.'.$this->pk_id,$id); //if the argument is NUMERIC, always filter on the primary key
+        }else{
+            $this->db->where($id); //if STRING or is ARRAY, just pass it
+        }
+
         return $this->db->update($this->table, $this);
     }
 

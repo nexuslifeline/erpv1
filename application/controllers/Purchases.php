@@ -14,6 +14,7 @@ class Purchases extends CORE_Controller
         $this->load->model('Products_model');
         $this->load->model('Purchase_items_model');
         $this->load->model('Delivery_invoice_model');
+        $this->load->library('email');
 
     }
 
@@ -349,10 +350,44 @@ class Purchases extends CORE_Controller
                     $m_purchases=$this->Purchases_model;
                     $purchase_order_id=$this->input->post('purchase_order_id',TRUE);
 
+
+
                     $m_purchases->set('date_approved','NOW()'); //treat NOW() as function and not string, set date of approval
                     $m_purchases->approved_by_user=$this->session->user_id; //deleted by user
                     $m_purchases->approval_id=1; //1 means approved
                     if($m_purchases->modify($purchase_order_id)){
+
+                        $info=$m_purchases->get_list(
+                            $purchase_order_id,
+                            array(
+                                'user_accounts.user_email',
+                                'purchase_order.po_no'
+                            ),
+                            array(
+                                array('user_accounts','user_accounts.user_id=purchase_order.posted_by_user','left')
+                            )
+                        );
+
+                        if(strlen($info[0]->user_email)>0){ //if email is found, notify the user who posted it
+                            $email_setting  = array('mailtype'=>'html');
+                            $this->email->initialize($email_setting);
+
+                            $this->email->from('jdevsystems@jdevsolution.com', 'Paul Christian Rueda');
+                            $this->email->to($info[0]->user_email);
+                            //$this->email->cc('another@another-example.com');
+                            //$this->email->bcc('them@their-example.com');
+
+                            $this->email->subject('PO Notification!');
+                            $this->email->message('<p>Good Day!</p><br /><br /><p>Hi! your Purchase Order '.$info[0]->po_no.' is already approved. Kindly check your account.</p>');
+                            //$this->email->set_mailtype('html');
+
+                            $this->email->send();
+                        }
+
+
+
+
+
                         $response['title']='Success!';
                         $response['stat']='success';
                         $response['msg']='Purchase order successfully approved.';

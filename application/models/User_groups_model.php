@@ -17,13 +17,25 @@ class User_groups_model extends CORE_Model
         $sql="INSERT INTO user_groups
                   (user_group_id,user_group,user_group_desc)
               VALUES
-                  (1,'Super User','Can access all features.')
+                  (1,'System Administrator','Can access all features.')
               ON DUPLICATE KEY UPDATE
                   user_groups.user_group=VALUES(user_groups.user_group),
                   user_groups.user_group_desc=VALUES(user_groups.user_group_desc)
         ";
         $this->db->query($sql);
+
+
+        //create default user rights of this group
+        $sql="INSERT IGNORE INTO user_group_rights() SELECT link_id,1,link_code FROM rights_links";
+        $this->db->query($sql);
+
+
     }
+
+
+
+
+
 
 
 
