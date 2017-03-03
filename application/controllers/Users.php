@@ -34,6 +34,19 @@ class Users extends CORE_Controller
                 break;
             case 'create':
                 $m_users=$this->Users_model;
+                $user_name=$this->input->post('user_name',TRUE);
+
+                if(count($m_users->get_list(array(
+                    'user_accounts.user_name'=>$user_name
+                )))>0){
+
+                    $response['title']='Error!';
+                    $response['stat']='error';
+                    $response['msg']='Sorry, username already exist.';
+                    echo json_encode($response);
+                    exit;
+                }
+
 
                 $m_users->user_name=$this->input->post('user_name',TRUE);
                 $m_users->user_pword=sha1($this->input->post('user_pword',TRUE));

@@ -145,6 +145,16 @@
 
 <div id="div_sales_invoice_list">
 
+    <button onclick="printPage()">print</button>
+    <div id="printerDiv" style="display:none"></div>
+    <script>
+        function printPage()
+        {
+            var div = document.getElementById("printerDiv");
+            div.innerHTML = '<iframe src="Templates/layout/sales-invoice/1" onload="this.contentWindow.print();"></iframe>';
+        }
+    </script>
+
 
 
 

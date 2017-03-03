@@ -147,7 +147,7 @@ class Products extends CORE_Controller
         return $this->Products_model->get_list(
             $filter,
 
-            'products.*,categories.category_name,units.unit_name,0 as on_hand,item_types.item_type,account_titles.account_title',
+            'products.*,categories.category_name,units.unit_name,IF(products.item_type_id=1,CAST(get_product_qty(products.product_id) as CHAR),"na") as on_hand,item_types.item_type,account_titles.account_title',
 
             array(
                 array('categories','categories.category_id=products.category_id','left'),

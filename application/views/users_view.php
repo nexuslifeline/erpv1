@@ -736,8 +736,12 @@
                         if(_txnMode=="new"){
                             createUserAccount().done(function(response){
                                 showNotification(response);
-                                dt.row.add(response.row_added[0]).draw();
-                                clearFields($('#frm_users'));
+                                if(response.stat=="success"){
+                                    dt.row.add(response.row_added[0]).draw();
+                                    clearFields($('#frm_users'));
+                                    showList(true);
+                                }
+
                             }).always(function(){
                                 showSpinningProgress($('#btn_save'));
                             });
